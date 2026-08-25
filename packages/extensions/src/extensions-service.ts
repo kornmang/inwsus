@@ -1,4 +1,4 @@
-import { appError, err, ok, type Result } from '@lnwjud/domain';
+import { appError, err, ok, type Result } from '@inwsus/domain';
 import { McpConfigLoader } from './mcp-config-loader.js';
 import { McpSessionManager, type McpClientFactory } from './mcp-session-manager.js';
 import { SkillCatalog } from './skill-catalog.js';

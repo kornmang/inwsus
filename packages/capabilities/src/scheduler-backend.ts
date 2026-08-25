@@ -1,6 +1,6 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { appError, err, ok, type Result } from '@lnwjud/domain';
+import { appError, err, ok, type Result } from '@inwsus/domain';
 import type { CapabilityBackend } from './local-capability-service.js';
 
 const execFileAsync = promisify(execFile);

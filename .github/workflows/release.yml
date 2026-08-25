@@ -58,8 +58,8 @@ jobs:
 
           $package = Get-Content package.json -Raw | ConvertFrom-Json
           $requiredFiles = @(
-            "lnwjud-Setup-$($package.version).exe",
-            "lnwjud-Setup-$($package.version).exe.blockmap",
+            "inwsus-Setup-$($package.version).exe",
+            "inwsus-Setup-$($package.version).exe.blockmap",
             'latest.yml'
           )
           foreach ($fileName in $requiredFiles) {

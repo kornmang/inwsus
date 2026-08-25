@@ -32,7 +32,7 @@ export class McpConfigLoader {
     );
 
     for (const [name, config] of Object.entries(this.options.settings.extraMcpServers)) {
-      discovered.push(this.toServer(name, 'lnwjud-settings', config));
+      discovered.push(this.toServer(name, 'inwsus-settings', config));
     }
 
     return dedupeServers(discovered);
@@ -99,16 +99,16 @@ export function normalizeLaunchConfig(
 
 export function exclusionReason(name: string, config: McpServerLaunchConfig): string | undefined {
   const lowered = name.trim().toLowerCase();
-  if (lowered === 'lnwjud' || lowered.startsWith('lnwjud-')) {
-    return 'Refusing to aggregate lnwjud itself';
+  if (lowered === 'inwsus' || lowered.startsWith('inwsus-')) {
+    return 'Refusing to aggregate inwsus itself';
   }
   const command = path.basename(config.command).toLowerCase();
-  if (command === 'lnwjud' || command === 'lnwjud.exe' || command.includes('lnwjud')) {
-    return 'Refusing to aggregate lnwjud itself';
+  if (command === 'inwsus' || command === 'inwsus.exe' || command.includes('inwsus')) {
+    return 'Refusing to aggregate inwsus itself';
   }
   const args = (config.args ?? []).join(' ').toLowerCase();
-  if (args.includes('--mcp-stdio') && command.includes('lnwjud')) {
-    return 'Refusing to aggregate lnwjud itself';
+  if (args.includes('--mcp-stdio') && command.includes('inwsus')) {
+    return 'Refusing to aggregate inwsus itself';
   }
   return undefined;
 }

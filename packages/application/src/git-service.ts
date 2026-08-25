@@ -1,6 +1,6 @@
 import { realpath, stat } from 'node:fs/promises';
 import path from 'node:path';
-import { appError, err, ok, type Result } from '@lnwjud/domain';
+import { appError, err, ok, type Result } from '@inwsus/domain';
 import {
   GitAdapter,
   type GitCommandResult,
@@ -9,9 +9,9 @@ import {
   type GitLogRequest,
   type GitLogResult,
   type GitStatusResult,
-} from '@lnwjud/git';
-import { WorkspacePathGuard, type Workspace, type WorkspaceRepository } from '@lnwjud/workspace';
-import { isProvablyReadOnlyGitInvocation, prohibitedAgentGitInvocationReason } from '@lnwjud/shared';
+} from '@inwsus/git';
+import { WorkspacePathGuard, type Workspace, type WorkspaceRepository } from '@inwsus/workspace';
+import { isProvablyReadOnlyGitInvocation, prohibitedAgentGitInvocationReason } from '@inwsus/shared';
 import type { FileActor } from './file-service.js';
 import { isAbsoluteFsPath, resolveWorkspaceForPath } from './workspace-locator.js';
 

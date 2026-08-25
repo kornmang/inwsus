@@ -44,10 +44,10 @@ import {
   type UserSettings,
   type UpdateStatus,
   type WorkspaceSummary,
-} from '@lnwjud/ipc-contracts';
-import { readSharedActivitySnapshot, startMcpStdio, type HostMutationApprovalRequest } from '@lnwjud/mcp-server';
-import { DEFAULT_MCP_POLL_WAIT_SECONDS, DEFAULT_SHELL_SYNCHRONOUS_WAIT_SECONDS, MAX_CONFIGURABLE_WAIT_SECONDS, MIN_CONFIGURABLE_WAIT_SECONDS, resolveLnwjudDataPath } from '@lnwjud/shared';
-import { applyPendingSqliteRestoreSync } from '@lnwjud/storage';
+} from '@inwsus/ipc-contracts';
+import { readSharedActivitySnapshot, startMcpStdio, type HostMutationApprovalRequest } from '@inwsus/mcp-server';
+import { DEFAULT_MCP_POLL_WAIT_SECONDS, DEFAULT_SHELL_SYNCHRONOUS_WAIT_SECONDS, MAX_CONFIGURABLE_WAIT_SECONDS, MIN_CONFIGURABLE_WAIT_SECONDS, resolveInwsusDataPath } from '@inwsus/shared';
+import { applyPendingSqliteRestoreSync } from '@inwsus/storage';
 import { createDesktopRuntime, type DesktopRuntime } from './desktop-services.js';
 import { DesktopShutdownCoordinator } from './desktop-shutdown.js';
 import { shouldHoldSingleInstanceLock, wantsMcpStdio } from './instance-lock.js';
@@ -183,7 +183,7 @@ const defaultDesktopServices: DesktopIpcServices = {
     stdioAllowedRoots: [],
     backups: [],
     recovery: { trashRoot: null, trashItems: [], checkpoints: [] },
-    connectionModes: { httpUrl: null, stdioCommand: 'lnwjud.exe --mcp-stdio' },
+    connectionModes: { httpUrl: null, stdioCommand: 'inwsus.exe --mcp-stdio' },
     workLog: [],
     inFlight: [],
     tunnel: emptyTunnel,
@@ -262,7 +262,7 @@ export function registerIpcHandlers(
     choosePath: async (): Promise<string | null> => {
       const window = getMainWindow();
       if (window === null) return null;
-      const result = await dialog.showSaveDialog(window, { title: 'Capture lnwjud incident evidence', defaultPath: 'lnwjud-incident.json', filters: [{ name: 'JSON', extensions: ['json'] }] });
+      const result = await dialog.showSaveDialog(window, { title: 'Capture inwsus incident evidence', defaultPath: 'inwsus-incident.json', filters: [{ name: 'JSON', extensions: ['json'] }] });
       return result.canceled || result.filePath === undefined || result.filePath.length === 0 ? null : result.filePath;
     },
     write: atomicWrite,
@@ -595,8 +595,8 @@ async function exportLogsToFile(
 ): Promise<{ readonly exported: boolean }> {
   if (window === null) return { exported: false };
   const result = await dialog.showSaveDialog(window, {
-    title: 'Export lnwjud logs',
-    defaultPath: `lnwjud-${request.source}-logs.txt`,
+    title: 'Export inwsus logs',
+    defaultPath: `inwsus-${request.source}-logs.txt`,
     filters: [{ name: 'Text', extensions: ['txt', 'log'] }],
   });
   if (result.canceled || result.filePath === undefined || result.filePath.length === 0) {
@@ -959,7 +959,7 @@ function setDesktopLocale(locale: UiLocale): void {
 function createDesktopTray(): void {
   const iconPath = getWindowIconPath();
   if (iconPath === undefined) {
-    console.error('lnwjud tray icon was not found');
+    console.error('inwsus tray icon was not found');
     return;
   }
   tray?.destroy();
@@ -1003,13 +1003,13 @@ function bootstrapMcpStdio(): void {
     });
     desktopRuntime = runtime;
     const workspacePath = readArgValue('--workspace')
-      ?? process.env.LNWJUD_WORKSPACE
+      ?? process.env.INWSUS_WORKSPACE
       ?? process.cwd();
     try {
       const workspaceId = await runtime.ensureDefaultWorkspace(workspacePath);
-      process.stderr.write(`lnwjud MCP stdio ready workspace=${workspaceId}\n`);
+      process.stderr.write(`inwsus MCP stdio ready workspace=${workspaceId}\n`);
     } catch (error: unknown) {
-      process.stderr.write(`lnwjud MCP stdio workspace warning: ${error instanceof Error ? error.message : 'unknown'}\n`);
+      process.stderr.write(`inwsus MCP stdio workspace warning: ${error instanceof Error ? error.message : 'unknown'}\n`);
     }
     startMcpStdio({
       services: runtime.mcpServices,
@@ -1021,11 +1021,11 @@ function bootstrapMcpStdio(): void {
       codexToolsEnabled: runtime.getUserSettings().codexToolsEnabled,
       onError: (error): void => {
         if (/EPIPE|ECONNRESET|broken pipe/i.test(error.message)) {
-          process.stderr.write(`lnwjud MCP stdio: peer closed (${error.message})\n`);
+          process.stderr.write(`inwsus MCP stdio: peer closed (${error.message})\n`);
           void desktopRuntime?.close().finally(() => process.exit(0));
           return;
         }
-        process.stderr.write(`lnwjud MCP stdio error: ${error.message}\n`);
+        process.stderr.write(`inwsus MCP stdio error: ${error.message}\n`);
       },
     });
     process.stdin.on('end', () => {
@@ -1090,7 +1090,7 @@ function initAutoUpdater(runtime: DesktopRuntime): void {
         try {
           if ((await runtime.services.getTunnelStatus()).state === 'running') return true;
           try {
-            await access(path.join(process.env.APPDATA ?? app.getPath('appData'), 'tunnel-client', 'lnwjud.tunnel.lock'));
+            await access(path.join(process.env.APPDATA ?? app.getPath('appData'), 'tunnel-client', 'inwsus.tunnel.lock'));
             return true;
           } catch (error: unknown) {
             return typeof error === 'object' && error !== null && (error as NodeJS.ErrnoException).code === 'ENOENT' ? false : 'unverifiable';
@@ -1236,7 +1236,7 @@ function initAutoUpdater(runtime: DesktopRuntime): void {
 function bootstrapDesktop(): void {
   const dataPath = configureDataPath();
   void app.whenReady().then(async () => {
-    app.setAppUserModelId('com.lnwjud.desktop');
+    app.setAppUserModelId('com.inwsus.desktop');
     const runtime = createDesktopRuntime(dataPath, { hostMutationApprovalProvider: requestNativeMutationApproval });
     desktopRuntime = runtime;
     setDesktopLocale(runtime.getLocale());
@@ -1266,7 +1266,7 @@ function bootstrapDesktop(): void {
 function bootstrapLogViewerOnly(): void {
   const dataPath = configureDataPath();
   void app.whenReady().then(async () => {
-    app.setAppUserModelId('com.lnwjud.desktop');
+    app.setAppUserModelId('com.inwsus.desktop');
     const runtime = createDesktopRuntime(dataPath, { hostMutationApprovalProvider: requestNativeMutationApproval });
     desktopRuntime = runtime;
     configureDesktopShutdown(runtime);
@@ -1305,8 +1305,8 @@ function configureDesktopShutdown(runtime: DesktopRuntime): void {
       });
       void dialog.showMessageBox({
         type: 'error',
-        title: 'lnwjud is still running',
-        message: 'The owned tunnel could not be confirmed stopped. lnwjud will remain open; retry Quit after checking the tunnel status.',
+        title: 'inwsus is still running',
+        message: 'The owned tunnel could not be confirmed stopped. inwsus will remain open; retry Quit after checking the tunnel status.',
         detail: error.message,
         buttons: ['OK'],
       });
@@ -1380,10 +1380,10 @@ function configureCrashRecovery(dataPath: string): void {
 
 function configureDataPath(): string {
   app.setName(APP_NAME);
-  const dataPath = resolveLnwjudDataPath(process.env, app.getPath('appData'));
+  const dataPath = resolveInwsusDataPath(process.env, app.getPath('appData'));
   app.setPath('userData', dataPath);
   configureCrashRecovery(dataPath);
-  const restore = applyPendingSqliteRestoreSync(path.join(dataPath, 'lnwjud.sqlite'), path.join(dataPath, 'backups'));
+  const restore = applyPendingSqliteRestoreSync(path.join(dataPath, 'inwsus.sqlite'), path.join(dataPath, 'backups'));
   if (restore.error !== undefined) console.error(`Scheduled database restore failed: ${restore.error}`);
   if (restore.applied) console.log(`Database restore applied from ${restore.backupId ?? 'scheduled backup'}`);
   return dataPath;

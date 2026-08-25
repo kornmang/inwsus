@@ -1,4 +1,4 @@
-import type { LogLine } from '@lnwjud/ipc-contracts';
+import type { LogLine } from '@inwsus/ipc-contracts';
 
 export function applyLogSnapshot(
   previous: readonly LogLine[],

@@ -11,8 +11,8 @@
     <SelfContained>true</SelfContained>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <InvariantGlobalization>true</InvariantGlobalization>
-    <AssemblyName>lnwjud-windows-ocr</AssemblyName>
-    <RootNamespace>Lnwjud.WindowsOcr</RootNamespace>
+    <AssemblyName>inwsus-windows-ocr</AssemblyName>
+    <RootNamespace>Inwsus.WindowsOcr</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.SDK.Contracts" Version="10.0.28000.2526" />

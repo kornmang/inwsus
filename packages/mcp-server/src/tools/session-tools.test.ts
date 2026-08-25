@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ok } from '@lnwjud/domain';
+import { ok } from '@inwsus/domain';
 import { ContextEconomyRuntime } from '../context-economy.js';
 import { IncrementalVerifier } from '../incremental-verifier.js';
 import { sessionTools } from './session-tools.js';

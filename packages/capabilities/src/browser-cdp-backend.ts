@@ -1,4 +1,4 @@
-import { appError, err, ok, type Result } from '@lnwjud/domain';
+import { appError, err, ok, type Result } from '@inwsus/domain';
 import type { CapabilityBackend } from './local-capability-service.js';
 import { NodeBrowserCdpProtocol } from './browser-cdp-protocol.js';
 

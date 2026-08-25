@@ -1,6 +1,6 @@
-﻿export const CAPABILITY_TASK_OWNER_METADATA_KEY = 'lnwjud.taskOwner.v1';
+﻿export const CAPABILITY_TASK_OWNER_METADATA_KEY = 'inwsus.taskOwner.v1';
 
-export const CAPABILITY_ACTIVE_WORKSPACE_ROOT_METADATA_KEY = 'lnwjud.activeWorkspaceRoot.v1';
+export const CAPABILITY_ACTIVE_WORKSPACE_ROOT_METADATA_KEY = 'inwsus.activeWorkspaceRoot.v1';
 
 export interface CapabilityTaskOwner {
   readonly clientId: string;

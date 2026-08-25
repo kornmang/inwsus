@@ -2,7 +2,7 @@ import { mkdtemp, realpath, rm, symlink, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { ok, type Result } from '@lnwjud/domain';
+import { ok, type Result } from '@inwsus/domain';
 import { ShellCapabilityBackend } from './shell-backend.js';
 import { CAPABILITY_TASK_OWNER_METADATA_KEY } from './task-ownership.js';
 
@@ -19,7 +19,7 @@ describe('ShellCapabilityBackend', () => {
     ['PowerShell dynamic command', 'powershell.exe', ['-Command', "& ('Remove'+'-Item') x"]],
     ['Node script', 'node.exe', ['cleanup.js']],
   ])('classifies unconfirmed run appropriately: %s', async (label, executable, args) => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-'));
     temporaryRoots.push(root);
     let resolutions = 0;
     const backend = new ShellCapabilityBackend({
@@ -44,7 +44,7 @@ describe('ShellCapabilityBackend', () => {
   });
 
   it('allows an unconfirmed dry run without resolving or spawning the executable', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-'));
     temporaryRoots.push(root);
     const backend = new ShellCapabilityBackend({ allowedRoots: [root] });
     const canonicalRoot = await realpath(root);
@@ -60,7 +60,7 @@ describe('ShellCapabilityBackend', () => {
     ['Git purge', 'git.exe', ['clean', '-fd']],
     ['direct replacing copy', 'cp', ['source.txt', 'destination.txt']],
   ] as const)('allows risky command after explicit confirmation: %s', async (_label, executable, args) => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-'));
     temporaryRoots.push(root);
     let resolutions = 0;
     const backend = new ShellCapabilityBackend({
@@ -73,26 +73,26 @@ describe('ShellCapabilityBackend', () => {
       },
     });
 
-    const result = await backend.execute({ operation: 'run', executable, arguments: args, cwd: root, execution: 'foreground', userConfirmed: true, metadata: { 'lnwjud.activeWorkspaceRoot.v1': root } });
+    const result = await backend.execute({ operation: 'run', executable, arguments: args, cwd: root, execution: 'foreground', userConfirmed: true, metadata: { 'inwsus.activeWorkspaceRoot.v1': root } });
     expect(result.ok).toBe(true);
     expect(resolutions).toBe(1);
   });
 
   it('rejects another configured root when host metadata binds the active workspace root', async () => {
-    const activeRoot = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-active-'));
-    const otherRoot = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-other-'));
+    const activeRoot = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-active-'));
+    const otherRoot = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-other-'));
     temporaryRoots.push(activeRoot, otherRoot);
     const backend = new ShellCapabilityBackend({ allowedRoots: [activeRoot, otherRoot], unrestricted: true });
 
     await expect(backend.execute({
       operation: 'run', executable: process.execPath, arguments: ['--version'], cwd: otherRoot, dry_run: true,
-      metadata: { 'lnwjud.activeWorkspaceRoot.v1': activeRoot },
+      metadata: { 'inwsus.activeWorkspaceRoot.v1': activeRoot },
     })).resolves.toMatchObject({ ok: false, error: { code: 'PATH_OUTSIDE_WORKSPACE' } });
   });
 
   it('rejects a junction that is lexically inside the active workspace but resolves outside it', async () => {
-    const activeRoot = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-active-'));
-    const otherRoot = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-other-'));
+    const activeRoot = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-active-'));
+    const otherRoot = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-other-'));
     temporaryRoots.push(activeRoot, otherRoot);
     const escape = path.join(activeRoot, 'escape');
     await symlink(otherRoot, escape, process.platform === 'win32' ? 'junction' : 'dir');
@@ -100,12 +100,12 @@ describe('ShellCapabilityBackend', () => {
 
     await expect(backend.execute({
       operation: 'run', executable: process.execPath, arguments: ['--version'], cwd: escape, dry_run: true,
-      metadata: { 'lnwjud.activeWorkspaceRoot.v1': activeRoot },
+      metadata: { 'inwsus.activeWorkspaceRoot.v1': activeRoot },
     })).resolves.toMatchObject({ ok: false, error: { code: 'PATH_OUTSIDE_WORKSPACE' } });
   });
 
   it('runs an executable with separate arguments and returns bounded output', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-'));
     temporaryRoots.push(root);
     const backend = new ShellCapabilityBackend({ allowedRoots: [root] });
 
@@ -123,7 +123,7 @@ describe('ShellCapabilityBackend', () => {
   });
 
   it('keeps the backend foreground wait independent from the MCP 5-second poll policy', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-'));
     temporaryRoots.push(root);
     const backend = new ShellCapabilityBackend({ allowedRoots: [root] });
 
@@ -141,7 +141,7 @@ describe('ShellCapabilityBackend', () => {
   }, 10_000);
 
   it('applies a live synchronous-wait provider without changing the backend default contract', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-'));
     temporaryRoots.push(root);
     let waitSeconds = 0.05;
     const backend = new ShellCapabilityBackend({ allowedRoots: [root], maxSynchronousWaitSecondsProvider: (): number => waitSeconds });
@@ -162,8 +162,8 @@ describe('ShellCapabilityBackend', () => {
   }, 10_000);
 
   it('rejects a working directory outside configured local roots', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-'));
-    const outside = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-outside-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-'));
+    const outside = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-outside-'));
     temporaryRoots.push(root, outside);
     const backend = new ShellCapabilityBackend({ allowedRoots: [root] });
 
@@ -179,7 +179,7 @@ describe('ShellCapabilityBackend', () => {
   });
 
   it('supports a background task handle followed by wait and result', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-'));
     temporaryRoots.push(root);
     const backend = new ShellCapabilityBackend({ allowedRoots: [root] });
 
@@ -201,7 +201,7 @@ describe('ShellCapabilityBackend', () => {
   });
 
   it('returns a running task instead of blocking an MCP call past the synchronous wait budget', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-'));
     temporaryRoots.push(root);
     const backend = new ShellCapabilityBackend({ allowedRoots: [root], maxSynchronousWaitSeconds: 0.05 });
 
@@ -222,7 +222,7 @@ describe('ShellCapabilityBackend', () => {
   });
 
   it('cancels a foreground process when its caller aborts the request', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-'));
     temporaryRoots.push(root);
     let stops = 0;
     const backend = new ShellCapabilityBackend({
@@ -258,7 +258,7 @@ describe('ShellCapabilityBackend', () => {
   });
 
   it('does not spawn after cancellation wins during executable resolution', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-'));
     temporaryRoots.push(root);
     let releaseResolver!: () => void;
     let resolverStarted!: () => void;
@@ -304,7 +304,7 @@ describe('ShellCapabilityBackend', () => {
   });
 
   it('retains an explicit unverified state when the root closes after termination rejection', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-'));
     temporaryRoots.push(root);
     const backend = new ShellCapabilityBackend({
       allowedRoots: [root],
@@ -346,7 +346,7 @@ describe('ShellCapabilityBackend', () => {
   });
 
   it('retains an explicit unverified state when the root closes before termination rejection', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-'));
     temporaryRoots.push(root);
     const backend = new ShellCapabilityBackend({
       allowedRoots: [root],
@@ -383,7 +383,7 @@ describe('ShellCapabilityBackend', () => {
   });
 
   it('allows a termination-unverified task to be safely re-verified', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-'));
     temporaryRoots.push(root);
     let attempts = 0;
     const backend = new ShellCapabilityBackend({
@@ -427,7 +427,7 @@ describe('ShellCapabilityBackend', () => {
   });
 
   it('caps shell wait calls so polling cannot hold the MCP connection open indefinitely', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-'));
     temporaryRoots.push(root);
     const backend = new ShellCapabilityBackend({ allowedRoots: [root], maxSynchronousWaitSeconds: 0.05 });
     const started = await backend.execute({
@@ -452,14 +452,14 @@ describe('ShellCapabilityBackend', () => {
 
   it('runs a Windows .cmd shim whose path contains spaces', async () => {
     if (process.platform !== 'win32') return;
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud shell shim-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus shell shim-'));
     temporaryRoots.push(root);
-    await writeFile(path.join(root, 'lnwjud-shim.cmd'), '@echo off\r\necho shell-shim-marker\r\n', 'utf8');
+    await writeFile(path.join(root, 'inwsus-shim.cmd'), '@echo off\r\necho shell-shim-marker\r\n', 'utf8');
     const backend = new ShellCapabilityBackend({ allowedRoots: [root] });
 
     const result = await backend.execute({
       operation: 'run',
-      executable: path.join(root, 'lnwjud-shim.cmd'),
+      executable: path.join(root, 'inwsus-shim.cmd'),
       arguments: [],
       cwd: root,
       execution: 'foreground',
@@ -480,8 +480,8 @@ function delayForTest(milliseconds: number): Promise<void> {
 
 describe('ShellCapabilityBackend unrestricted', () => {
   it('allows a working directory outside configured local roots', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-'));
-    const outside = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-outside-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-'));
+    const outside = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-outside-'));
     temporaryRoots.push(root, outside);
     const backend = new ShellCapabilityBackend({ allowedRoots: [root], unrestricted: true });
 
@@ -498,14 +498,14 @@ describe('ShellCapabilityBackend unrestricted', () => {
   });
 
   it('passes the full environment through in unrestricted mode', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-'));
     temporaryRoots.push(root);
     const backend = new ShellCapabilityBackend({ allowedRoots: [root], unrestricted: true });
 
     const result = await backend.execute({
       operation: 'run',
       executable: process.execPath,
-      arguments: ['-e', "process.stdout.write(process.env.LNWJUD_ENV_PROBE ?? 'missing')"],
+      arguments: ['-e', "process.stdout.write(process.env.INWSUS_ENV_PROBE ?? 'missing')"],
       cwd: root,
       execution: 'foreground',
       userConfirmed: true,
@@ -515,7 +515,7 @@ describe('ShellCapabilityBackend unrestricted', () => {
   });
 
   it('still blocks delete-like commands in unrestricted mode', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-'));
     temporaryRoots.push(root);
     const backend = new ShellCapabilityBackend({ allowedRoots: [root], unrestricted: true });
 
@@ -531,7 +531,7 @@ describe('ShellCapabilityBackend unrestricted', () => {
   });
 
   it('allows git rm and git reset as dry-run', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-'));
     temporaryRoots.push(root);
     const backend = new ShellCapabilityBackend({
       allowedRoots: [root],
@@ -561,7 +561,7 @@ describe('ShellCapabilityBackend unrestricted', () => {
   });
 
   it('does not treat powershell git rm as a filesystem delete', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-'));
     temporaryRoots.push(root);
     const backend = new ShellCapabilityBackend({
       allowedRoots: [root],
@@ -582,7 +582,7 @@ describe('ShellCapabilityBackend unrestricted', () => {
   });
 
   it('persists durable task ownership and rejects another session in the same workspace', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-shell-owner-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-shell-owner-'));
     temporaryRoots.push(root);
     const taskStateDirectory = path.join(root, '.tasks');
     const owner = (sessionId: string): { metadata: Record<string, unknown> } => ({

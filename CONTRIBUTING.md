@@ -1,6 +1,6 @@
-# Contributing to lnwjud
+# Contributing to inwsus
 
-Thanks for helping improve lnwjud. The project is a Windows-first local AI-agent runtime and MCP gateway, so changes should preserve local-first behavior, explicit trust boundaries, and deterministic release verification.
+Thanks for helping improve inwsus. The project is a Windows-first local AI-agent runtime and MCP gateway, so changes should preserve local-first behavior, explicit trust boundaries, and deterministic release verification.
 
 ## Before you start
 

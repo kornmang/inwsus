@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import type { Workspace, WorkspaceRepository } from '@lnwjud/workspace';
-import { ProjectDetector } from '@lnwjud/project';
+import type { Workspace, WorkspaceRepository } from '@inwsus/workspace';
+import { ProjectDetector } from '@inwsus/project';
 import { ProjectService } from './project-service.js';
 
 const workspace: Workspace = {

@@ -16,7 +16,7 @@ import {
   type ExportLogsRequest,
   type IncidentExportResult,
   type InFlightWorkItem,
-  type LnwjudApi,
+  type InwsusApi,
   type LogLine,
   type LogSnapshot,
   type ManagedBrowserStatus,
@@ -45,7 +45,7 @@ import {
   type UserSettings,
   type WorkLogEntry,
   type WorkspaceSummary,
-} from '@lnwjud/ipc-contracts';
+} from '@inwsus/ipc-contracts';
 import { parseLogCorrelation } from './log-parser.js';
 
 function invoke(channel: string, payload?: unknown): Promise<unknown> {
@@ -776,7 +776,7 @@ function onLogEvent(callback: (line: LogLine) => void): () => void {
   };
 }
 
-const api: LnwjudApi = {
+const api: InwsusApi = {
   listWorkspaces: () => invoke(ipcChannels.listWorkspaces).then(workspaceList),
   addWorkspace,
   selectWorkspace,
@@ -827,4 +827,4 @@ const api: LnwjudApi = {
   onUpdateStatus,
 };
 
-contextBridge.exposeInMainWorld('lnwjud', api);
+contextBridge.exposeInMainWorld('inwsus', api);

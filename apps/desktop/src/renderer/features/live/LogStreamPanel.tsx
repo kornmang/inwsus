@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
-import type { LogLevel, LogLine, LogSource, WorkspaceSummary } from '@lnwjud/ipc-contracts';
+import type { LogLevel, LogLine, LogSource, WorkspaceSummary } from '@inwsus/ipc-contracts';
 import { copyTextToClipboard } from '../../clipboard.js';
 import type { MessageKey } from '../../i18n/messages.js';
 

@@ -1,4 +1,4 @@
-import type { AuditEvent, AuditEventQuery, AuditEventRepository } from '@lnwjud/audit';
+import type { AuditEvent, AuditEventQuery, AuditEventRepository } from '@inwsus/audit';
 import type { SqliteDatabase } from './database.js';
 
 interface AuditEventRow {

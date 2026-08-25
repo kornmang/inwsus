@@ -1,4 +1,4 @@
-import type { AppError, Result } from '@lnwjud/domain';
+import type { AppError, Result } from '@inwsus/domain';
 
 export interface McpTextContent {
   readonly type: 'text';

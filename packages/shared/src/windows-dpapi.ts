@@ -58,10 +58,10 @@ export function loadOrCreateWindowsProtectedKey(filePath: string, byteLength = 3
 }
 
 export function loadCheckpointEncryptionKey(dataPath: string): Buffer {
-  const configured = process.env.LNWJUD_CHECKPOINT_KEY_BASE64;
+  const configured = process.env.INWSUS_CHECKPOINT_KEY_BASE64;
   if (configured !== undefined && configured.trim().length > 0) {
     const key = Buffer.from(configured.trim(), 'base64');
-    if (key.byteLength !== 32) throw new Error('LNWJUD_CHECKPOINT_KEY_BASE64 must decode to 32 bytes');
+    if (key.byteLength !== 32) throw new Error('INWSUS_CHECKPOINT_KEY_BASE64 must decode to 32 bytes');
     return key;
   }
   return loadOrCreateWindowsProtectedKey(path.join(dataPath, 'checkpoint-master.key'), 32);

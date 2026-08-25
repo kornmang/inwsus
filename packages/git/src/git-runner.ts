@@ -1,5 +1,5 @@
 import { spawn, type ChildProcess } from 'node:child_process';
-import { WindowsProcessTree, type ProcessTreeTerminator } from '@lnwjud/process';
+import { WindowsProcessTree, type ProcessTreeTerminator } from '@inwsus/process';
 
 export interface GitRunResult {
   readonly exitCode: number;

@@ -1,5 +1,5 @@
 import { useMemo, useState, type ReactElement } from 'react';
-import type { UiLocale, WorkspaceSummary } from '@lnwjud/ipc-contracts';
+import type { UiLocale, WorkspaceSummary } from '@inwsus/ipc-contracts';
 import { createTranslator } from '../../i18n/index.js';
 
 interface ProjectsPageProps {

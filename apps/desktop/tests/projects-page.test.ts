@@ -1,7 +1,7 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import type { WorkspaceSummary } from '@lnwjud/ipc-contracts';
+import type { WorkspaceSummary } from '@inwsus/ipc-contracts';
 import { ProjectsPage } from '../src/renderer/features/projects/ProjectsPage.js';
 
 const noop = async (): Promise<void> => undefined;
@@ -38,7 +38,7 @@ describe('Projects page lifecycle controls', () => {
     expect(markup).toContain('Archive</button>');
     expect(markup).toContain('Restore</button>');
     expect(markup).toContain('Remove</button>');
-    expect(markup).toContain('managed automatically by lnwjud');
+    expect(markup).toContain('managed automatically by inwsus');
     expect(markup.match(/>Remove<\/button>/g)?.length).toBe(2);
   });
 

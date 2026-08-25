@@ -5,8 +5,8 @@ import path from 'node:path';
 // Tunnel itself targets the live Desktop loopback HTTP MCP so the host-selected
 // Active Project and native exact-action approval remain authoritative.
 const COMMAND_LINE = /(command:\s*)"[^"]*"/i;
-const PACKAGED_EXECUTABLE = 'lnwjud.exe';
-const PACKAGED_STDIO_LAUNCHER = 'lnwjud-mcp-stdio.cmd';
+const PACKAGED_EXECUTABLE = 'inwsus.exe';
+const PACKAGED_STDIO_LAUNCHER = 'inwsus-mcp-stdio.cmd';
 const RUNTIME_API_KEY_REF = 'env:CONTROL_PLANE_API_KEY';
 
 export function posixPath(filePath: string): string {
@@ -96,15 +96,15 @@ export function resolveStdioLauncherPath(candidates: readonly string[]): string 
  * The packaged Electron executable uses the GUI subsystem. When a direct local
  * stdio host starts it as a child, its stdio handles can close immediately even
  * though Electron reports that the app is ready. The packaged launcher uses the
- * private Node 24 runtime shipped with lnwjud and keeps the MCP pipe owned by a
+ * private Node 24 runtime shipped with inwsus and keeps the MCP pipe owned by a
  * normal console process without system Node.js.
  *
  * This helper is for direct local stdio integrations only. Secure Tunnel uses the
  * Desktop loopback HTTP MCP and never spawns this launcher.
  *
- * An installed lnwjud.exe must never fall back to a launcher from a developer
+ * An installed inwsus.exe must never fall back to a launcher from a developer
  * repository. Installed builds accept only a canonical launcher beside
- * lnwjud.exe or inside that installation's canonical resources directory.
+ * inwsus.exe or inside that installation's canonical resources directory.
  * Junction or symlink escapes fail closed.
  */
 export function preferredTunnelMcpCommand(execPath: string, cmdFallback: string | null): string | null {
@@ -133,11 +133,11 @@ export function preferredTunnelMcpCommand(execPath: string, cmdFallback: string 
 export function packagedStdioLauncherCandidates(execPath: string, resourcesPath?: string): string[] {
   const execDir = path.dirname(execPath);
   const candidates = [
-    path.join(execDir, 'lnwjud-mcp-stdio.cmd'),
-    path.join(execDir, 'resources', 'lnwjud-mcp-stdio.cmd'),
+    path.join(execDir, 'inwsus-mcp-stdio.cmd'),
+    path.join(execDir, 'resources', 'inwsus-mcp-stdio.cmd'),
   ];
   if (typeof resourcesPath === 'string' && resourcesPath.trim().length > 0) {
-    candidates.push(path.join(resourcesPath, 'lnwjud-mcp-stdio.cmd'));
+    candidates.push(path.join(resourcesPath, 'inwsus-mcp-stdio.cmd'));
   }
   return candidates;
 }

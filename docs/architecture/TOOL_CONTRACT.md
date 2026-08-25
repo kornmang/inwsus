@@ -1,4 +1,4 @@
-# lnwjud Tool Contract
+# inwsus Tool Contract
 
 Status: God-Tier Wave 0–8 additive contract snapshot for `v4.0.0`.
 

@@ -1,8 +1,8 @@
 import { closeSync, existsSync, openSync, readSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { StringDecoder } from 'node:string_decoder';
-import type { AppErrorCode } from '@lnwjud/domain';
-import { type LogCorrelation, type LogLevel, type LogLine, type LogScopeRequest, type LogSnapshot, type LogSource, type TunnelLifecycleCategory } from '@lnwjud/ipc-contracts';
+import type { AppErrorCode } from '@inwsus/domain';
+import { type LogCorrelation, type LogLevel, type LogLine, type LogScopeRequest, type LogSnapshot, type LogSource, type TunnelLifecycleCategory } from '@inwsus/ipc-contracts';
 
 const MAX_LINES_PER_SOURCE = 2_000;
 const MAX_SEEN_KEYS_PER_SOURCE = 4_000;

@@ -1,5 +1,5 @@
 {
-  "name": "@lnwjud/mcp-server",
+  "name": "@inwsus/mcp-server",
   "version": "4.10.0",
   "private": true,
   "type": "module",
@@ -13,13 +13,13 @@
     }
   },
   "dependencies": {
-    "@lnwjud/application": "workspace:*",
-    "@lnwjud/capabilities": "workspace:*",
-    "@lnwjud/domain": "workspace:*",
-    "@lnwjud/extensions": "workspace:*",
-    "@lnwjud/permissions": "workspace:*",
-    "@lnwjud/search": "workspace:*",
-    "@lnwjud/shared": "workspace:*",
+    "@inwsus/application": "workspace:*",
+    "@inwsus/capabilities": "workspace:*",
+    "@inwsus/domain": "workspace:*",
+    "@inwsus/extensions": "workspace:*",
+    "@inwsus/permissions": "workspace:*",
+    "@inwsus/search": "workspace:*",
+    "@inwsus/shared": "workspace:*",
     "@modelcontextprotocol/server": "2.0.0",
     "zod": "4.2.0"
   },
@@ -27,7 +27,7 @@
     "@modelcontextprotocol/client": "2.0.0"
   },
   "scripts": {
-    "test": "corepack pnpm@10.15.0 --filter @lnwjud/domain build && corepack pnpm@10.15.0 --filter @lnwjud/capabilities build && corepack pnpm@10.15.0 --filter @lnwjud/extensions build && corepack pnpm@10.15.0 build && vitest run",
+    "test": "corepack pnpm@10.15.0 --filter @inwsus/domain build && corepack pnpm@10.15.0 --filter @inwsus/capabilities build && corepack pnpm@10.15.0 --filter @inwsus/extensions build && corepack pnpm@10.15.0 build && vitest run",
     "typecheck": "tsc --noEmit",
     "build": "tsc --outDir dist"
   },

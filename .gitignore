@@ -41,7 +41,7 @@ credentials.json
 
 # Logs & Diagnostics
 *.log
-lnwjud-*-logs.txt
+inwsus-*-logs.txt
 logs/
 diagnostics/
 
@@ -81,5 +81,5 @@ docs/benchmarks/*
 *.swo
 .DS_Store
 Thumbs.db
-lnwjud-incident.json
+inwsus-incident.json
 .codegraph

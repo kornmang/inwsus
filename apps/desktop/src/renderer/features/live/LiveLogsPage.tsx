@@ -1,5 +1,5 @@
 import { useState, type ReactElement } from 'react';
-import type { IncidentClassification, LogLine, LogSource, UiLocale, WorkspaceSummary } from '@lnwjud/ipc-contracts';
+import type { IncidentClassification, LogLine, LogSource, UiLocale, WorkspaceSummary } from '@inwsus/ipc-contracts';
 import { createTranslator } from '../../i18n/index.js';
 import { LogStreamPanel, type LogScopeSelection } from './LogStreamPanel.js';
 

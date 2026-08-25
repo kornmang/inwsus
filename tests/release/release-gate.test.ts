@@ -72,7 +72,7 @@ describe('MVP release verification gate', () => {
     ) as { scripts?: Record<string, string> };
     expect(desktopPackage.scripts?.['electron:install']).toBe('node node_modules/electron/install.js');
     expect(desktopPackage.scripts?.['test:e2e']).toMatch(/^node node_modules\/electron\/install\.js && /);
-    expect(rootPackage.scripts?.desktop).toContain('--filter @lnwjud/desktop electron:install');
+    expect(rootPackage.scripts?.desktop).toContain('--filter @inwsus/desktop electron:install');
   });
 
   it('provisions ripgrep on fresh Windows CI before the authoritative gate', async () => {

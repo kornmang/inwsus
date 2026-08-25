@@ -11,7 +11,7 @@ import type {
   UserSettings,
   IncidentClassification,
   WorkspaceSummary,
-} from '@lnwjud/ipc-contracts';
+} from '@inwsus/ipc-contracts';
 import { AppShell, type Screen } from './features/shell/AppShell.js';
 import { ControlCenterPage } from './features/home/ControlCenterPage.js';
 import { ProjectsPage } from './features/projects/ProjectsPage.js';
@@ -57,10 +57,10 @@ export function App(): ReactElement {
 
   useEffect(() => {
     let disposed = false;
-    void window.lnwjud.getUpdateStatus().then((status) => {
+    void window.inwsus.getUpdateStatus().then((status) => {
       if (!disposed) setUpdateStatus(status);
     }).catch(() => undefined);
-    const unsubscribe = window.lnwjud.onUpdateStatus((status) => {
+    const unsubscribe = window.inwsus.onUpdateStatus((status) => {
       if (!disposed) setUpdateStatus(status);
     });
     return (): void => {
@@ -71,7 +71,7 @@ export function App(): ReactElement {
 
   useEffect(() => {
     let disposed = false;
-    void window.lnwjud.getLogSnapshot().then((snapshot) => {
+    void window.inwsus.getLogSnapshot().then((snapshot) => {
       if (disposed) return;
       setLogLines((previous) => {
         const merged = applyLogSnapshot(previous, logIds.current, snapshot.lines);
@@ -81,7 +81,7 @@ export function App(): ReactElement {
       setTunnelLogPath(snapshot.tunnelLogPath);
       setTunnelLogExists(snapshot.tunnelLogExists);
     }).catch(() => undefined);
-    const unsubscribe = window.lnwjud.onLogEvent((line) => {
+    const unsubscribe = window.inwsus.onLogEvent((line) => {
       appendLogLine(line);
       if (line.source === 'tunnel') setTunnelLogExists(true);
     });
@@ -93,7 +93,7 @@ export function App(): ReactElement {
 
   async function clearLogSource(source: LogSource, scope: LogScopeSelection): Promise<void> {
     try {
-      await window.lnwjud.clearLogBuffer({
+      await window.inwsus.clearLogBuffer({
         source,
         ...(scope.workspaceId === null ? {} : { workspaceId: scope.workspaceId }),
         ...(scope.sessionId === null ? {} : { sessionId: scope.sessionId }),
@@ -106,7 +106,7 @@ export function App(): ReactElement {
 
   async function clearAllLogs(): Promise<void> {
     try {
-      await Promise.all((['tunnel', 'mcp', 'process'] as const).map((source) => window.lnwjud.clearLogBuffer({ source })));
+      await Promise.all((['tunnel', 'mcp', 'process'] as const).map((source) => window.inwsus.clearLogBuffer({ source })));
       logIds.current = new Set();
       setLogLines([]);
     } catch (cause: unknown) {
@@ -116,7 +116,7 @@ export function App(): ReactElement {
 
   async function exportLogSource(source: LogSource, scope: LogScopeSelection, query: string): Promise<void> {
     try {
-      await window.lnwjud.exportLogs({
+      await window.inwsus.exportLogs({
         source,
         filePath: '',
         ...(scope.workspaceId === null ? {} : { workspaceId: scope.workspaceId }),
@@ -130,7 +130,7 @@ export function App(): ReactElement {
 
   async function popOutLogViewer(): Promise<void> {
     try {
-      await window.lnwjud.openLogViewer();
+      await window.inwsus.openLogViewer();
     } catch (cause: unknown) {
       setError(errorMessage(cause, t('error.logViewerOpen')));
     }
@@ -141,7 +141,7 @@ export function App(): ReactElement {
     incidentBusyRef.current = true;
     setIncidentBusy(true);
     try {
-      const result = await window.lnwjud.captureIncident();
+      const result = await window.inwsus.captureIncident();
       if (result.exported && !result.cancelled) {
         setIncidentClassification(result.classification);
         setIncidentCapturedAt(result.capturedAt);
@@ -160,8 +160,8 @@ export function App(): ReactElement {
   const refresh = useCallback(async (): Promise<void> => {
     try {
       const [nextDashboard, nextWorkspaces] = await Promise.all([
-        window.lnwjud.getDashboard(),
-        window.lnwjud.listWorkspaces(),
+        window.inwsus.getDashboard(),
+        window.inwsus.listWorkspaces(),
       ]);
       setDashboard(nextDashboard);
       setWorkspaces(nextWorkspaces);
@@ -181,11 +181,11 @@ export function App(): ReactElement {
   async function handleUpdateAction(): Promise<void> {
     try {
       if (updateStatus?.canInstall === true) {
-        const result = await window.lnwjud.installUpdate();
+        const result = await window.inwsus.installUpdate();
         setUpdateStatus(result.status);
         return;
       }
-      setUpdateStatus(await window.lnwjud.checkForUpdates());
+      setUpdateStatus(await window.inwsus.checkForUpdates());
     } catch (cause: unknown) {
       setError(errorMessage(cause, locale === 'th' ? 'ไม่สามารถตรวจอัปเดตได้' : 'Unable to check for updates'));
     }
@@ -194,7 +194,7 @@ export function App(): ReactElement {
   async function addWorkspace(rootPath: string): Promise<void> {
     setError(null);
     try {
-      await window.lnwjud.addWorkspace({ rootPath });
+      await window.inwsus.addWorkspace({ rootPath });
       await refresh();
     } catch (cause: unknown) {
       setError(errorMessage(cause, t('error.workspaceAdd')));
@@ -204,7 +204,7 @@ export function App(): ReactElement {
   async function selectWorkspace(workspaceId: string): Promise<void> {
     try {
       setMcpBusy(true);
-      await window.lnwjud.selectWorkspace({ workspaceId });
+      await window.inwsus.selectWorkspace({ workspaceId });
       await refresh();
     } catch (cause: unknown) {
       setError(errorMessage(cause, t('error.workspaceSelect')));
@@ -216,7 +216,7 @@ export function App(): ReactElement {
   async function setWorkspaceArchived(workspaceId: string, archived: boolean): Promise<void> {
     setError(null);
     try {
-      await window.lnwjud.setWorkspaceArchived({ workspaceId, archived });
+      await window.inwsus.setWorkspaceArchived({ workspaceId, archived });
       await refresh();
     } catch (cause: unknown) {
       setError(errorMessage(cause, t('error.workspaceArchive')));
@@ -227,7 +227,7 @@ export function App(): ReactElement {
   async function deleteWorkspace(workspaceId: string): Promise<void> {
     setError(null);
     try {
-      await window.lnwjud.deleteWorkspace({ workspaceId, userConfirmed: true });
+      await window.inwsus.deleteWorkspace({ workspaceId, userConfirmed: true });
       await refresh();
     } catch (cause: unknown) {
       setError(errorMessage(cause, t('error.workspaceDelete')));
@@ -237,7 +237,7 @@ export function App(): ReactElement {
 
   async function setPermissionProfile(profile: PermissionProfileName): Promise<void> {
     try {
-      await window.lnwjud.setPermissionProfile({ profile });
+      await window.inwsus.setPermissionProfile({ profile });
       await refresh();
     } catch (cause: unknown) {
       setError(errorMessage(cause, t('error.permissionProfileChange')));
@@ -246,7 +246,7 @@ export function App(): ReactElement {
 
   async function setUnrestrictedMode(enabled: boolean): Promise<boolean> {
     try {
-      const result = await window.lnwjud.setUnrestrictedMode({ enabled });
+      const result = await window.inwsus.setUnrestrictedMode({ enabled });
       await refresh();
       return result.restartRequired;
     } catch (cause: unknown) {
@@ -257,7 +257,7 @@ export function App(): ReactElement {
 
   async function setDestructiveDeletePolicy(policy: DestructiveDeletePolicy): Promise<void> {
     try {
-      await window.lnwjud.setAiDeletePolicy({ policy });
+      await window.inwsus.setAiDeletePolicy({ policy });
       await refresh();
     } catch (cause: unknown) {
       setError(errorMessage(cause, propsText(locale, 'ไม่สามารถเปลี่ยนนโยบายการลบได้', 'Could not change destructive-action policy')));
@@ -266,7 +266,7 @@ export function App(): ReactElement {
 
   async function setStdioPolicy(profile: PermissionProfileName, strictRoots: boolean, allowedRoots: readonly string[]): Promise<boolean> {
     try {
-      const result = await window.lnwjud.setStdioPolicy({ profile, strictRoots, allowedRoots });
+      const result = await window.inwsus.setStdioPolicy({ profile, strictRoots, allowedRoots });
       await refresh();
       return result.restartRequired;
     } catch (cause: unknown) {
@@ -278,7 +278,7 @@ export function App(): ReactElement {
   async function stopMcp(): Promise<void> {
     try {
       setMcpBusy(true);
-      await window.lnwjud.stopMcp();
+      await window.inwsus.stopMcp();
       await refresh();
     } catch (cause: unknown) {
       setError(errorMessage(cause, t('error.mcpStop')));
@@ -290,7 +290,7 @@ export function App(): ReactElement {
   async function restartMcp(): Promise<void> {
     try {
       setMcpBusy(true);
-      await window.lnwjud.restartMcp();
+      await window.inwsus.restartMcp();
       await refresh();
     } catch (cause: unknown) {
       setError(errorMessage(cause, t('error.mcpRestart')));
@@ -301,7 +301,7 @@ export function App(): ReactElement {
 
   async function clearWorkLog(scope: LogScopeSelection): Promise<void> {
     try {
-      await window.lnwjud.clearWorkLog({
+      await window.inwsus.clearWorkLog({
         ...(scope.workspaceId === null ? {} : { workspaceId: scope.workspaceId }),
         ...(scope.sessionId === null ? {} : { sessionId: scope.sessionId }),
       });
@@ -314,7 +314,7 @@ export function App(): ReactElement {
   async function startTunnel(): Promise<void> {
     try {
       setTunnelBusy(true);
-      await window.lnwjud.startTunnel();
+      await window.inwsus.startTunnel();
       await refresh();
     } catch (cause: unknown) {
       setError(errorMessage(cause, t('error.tunnelStart')));
@@ -326,7 +326,7 @@ export function App(): ReactElement {
   async function stopTunnel(): Promise<void> {
     try {
       setTunnelBusy(true);
-      await window.lnwjud.stopTunnel();
+      await window.inwsus.stopTunnel();
       await refresh();
     } catch (cause: unknown) {
       setError(errorMessage(cause, t('error.tunnelStop')));
@@ -336,45 +336,45 @@ export function App(): ReactElement {
   }
 
   async function createBackup(): Promise<void> {
-    await window.lnwjud.createBackup();
+    await window.inwsus.createBackup();
     await refresh();
   }
 
   async function scheduleRestoreBackup(backupId: string): Promise<boolean> {
-    const result = await window.lnwjud.scheduleRestoreBackup({ backupId });
+    const result = await window.inwsus.scheduleRestoreBackup({ backupId });
     await refresh();
     return result.restartRequired;
   }
 
   async function restoreRecoveryItem(workspaceId: string, recoveryId: string): Promise<void> {
-    await window.lnwjud.restoreRecoveryItem({ workspaceId, recoveryId });
+    await window.inwsus.restoreRecoveryItem({ workspaceId, recoveryId });
     await refresh();
   }
 
   async function restoreCheckpoint(workspaceId: string, checkpointId: string): Promise<void> {
-    await window.lnwjud.restoreCheckpoint({ workspaceId, checkpointId });
+    await window.inwsus.restoreCheckpoint({ workspaceId, checkpointId });
     await refresh();
   }
 
   async function saveTunnelApiKey(apiKey: string): Promise<void> {
-    await window.lnwjud.saveTunnelApiKey({ apiKey });
+    await window.inwsus.saveTunnelApiKey({ apiKey });
     await refresh();
   }
 
   async function setTunnelClientPath(clientPath: string): Promise<void> {
-    await window.lnwjud.setTunnelClientPath({ clientPath });
+    await window.inwsus.setTunnelClientPath({ clientPath });
     await refresh();
   }
 
   async function changeLocale(next: UiLocale): Promise<void> {
-    await window.lnwjud.setLocale({ locale: next });
+    await window.inwsus.setLocale({ locale: next });
     setLocale(next);
     await refresh();
   }
 
   async function setUserSettings(settings: UserSettings): Promise<boolean> {
     try {
-      const result = await window.lnwjud.setUserSettings({ settings });
+      const result = await window.inwsus.setUserSettings({ settings });
       await refresh();
       return result.restartRequired;
     } catch (cause: unknown) {
@@ -384,19 +384,19 @@ export function App(): ReactElement {
   }
 
   async function chooseTunnelClientPath(): Promise<string | null> {
-    const result = await window.lnwjud.chooseTunnelClientPath();
+    const result = await window.inwsus.chooseTunnelClientPath();
     return result.clientPath;
   }
 
   async function configureTunnelProfile(tunnelId: string): Promise<string> {
-    const result = await window.lnwjud.configureTunnelProfile({ tunnelId });
+    const result = await window.inwsus.configureTunnelProfile({ tunnelId });
     await refresh();
     return result.profilePath;
   }
 
   async function runDoctor(): Promise<void> {
     try {
-      setDoctor(await window.lnwjud.runDoctor());
+      setDoctor(await window.inwsus.runDoctor());
     } catch (cause: unknown) {
       setError(errorMessage(cause, t('error.doctorRun')));
     }

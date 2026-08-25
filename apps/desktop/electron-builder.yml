@@ -1,5 +1,5 @@
-﻿appId: com.lnwjud.desktop
-productName: lnwjud
+﻿appId: com.inwsus.desktop
+productName: inwsus
 asar: true
 npmRebuild: false
 directories:
@@ -15,37 +15,37 @@ files:
 publish:
   provider: github
   owner: engasnm111
-  repo: lnwjud
+  repo: inwsus
   releaseType: release
 extraResources:
   - from: ../../packages/capabilities/src/windows-capability-bridge.ps1
     to: windows-capability-bridge.ps1
   - from: build/windows-capability-bridge.sha256
     to: windows-capability-bridge.sha256
-  - from: build/lnwjud-mcp-stdio.cjs
-    to: lnwjud-mcp-stdio.cjs
-  - from: build/lnwjud-mcp-stdio.cmd
-    to: lnwjud-mcp-stdio.cmd
-  - from: build/lnwjud-node.exe
-    to: lnwjud-node.exe
+  - from: build/inwsus-mcp-stdio.cjs
+    to: inwsus-mcp-stdio.cjs
+  - from: build/inwsus-mcp-stdio.cmd
+    to: inwsus-mcp-stdio.cmd
+  - from: build/inwsus-node.exe
+    to: inwsus-node.exe
   - from: ../../native/windows-ocr/bin
     to: windows-ocr
-# Tunnel profile expects these next to lnwjud.exe (not only under resources/).
+# Tunnel profile expects these next to inwsus.exe (not only under resources/).
 extraFiles:
-  - from: build/lnwjud-mcp-stdio.cjs
-    to: lnwjud-mcp-stdio.cjs
-  - from: build/lnwjud-mcp-stdio.cmd
-    to: lnwjud-mcp-stdio.cmd
-  - from: build/lnwjud-node.exe
-    to: lnwjud-node.exe
+  - from: build/inwsus-mcp-stdio.cjs
+    to: inwsus-mcp-stdio.cjs
+  - from: build/inwsus-mcp-stdio.cmd
+    to: inwsus-mcp-stdio.cmd
+  - from: build/inwsus-node.exe
+    to: inwsus-node.exe
 win:
   icon: build/icon.ico
   target:
     - target: nsis
       arch:
         - x64
-  artifactName: lnwjud-Setup-${version}.${ext}
-  # Keep the branded icon embedded in lnwjud.exe for Windows shortcuts and taskbar.
+  artifactName: inwsus-Setup-${version}.${ext}
+  # Keep the branded icon embedded in inwsus.exe for Windows shortcuts and taskbar.
   signAndEditExecutable: true
 nsis:
   oneClick: false

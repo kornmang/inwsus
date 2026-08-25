@@ -1,8 +1,8 @@
 import { createHash, randomUUID } from 'node:crypto';
 import path from 'node:path';
-import { appError, err, ok, type Result } from '@lnwjud/domain';
-import type { FileActor } from '@lnwjud/application';
-import { capabilityDescriptors, EventLogCapabilityBackend, type CapabilityDescriptor } from '@lnwjud/capabilities';
+import { appError, err, ok, type Result } from '@inwsus/domain';
+import type { FileActor } from '@inwsus/application';
+import { capabilityDescriptors, EventLogCapabilityBackend, type CapabilityDescriptor } from '@inwsus/capabilities';
 import type { McpApplicationServices } from './tools/tool-types.js';
 import { ContextEngine } from './context-engine.js';
 import { ContextEconomyRuntime } from './context-economy.js';
@@ -316,9 +316,9 @@ export class UpgradeRuntimeService {
       case 'regression_report':
         return ok({ status: 'available', scenarios: ['small repository', 'large generated source tree', 'concurrent tool calls', 'tunnel connection', 'local stdio connection'], regressions: [] });
       case 'project_profile_get':
-        return ok({ profile: null, source: '.lnwjud/project.yaml', augmentsCapabilities: true });
+        return ok({ profile: null, source: '.inwsus/project.yaml', augmentsCapabilities: true });
       case 'project_profile_set':
-        return ok({ saved: true, source: '.lnwjud/project.yaml', accessRestrictionsChanged: false });
+        return ok({ saved: true, source: '.inwsus/project.yaml', accessRestrictionsChanged: false });
       case 'debug_context':
       case 'review_context':
       case 'change_context':
@@ -634,8 +634,8 @@ export class UpgradeRuntimeService {
     if (workspaceId === undefined) return err(appError('INVALID_INPUT', 'workspaceId is required for a Git worktree'));
     const worktreePath = readString(input, 'worktreePath') ?? `.worktrees/agent-${randomUUID().slice(0, 8)}`;
     const normalizedPath = worktreePath.replaceAll('\\', '/');
-    if (normalizedPath.startsWith('/') || /^[A-Za-z]:/.test(normalizedPath) || normalizedPath.split('/').some((part) => part === '..') || !(normalizedPath.startsWith('.worktrees/') || normalizedPath.startsWith('.lnwjud/worktrees/'))) {
-      return err(appError('PATH_OUTSIDE_WORKSPACE', 'Git worktree path must remain under .worktrees or .lnwjud/worktrees'));
+    if (normalizedPath.startsWith('/') || /^[A-Za-z]:/.test(normalizedPath) || normalizedPath.split('/').some((part) => part === '..') || !(normalizedPath.startsWith('.worktrees/') || normalizedPath.startsWith('.inwsus/worktrees/'))) {
+      return err(appError('PATH_OUTSIDE_WORKSPACE', 'Git worktree path must remain under .worktrees or .inwsus/worktrees'));
     }
     const ref = readString(input, 'ref') ?? 'HEAD';
     if (ref.includes('\0') || ref.length > 256) return err(appError('INVALID_INPUT', 'Git worktree ref is invalid'));

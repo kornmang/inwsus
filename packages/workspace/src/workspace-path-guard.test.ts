@@ -2,14 +2,14 @@ import { mkdir, mkdtemp, realpath, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import type { Result } from '@lnwjud/domain';
+import type { Result } from '@inwsus/domain';
 import type { Workspace, ResolvedWorkspacePath } from './workspace-types.js';
 import { WorkspacePathGuard } from './workspace-path-guard.js';
 
 const temporaryRoots: string[] = [];
 
 async function createWorkspace(): Promise<Workspace> {
-  const rawRoot = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-workspace-'));
+  const rawRoot = await mkdtemp(path.join(os.tmpdir(), 'inwsus-workspace-'));
   temporaryRoots.push(rawRoot);
   const rootPath = await realpath(rawRoot);
   await mkdir(path.join(rootPath, 'src'));

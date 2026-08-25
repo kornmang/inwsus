@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { McpHttpServerHandle, McpHttpServerOptions } from '@lnwjud/mcp-server';
+import type { McpHttpServerHandle, McpHttpServerOptions } from '@inwsus/mcp-server';
 import { DesktopMcpLifecycle, type McpHttpServerStarter } from '../src/main/mcp-lifecycle.js';
 
 function createHandle(url: string, onClose: () => void): McpHttpServerHandle {
@@ -15,7 +15,7 @@ function createOptions(): McpHttpServerOptions {
   return {
     port: 0,
     services: {},
-    actor: { clientId: 'desktop-global', clientName: 'lnwjud desktop' },
+    actor: { clientId: 'desktop-global', clientName: 'inwsus desktop' },
   };
 }
 

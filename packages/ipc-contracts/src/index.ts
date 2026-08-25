@@ -1,52 +1,52 @@
-export const APP_NAME = 'lnwjud';
+export const APP_NAME = 'inwsus';
 export const APP_VERSION = '4.10.0';
 
 export const ipcChannels = {
-  listWorkspaces: 'lnwjud:list-workspaces',
-  addWorkspace: 'lnwjud:add-workspace',
-  selectWorkspace: 'lnwjud:select-workspace',
-  setWorkspaceArchived: 'lnwjud:set-workspace-archived',
-  deleteWorkspace: 'lnwjud:delete-workspace',
-  getDashboard: 'lnwjud:get-dashboard',
-  setPermissionProfile: 'lnwjud:set-permission-profile',
-  setUnrestrictedMode: 'lnwjud:set-unrestricted-mode',
-  setAiDeletePolicy: 'lnwjud:set-ai-delete-policy',
-  setStdioPolicy: 'lnwjud:set-stdio-policy',
-  createBackup: 'lnwjud:create-backup',
-  scheduleRestoreBackup: 'lnwjud:schedule-restore-backup',
-  restoreRecoveryItem: 'lnwjud:restore-recovery-item',
-  restoreCheckpoint: 'lnwjud:restore-checkpoint',
-  listProcesses: 'lnwjud:list-processes',
-  startProcess: 'lnwjud:start-process',
-  stopProcess: 'lnwjud:stop-process',
-  startMcp: 'lnwjud:start-mcp',
-  stopMcp: 'lnwjud:stop-mcp',
-  restartMcp: 'lnwjud:restart-mcp',
-  clearWorkLog: 'lnwjud:clear-work-log',
-  saveTunnelApiKey: 'lnwjud:save-tunnel-api-key',
-  startTunnel: 'lnwjud:start-tunnel',
-  stopTunnel: 'lnwjud:stop-tunnel',
-  getTunnelStatus: 'lnwjud:get-tunnel-status',
-  setTunnelClientPath: 'lnwjud:set-tunnel-client-path',
-  setLocale: 'lnwjud:set-locale',
-  setUserSettings: 'lnwjud:set-user-settings',
-  chooseTunnelClientPath: 'lnwjud:choose-tunnel-client-path',
-  configureTunnelProfile: 'lnwjud:configure-tunnel-profile',
-  launchManagedBrowser: 'lnwjud:launch-managed-browser',
-  runDoctor: 'lnwjud:run-doctor',
-  getLogSnapshot: 'lnwjud:get-log-snapshot',
-  clearLogBuffer: 'lnwjud:clear-log-buffer',
-  exportLogs: 'lnwjud:export-logs',
-  captureIncident: 'lnwjud:capture-incident',
-  openLogViewer: 'lnwjud:open-log-viewer',
-  getUpdateStatus: 'lnwjud:get-update-status',
-  checkForUpdates: 'lnwjud:check-for-updates',
-  installUpdate: 'lnwjud:install-update',
+  listWorkspaces: 'inwsus:list-workspaces',
+  addWorkspace: 'inwsus:add-workspace',
+  selectWorkspace: 'inwsus:select-workspace',
+  setWorkspaceArchived: 'inwsus:set-workspace-archived',
+  deleteWorkspace: 'inwsus:delete-workspace',
+  getDashboard: 'inwsus:get-dashboard',
+  setPermissionProfile: 'inwsus:set-permission-profile',
+  setUnrestrictedMode: 'inwsus:set-unrestricted-mode',
+  setAiDeletePolicy: 'inwsus:set-ai-delete-policy',
+  setStdioPolicy: 'inwsus:set-stdio-policy',
+  createBackup: 'inwsus:create-backup',
+  scheduleRestoreBackup: 'inwsus:schedule-restore-backup',
+  restoreRecoveryItem: 'inwsus:restore-recovery-item',
+  restoreCheckpoint: 'inwsus:restore-checkpoint',
+  listProcesses: 'inwsus:list-processes',
+  startProcess: 'inwsus:start-process',
+  stopProcess: 'inwsus:stop-process',
+  startMcp: 'inwsus:start-mcp',
+  stopMcp: 'inwsus:stop-mcp',
+  restartMcp: 'inwsus:restart-mcp',
+  clearWorkLog: 'inwsus:clear-work-log',
+  saveTunnelApiKey: 'inwsus:save-tunnel-api-key',
+  startTunnel: 'inwsus:start-tunnel',
+  stopTunnel: 'inwsus:stop-tunnel',
+  getTunnelStatus: 'inwsus:get-tunnel-status',
+  setTunnelClientPath: 'inwsus:set-tunnel-client-path',
+  setLocale: 'inwsus:set-locale',
+  setUserSettings: 'inwsus:set-user-settings',
+  chooseTunnelClientPath: 'inwsus:choose-tunnel-client-path',
+  configureTunnelProfile: 'inwsus:configure-tunnel-profile',
+  launchManagedBrowser: 'inwsus:launch-managed-browser',
+  runDoctor: 'inwsus:run-doctor',
+  getLogSnapshot: 'inwsus:get-log-snapshot',
+  clearLogBuffer: 'inwsus:clear-log-buffer',
+  exportLogs: 'inwsus:export-logs',
+  captureIncident: 'inwsus:capture-incident',
+  openLogViewer: 'inwsus:open-log-viewer',
+  getUpdateStatus: 'inwsus:get-update-status',
+  checkForUpdates: 'inwsus:check-for-updates',
+  installUpdate: 'inwsus:install-update',
 } as const;
 
 export const pushChannels = {
-  logEvent: 'lnwjud:event:log',
-  updateStatus: 'lnwjud:event:update-status',
+  logEvent: 'inwsus:event:log',
+  updateStatus: 'inwsus:event:update-status',
 } as const;
 
 export type IpcChannel = typeof ipcChannels[keyof typeof ipcChannels];
@@ -548,7 +548,7 @@ export interface IpcResponseMap {
   readonly [ipcChannels.installUpdate]: { readonly accepted: boolean; readonly status: UpdateStatus };
 }
 
-export interface LnwjudApi {
+export interface InwsusApi {
   listWorkspaces(): Promise<IpcResponseMap[typeof ipcChannels.listWorkspaces]>;
   addWorkspace(request: AddWorkspaceRequest): Promise<IpcResponseMap[typeof ipcChannels.addWorkspace]>;
   selectWorkspace(request: SelectWorkspaceRequest): Promise<IpcResponseMap[typeof ipcChannels.selectWorkspace]>;

@@ -1,5 +1,5 @@
 import { Client, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
-import { ok } from '@lnwjud/domain';
+import { ok } from '@inwsus/domain';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { ActivityTracker } from './activity-tracker.js';
 import { startMcpHttp, type McpHttpServerHandle } from './http.js';
@@ -40,7 +40,7 @@ describe('MCP localhost HTTP transport', () => {
     expect(handle.endpoint.pathname).toBe('/mcp');
 
     const client = new Client(
-      { name: 'lnwjud-http-test-client', version: '0.1.0' },
+      { name: 'inwsus-http-test-client', version: '0.1.0' },
       { versionNegotiation: { mode: { pin: '2026-07-28' } } },
     );
     const transport = new StreamableHTTPClientTransport(handle.endpoint);

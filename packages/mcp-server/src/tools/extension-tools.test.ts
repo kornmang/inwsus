@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { ok } from '@lnwjud/domain';
+import { ok } from '@inwsus/domain';
 import { ToolRegistry } from '../tool-registry.js';
-import type { ExtensionsService } from '@lnwjud/extensions';
+import type { ExtensionsService } from '@inwsus/extensions';
 
 describe('skills and mcp bridge tools', () => {
   it('registers skill tools as dangerous, MCP inspection as read-only, and mcp_call as opaque mutation', async () => {

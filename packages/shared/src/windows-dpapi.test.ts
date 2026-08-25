@@ -6,14 +6,14 @@ import { loadOrCreateWindowsProtectedKey, protectWithWindowsDpapi, unprotectWith
 
 describe.runIf(process.platform === 'win32')('Windows DPAPI helpers', () => {
   it('round-trips UTF-8 text through direct Windows DPAPI', () => {
-    const plaintext = 'lnwjud-dpapi-ทดสอบ-' + Date.now();
+    const plaintext = 'inwsus-dpapi-ทดสอบ-' + Date.now();
     const protectedValue = protectWithWindowsDpapi(plaintext);
     expect(protectedValue).not.toContain(plaintext);
     expect(unprotectWithWindowsDpapi(protectedValue)).toBe(plaintext);
   }, 15_000);
 
   it('persists a v2 protected key and reuses the same key', async () => {
-    const filePath = path.join(os.tmpdir(), 'lnwjud-dpapi-' + process.pid + '-' + Date.now() + '.key');
+    const filePath = path.join(os.tmpdir(), 'inwsus-dpapi-' + process.pid + '-' + Date.now() + '.key');
     try {
       const first = loadOrCreateWindowsProtectedKey(filePath, 32);
       const stored = await readFile(filePath, 'utf8');

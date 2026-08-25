@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import path from 'node:path';
-import { appError, err, ok } from '@lnwjud/domain';
-import { permissionProfiles } from '@lnwjud/permissions';
-import { DEFAULT_DESTRUCTIVE_AUTO_APPROVAL_POLICY, type DestructiveAutoApprovalPolicy } from '@lnwjud/shared';
+import { appError, err, ok } from '@inwsus/domain';
+import { permissionProfiles } from '@inwsus/permissions';
+import { DEFAULT_DESTRUCTIVE_AUTO_APPROVAL_POLICY, type DestructiveAutoApprovalPolicy } from '@inwsus/shared';
 import type { ActivitySinkEvent } from './activity-tracker.js';
 import { ToolRegistry, type McpApplicationServices, type ToolRegistryOptions, type WorkspaceScope } from './tool-registry.js';
 import { CODEX_TOOL_NAMES } from './tools/codex-tools.js';
@@ -270,7 +270,7 @@ describe('MCP tool registry', () => {
         async info(): Promise<ReturnType<typeof err>> { return err(appError('WORKSPACE_NOT_FOUND', 'not used')); },
         async list(): Promise<ReturnType<typeof ok>> { return ok([
           { id: 'machine-root', displayName: 'E', rootPath: 'E:\\', realRootPath: 'E:\\' },
-          { id: 'workspace-project', displayName: 'lnwjud', rootPath: 'E:\\lnwjud', realRootPath: 'E:\\lnwjud' },
+          { id: 'workspace-project', displayName: 'inwsus', rootPath: 'E:\\inwsus', realRootPath: 'E:\\inwsus' },
         ]); },
       },
       capabilities: { async execute(tool, input): Promise<ReturnType<typeof ok>> {
@@ -283,7 +283,7 @@ describe('MCP tool registry', () => {
       activity: { async record(event: ActivitySinkEvent): Promise<void> { events.push(event); } },
       hostMutationApprovalProvider: approveMutation,
     });
-    await registry.invoke('shell', { operation: 'run', executable: 'node', arguments: ['--version'], cwd: 'E:\\lnwjud\\packages\\mcp-server', userConfirmed: true });
+    await registry.invoke('shell', { operation: 'run', executable: 'node', arguments: ['--version'], cwd: 'E:\\inwsus\\packages\\mcp-server', userConfirmed: true });
     await registry.invoke('shell', { operation: 'wait', task_id: 'task-1' });
     await registry.invoke('shell', { operation: 'run', executable: 'node', arguments: ['--version'], cwd: 'C:\\outside', userConfirmed: true });
     expect(events.slice(0, 4).map((event) => ({ phase: event.phase, workspaceId: event.workspaceId }))).toEqual([
@@ -409,8 +409,8 @@ describe('MCP tool registry', () => {
     expect(capabilityCalls).toHaveLength(2);
     expect(capabilityCalls[0]).toMatchObject({ tool: 'shell', input: { cwd: 'E:\\project-b' } });
     expect(capabilityCalls[1]).toMatchObject({ tool: 'wsl_exec', input: { cwd: 'E:\\project-b' } });
-    expect((capabilityCalls[0] as { input: { metadata?: Record<string, unknown> } }).input.metadata).not.toHaveProperty('lnwjud.activeWorkspaceRoot.v1');
-    expect((capabilityCalls[1] as { input: { metadata?: Record<string, unknown> } }).input.metadata).not.toHaveProperty('lnwjud.activeWorkspaceRoot.v1');
+    expect((capabilityCalls[0] as { input: { metadata?: Record<string, unknown> } }).input.metadata).not.toHaveProperty('inwsus.activeWorkspaceRoot.v1');
+    expect((capabilityCalls[1] as { input: { metadata?: Record<string, unknown> } }).input.metadata).not.toHaveProperty('inwsus.activeWorkspaceRoot.v1');
   });
 
   it('anchors missing and relative Shell or WSL cwd values to the host active workspace root', async () => {
@@ -422,8 +422,8 @@ describe('MCP tool registry', () => {
     await registry.invoke('shell', { workspaceId: 'workspace-a', operation: 'run', executable: 'node.exe', arguments: ['script.js'], cwd: 'src', userConfirmed: true });
     await registry.invoke('wsl_exec', { workspaceId: 'workspace-a', operation: 'run', executable: 'node', arguments: ['script.js'], userConfirmed: true });
     expect(capabilityCalls).toHaveLength(2);
-    expect(capabilityCalls[0]).toMatchObject({ tool: 'shell', input: { cwd: 'E:\\project-a\\src', metadata: { 'lnwjud.activeWorkspaceRoot.v1': 'E:\\project-a' } } });
-    expect(capabilityCalls[1]).toMatchObject({ tool: 'wsl_exec', input: { cwd: 'E:\\project-a', metadata: { 'lnwjud.activeWorkspaceRoot.v1': 'E:\\project-a' } } });
+    expect(capabilityCalls[0]).toMatchObject({ tool: 'shell', input: { cwd: 'E:\\project-a\\src', metadata: { 'inwsus.activeWorkspaceRoot.v1': 'E:\\project-a' } } });
+    expect(capabilityCalls[1]).toMatchObject({ tool: 'wsl_exec', input: { cwd: 'E:\\project-a', metadata: { 'inwsus.activeWorkspaceRoot.v1': 'E:\\project-a' } } });
   });
 
   it('lets a host-native exact-action approval veto risky execution while scoped recoverable auto-delete stays non-interactive', async () => {

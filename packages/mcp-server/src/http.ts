@@ -45,7 +45,7 @@ interface LegacySession {
 }
 
 function writeDiagnostic(error: Error): void {
-  process.stderr.write(`lnwjud MCP HTTP error: ${error.message}\n`);
+  process.stderr.write(`inwsus MCP HTTP error: ${error.message}\n`);
 }
 
 function isValidPort(port: number): boolean {

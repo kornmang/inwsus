@@ -23,7 +23,7 @@ describe('SchedulerCapabilityBackend', () => {
 
     const result = await backend.execute({
       action: 'create',
-      task_name: 'LnwjudTest',
+      task_name: 'InwsusTest',
       command: 'C:\\Program Files\\app\\tool.exe',
       arguments: ['--flag', 'value with space'],
       schedule: 'DAILY',
@@ -31,9 +31,9 @@ describe('SchedulerCapabilityBackend', () => {
       userConfirmed: true,
     });
 
-    expect(result).toMatchObject({ ok: true, value: { created: true, task_name: 'LnwjudTest' } });
+    expect(result).toMatchObject({ ok: true, value: { created: true, task_name: 'InwsusTest' } });
     expect(runImpl).toHaveBeenCalledWith('schtasks.exe', [
-      '/Create', '/TN', 'LnwjudTest',
+      '/Create', '/TN', 'InwsusTest',
       '/TR', '"C:\\Program Files\\app\\tool.exe" --flag "value with space"',
       '/SC', 'DAILY', '/ST', '09:30',
     ]);
@@ -43,21 +43,21 @@ describe('SchedulerCapabilityBackend', () => {
     const runImpl = vi.fn(async (): Promise<{ stdout: string; stderr: string }> => ({ stdout: 'SUCCESS', stderr: '' }));
     const backend = new SchedulerCapabilityBackend({ platform: 'win32', runImpl });
 
-    await expect(backend.execute({ action: 'delete', task_name: 'LnwjudTest' }))
+    await expect(backend.execute({ action: 'delete', task_name: 'InwsusTest' }))
       .resolves.toMatchObject({ ok: false, error: { code: 'PERMISSION_REQUIRED' } });
     expect(runImpl).not.toHaveBeenCalled();
 
-    await expect(backend.execute({ action: 'delete', task_name: 'LnwjudTest', userConfirmed: true }))
-      .resolves.toMatchObject({ ok: true, value: { deleted: true, task_name: 'LnwjudTest' } });
-    expect(runImpl).toHaveBeenCalledWith('schtasks.exe', ['/Delete', '/TN', 'LnwjudTest', '/F']);
+    await expect(backend.execute({ action: 'delete', task_name: 'InwsusTest', userConfirmed: true }))
+      .resolves.toMatchObject({ ok: true, value: { deleted: true, task_name: 'InwsusTest' } });
+    expect(runImpl).toHaveBeenCalledWith('schtasks.exe', ['/Delete', '/TN', 'InwsusTest', '/F']);
   });
 
   it('previews a deletion without confirmation or schtasks side effects', async () => {
     const runImpl = vi.fn(async (): Promise<{ stdout: string; stderr: string }> => ({ stdout: 'SHOULD NOT RUN', stderr: '' }));
     const backend = new SchedulerCapabilityBackend({ platform: 'win32', runImpl });
 
-    await expect(backend.execute({ action: 'delete', task_name: 'LnwjudTest', dry_run: true }))
-      .resolves.toMatchObject({ ok: true, value: { dry_run: true, action: 'delete', task_name: 'LnwjudTest' } });
+    await expect(backend.execute({ action: 'delete', task_name: 'InwsusTest', dry_run: true }))
+      .resolves.toMatchObject({ ok: true, value: { dry_run: true, action: 'delete', task_name: 'InwsusTest' } });
     expect(runImpl).not.toHaveBeenCalled();
   });
 
@@ -65,8 +65,8 @@ describe('SchedulerCapabilityBackend', () => {
     const runImpl = vi.fn(async (): Promise<{ stdout: string; stderr: string }> => ({ stdout: 'SUCCESS', stderr: '' }));
     const backend = new SchedulerCapabilityBackend({ platform: 'win32', runImpl });
     const input = action === 'create'
-      ? { action, task_name: 'LnwjudTest', command: 'tool.exe' }
-      : { action, task_name: 'LnwjudTest' };
+      ? { action, task_name: 'InwsusTest', command: 'tool.exe' }
+      : { action, task_name: 'InwsusTest' };
 
     await expect(backend.execute(input))
       .resolves.toMatchObject({ ok: false, error: { code: 'PERMISSION_REQUIRED' } });
@@ -106,7 +106,7 @@ describe('SchedulerCapabilityBackend', () => {
     });
     const backend = new SchedulerCapabilityBackend({ platform: 'win32', runImpl });
 
-    const result = await backend.execute({ action: 'delete', task_name: 'LnwjudTest', userConfirmed: true });
+    const result = await backend.execute({ action: 'delete', task_name: 'InwsusTest', userConfirmed: true });
 
     expect(result).toMatchObject({
       ok: false,
@@ -124,7 +124,7 @@ describe('SchedulerCapabilityBackend', () => {
     const controller = new AbortController();
     controller.abort();
 
-    await expect(backend.execute({ action: 'run', task_name: 'LnwjudTest' }, controller.signal))
+    await expect(backend.execute({ action: 'run', task_name: 'InwsusTest' }, controller.signal))
       .resolves.toMatchObject({ ok: false, error: { code: 'PROCESS_TIMEOUT' } });
     expect(runImpl).not.toHaveBeenCalled();
   });

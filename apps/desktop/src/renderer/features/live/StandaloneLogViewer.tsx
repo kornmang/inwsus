@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactElement } from 'react';
-import type { LogLine, LogSource } from '@lnwjud/ipc-contracts';
+import type { LogLine, LogSource } from '@inwsus/ipc-contracts';
 import { createTranslator } from '../../i18n/index.js';
 import { applyLogSnapshot } from './log-buffer.js';
 import { LogStreamPanel, type LogScopeSelection } from './LogStreamPanel.js';
@@ -23,7 +23,7 @@ export function StandaloneLogViewer(): ReactElement {
 
   useEffect(() => {
     let disposed = false;
-    void window.lnwjud.getLogSnapshot().then((snapshot) => {
+    void window.inwsus.getLogSnapshot().then((snapshot) => {
       if (disposed) return;
       setLines((previous) => {
         const merged = applyLogSnapshot(previous, logIds.current, snapshot.lines);
@@ -33,12 +33,12 @@ export function StandaloneLogViewer(): ReactElement {
       setTunnelLogPath(snapshot.tunnelLogPath);
       setTunnelLogExists(snapshot.tunnelLogExists);
     }).catch(() => undefined);
-    const unsubscribe = window.lnwjud.onLogEvent((line) => {
+    const unsubscribe = window.inwsus.onLogEvent((line) => {
       appendLine(line);
       if (line.source === 'tunnel') setTunnelLogExists(true);
     });
     const interval = window.setInterval(() => {
-      void window.lnwjud.getDashboard().catch(() => undefined);
+      void window.inwsus.getDashboard().catch(() => undefined);
     }, 1_000);
     return (): void => {
       disposed = true;
@@ -53,18 +53,18 @@ export function StandaloneLogViewer(): ReactElement {
       ...(scope.workspaceId === null ? {} : { workspaceId: scope.workspaceId }),
       ...(scope.sessionId === null ? {} : { sessionId: scope.sessionId }),
     };
-    await window.lnwjud.clearLogBuffer(request).catch(() => undefined);
+    await window.inwsus.clearLogBuffer(request).catch(() => undefined);
     setLines((previous) => previous.filter((line) => line.source !== source || !lineMatchesScope(line, scope)));
   }
 
   async function clearAll(): Promise<void> {
-    await Promise.all(sources.map((source) => window.lnwjud.clearLogBuffer({ source }).catch(() => undefined)));
+    await Promise.all(sources.map((source) => window.inwsus.clearLogBuffer({ source }).catch(() => undefined)));
     logIds.current = new Set();
     setLines([]);
   }
 
   async function exportLogs(source: LogSource, scope: LogScopeSelection, query: string): Promise<void> {
-    await window.lnwjud.exportLogs({
+    await window.inwsus.exportLogs({
       source,
       filePath: '',
       ...(scope.workspaceId === null ? {} : { workspaceId: scope.workspaceId }),
@@ -78,7 +78,7 @@ export function StandaloneLogViewer(): ReactElement {
       <header className="custom-titlebar">
         <div className="titlebar-drag-region">
           <div className="titlebar-brand">
-            <img src="./favicon.ico" alt="lnwjud logo" className="titlebar-logo" />
+            <img src="./favicon.ico" alt="inwsus logo" className="titlebar-logo" />
             <span className="titlebar-title">{t('brand')}</span>
             <span className="titlebar-version">Live Logs</span>
           </div>

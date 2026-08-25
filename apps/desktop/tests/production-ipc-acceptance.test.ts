@@ -1,6 +1,6 @@
 import { pathToFileURL } from 'node:url';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { APP_VERSION, ipcChannels, type TunnelStatus } from '@lnwjud/ipc-contracts';
+import { APP_VERSION, ipcChannels, type TunnelStatus } from '@inwsus/ipc-contracts';
 
 const electronHarness = vi.hoisted(() => ({
   handlers: new Map<string, (event: unknown, payload?: unknown) => Promise<unknown>>(),

@@ -1,5 +1,5 @@
 {
-  "name": "@lnwjud/capabilities",
+  "name": "@inwsus/capabilities",
   "version": "4.10.0",
   "private": true,
   "type": "module",
@@ -13,9 +13,9 @@
     }
   },
   "dependencies": {
-    "@lnwjud/domain": "workspace:*",
-    "@lnwjud/process": "workspace:*",
-    "@lnwjud/shared": "workspace:*"
+    "@inwsus/domain": "workspace:*",
+    "@inwsus/process": "workspace:*",
+    "@inwsus/shared": "workspace:*"
   },
   "scripts": {
     "test": "vitest run",

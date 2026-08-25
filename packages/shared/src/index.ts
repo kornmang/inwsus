@@ -1,8 +1,8 @@
-export const APP_NAME = 'lnwjud';
+export const APP_NAME = 'inwsus';
 export const APP_VERSION = '4.10.0';
 export { isUnrestricted, unrestrictedFromEnv, unrestrictedFromSetting, UNRESTRICTED_SETTING_KEY, type ProcessEnvLike } from './unrestricted.js';
 
-export { resolveLnwjudDataPath, type DataPathEnvironment } from './data-path.js';
+export { resolveInwsusDataPath, type DataPathEnvironment } from './data-path.js';
 
 export {
   ALLOW_AI_DELETE_SETTING_KEY,

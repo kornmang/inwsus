@@ -26,7 +26,7 @@ description: >-
   });
 
   it('lists and reads skills under configured roots', async () => {
-    const home = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-skills-'));
+    const home = await mkdtemp(path.join(os.tmpdir(), 'inwsus-skills-'));
     temporaryRoots.push(home);
     const skillRoot = path.join(home, '.cursor', 'skills-cursor', 'demo-skill');
     await mkdir(skillRoot, { recursive: true });

@@ -6,7 +6,7 @@ import {
   normalizeWorkspaceRoot,
   type Workspace,
   type WorkspaceService,
-} from '@lnwjud/workspace';
+} from '@inwsus/workspace';
 
 /** Ensure the drive containing the preferred workspace is registered as a machine root. */
 export async function syncPreferredMachineRoot(

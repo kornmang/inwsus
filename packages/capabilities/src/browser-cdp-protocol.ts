@@ -3,8 +3,8 @@ import { existsSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawn, type ChildProcess } from 'node:child_process';
-import { appError, err, ok, type Result } from '@lnwjud/domain';
-import { WindowsProcessTree, type ProcessTreeTerminator } from '@lnwjud/process';
+import { appError, err, ok, type Result } from '@inwsus/domain';
+import { WindowsProcessTree, type ProcessTreeTerminator } from '@inwsus/process';
 import type { BrowserCdpProtocol, BrowserCdpTab } from './browser-cdp-backend.js';
 
 interface BrowserCdpProtocolOptions {
@@ -23,9 +23,9 @@ export class NodeBrowserCdpProtocol implements BrowserCdpProtocol {
   private readonly terminationRetryMs: number;
 
   public constructor(options: BrowserCdpProtocolOptions = {}) {
-    this.port = options.port ?? readPort(process.env.LNWJUD_BROWSER_CDP_PORT);
-    this.profileDir = options.profileDir ?? process.env.LNWJUD_BROWSER_PROFILE ?? path.join(os.tmpdir(), 'lnwjud-browser-profile');
-    this.chromeExecutable = options.chromeExecutable ?? process.env.LNWJUD_BROWSER_EXECUTABLE;
+    this.port = options.port ?? readPort(process.env.INWSUS_BROWSER_CDP_PORT);
+    this.profileDir = options.profileDir ?? process.env.INWSUS_BROWSER_PROFILE ?? path.join(os.tmpdir(), 'inwsus-browser-profile');
+    this.chromeExecutable = options.chromeExecutable ?? process.env.INWSUS_BROWSER_EXECUTABLE;
     this.terminator = options.terminator ?? new WindowsProcessTree();
     this.terminationRetryMs = Math.max(1, options.terminationRetryMs ?? 250);
   }

@@ -25,15 +25,15 @@ describe('Windows desktop packaging', () => {
 
     expect(desktopPackage.description).toBe('Windows-first local AI-agent runtime and MCP gateway with 218 configurable tools.');
     expect(desktopPackage.author).toBe('Adisorn');
-    expect(desktopPackage.homepage).toBe('https://github.com/engasnm111/lnwjud#readme');
-    expect(desktopPackage.repository).toEqual({ type: 'git', url: 'https://github.com/engasnm111/lnwjud.git' });
+    expect(desktopPackage.homepage).toBe('https://github.com/engasnm111/inwsus#readme');
+    expect(desktopPackage.repository).toEqual({ type: 'git', url: 'https://github.com/engasnm111/inwsus.git' });
   });
 
-  it('declares lnwjud x64 NSIS packaging and built runtime bundles', async () => {
+  it('declares inwsus x64 NSIS packaging and built runtime bundles', async () => {
     const configPath = path.join(desktopRoot, 'electron-builder.yml');
     const config = await readFile(configPath, 'utf8');
 
-    expect(config).toContain('productName: lnwjud');
+    expect(config).toContain('productName: inwsus');
     expect(config).toContain('output: dist/installers');
     expect(config).toContain('target: nsis');
     expect(config).toContain('- x64');
@@ -43,16 +43,16 @@ describe('Windows desktop packaging', () => {
     expect(config).toContain('createStartMenuShortcut: false');
     expect(config).not.toMatch(/[A-Z]:\\Users\\[^\r\n]+/i);
     const installerScript = await readFile(path.join(desktopRoot, 'build', 'installer.nsh'), 'utf8');
-    expect(installerScript).toContain('CreateShortCut "$SMPROGRAMS\\lnwjud.lnk" "$INSTDIR\\lnwjud.exe"');
+    expect(installerScript).toContain('CreateShortCut "$SMPROGRAMS\\inwsus.lnk" "$INSTDIR\\inwsus.exe"');
     expect(installerScript).toContain('SetOutPath "$INSTDIR"');
     expect(installerScript).not.toMatch(/[A-Z]:\\Users\\[^\r\n]+/i);
     expect(config).toContain('extraResources:');
     expect(config).toContain('windows-capability-bridge.ps1');
-    expect(config).toContain('build/lnwjud-node.exe');
-    expect(config).toContain('to: lnwjud-node.exe');
-    await access(path.join(desktopRoot, 'build', 'lnwjud-node.exe'));
-    const stdioLauncher = await readFile(path.join(desktopRoot, 'build', 'lnwjud-mcp-stdio.cmd'), 'utf8');
-    expect(stdioLauncher).toContain('lnwjud-node.exe');
+    expect(config).toContain('build/inwsus-node.exe');
+    expect(config).toContain('to: inwsus-node.exe');
+    await access(path.join(desktopRoot, 'build', 'inwsus-node.exe'));
+    const stdioLauncher = await readFile(path.join(desktopRoot, 'build', 'inwsus-mcp-stdio.cmd'), 'utf8');
+    expect(stdioLauncher).toContain('inwsus-node.exe');
     expect(stdioLauncher).toContain('no system Node.js is required');
     expect(stdioLauncher).not.toContain(path.win32.join('%ProgramFiles%', 'nodejs'));
     expect(stdioLauncher).not.toContain(path.win32.join('%LOCALAPPDATA%', 'Programs', 'nodejs'));
@@ -66,15 +66,15 @@ describe('Windows desktop packaging', () => {
     const tunnelBundle = await readFile(path.join(desktopRoot, 'dist', 'main', 'tunnel-controller.js'), 'utf8');
     expect(windowBundle).toContain('webSecurity: true');
     expect(windowBundle).not.toContain('webSecurity: false');
-    expect(mainBundle).toMatch(/setName\(["']lnwjud["']|setName\(APP_NAME\)/);
-    expect(tunnelBundle).toContain('delete env.LNWJUD_DATA_PATH');
-    expect(tunnelBundle).toContain('delete env.LNWJUD_UNRESTRICTED');
+    expect(mainBundle).toMatch(/setName\(["']inwsus["']|setName\(APP_NAME\)/);
+    expect(tunnelBundle).toContain('delete env.INWSUS_DATA_PATH');
+    expect(tunnelBundle).toContain('delete env.INWSUS_UNRESTRICTED');
     expect(mainBundle).toMatch(/setPath\(["']userData["']/);
   });
 
   it('runs the stdio launcher with the bundled Node runtime even when PATH contains no system Node', async () => {
-    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-packaged-stdio-'));
-    const launcher = path.join(desktopRoot, 'build', 'lnwjud-mcp-stdio.cmd');
+    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'inwsus-packaged-stdio-'));
+    const launcher = path.join(desktopRoot, 'build', 'inwsus-mcp-stdio.cmd');
     const systemRoot = process.env.SystemRoot ?? path.win32.join(`C:${path.win32.sep}`, 'Windows');
     const commandProcessor = process.env.ComSpec ?? path.join(systemRoot, 'System32', 'cmd.exe');
     const child = spawn(commandProcessor, ['/d', '/c', 'call', launcher, '--workspace', repositoryRoot], {
@@ -82,7 +82,7 @@ describe('Windows desktop packaging', () => {
       env: {
         ...process.env,
         PATH: [path.join(systemRoot, 'System32'), path.join(systemRoot, 'System32', 'WindowsPowerShell', 'v1.0'), path.join(systemRoot, 'System32', 'Wbem')].join(path.delimiter),
-        LNWJUD_DATA_PATH: dataPath,
+        INWSUS_DATA_PATH: dataPath,
       },
       windowsHide: true,
       stdio: ['pipe', 'pipe', 'pipe'],
@@ -94,7 +94,7 @@ describe('Windows desktop packaging', () => {
         child.stderr?.setEncoding('utf8');
         child.stderr?.on('data', (chunk: string) => {
           stderr += chunk;
-          if (!stderr.includes('lnwjud MCP stdio ready ')) return;
+          if (!stderr.includes('inwsus MCP stdio ready ')) return;
           clearTimeout(timer);
           resolve();
         });
@@ -103,12 +103,12 @@ describe('Windows desktop packaging', () => {
           reject(error);
         });
         child.once('exit', (code) => {
-          if (stderr.includes('lnwjud MCP stdio ready ')) return;
+          if (stderr.includes('inwsus MCP stdio ready ')) return;
           clearTimeout(timer);
           reject(new Error(`stdio launcher exited early with ${String(code)}: ${stderr}`));
         });
       });
-      expect(stderr).toContain('lnwjud MCP stdio ready ');
+      expect(stderr).toContain('inwsus MCP stdio ready ');
     } finally {
       if (child.exitCode === null && child.pid !== undefined) {
         const taskkill = spawn(path.join(systemRoot, 'System32', 'taskkill.exe'), ['/PID', String(child.pid), '/T', '/F'], { windowsHide: true, stdio: 'ignore' });

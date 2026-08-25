@@ -1,6 +1,6 @@
 import path from 'node:path';
-import { appError, err, type Result } from '@lnwjud/domain';
-import type { Workspace } from '@lnwjud/workspace';
+import { appError, err, type Result } from '@inwsus/domain';
+import type { Workspace } from '@inwsus/workspace';
 
 export interface WorkspaceCommandService {
   add(displayName: string, rootPath: string): Promise<Result<Workspace>>;

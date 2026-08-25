@@ -1,9 +1,9 @@
 import path from 'node:path';
-import { appError, type CommandSpec } from '@lnwjud/domain';
-import { sanitizeException, type DiagnosticLogger, type FileActor } from '@lnwjud/application';
-import { CAPABILITY_ACTIVE_WORKSPACE_ROOT_METADATA_KEY } from '@lnwjud/capabilities';
-import { DefaultPermissionEngine, permissionProfiles, type PermissionProfile } from '@lnwjud/permissions';
-import { DEFAULT_DESTRUCTIVE_AUTO_APPROVAL_POLICY, prohibitedAgentCommandReason, prohibitedAgentGitInvocationReason, type DestructiveAutoApprovalPolicy } from '@lnwjud/shared';
+import { appError, type CommandSpec } from '@inwsus/domain';
+import { sanitizeException, type DiagnosticLogger, type FileActor } from '@inwsus/application';
+import { CAPABILITY_ACTIVE_WORKSPACE_ROOT_METADATA_KEY } from '@inwsus/capabilities';
+import { DefaultPermissionEngine, permissionProfiles, type PermissionProfile } from '@inwsus/permissions';
+import { DEFAULT_DESTRUCTIVE_AUTO_APPROVAL_POLICY, prohibitedAgentCommandReason, prohibitedAgentGitInvocationReason, type DestructiveAutoApprovalPolicy } from '@inwsus/shared';
 import { ActivityTracker, type ActivitySink, type TraceContext } from './activity-tracker.js';
 import { ContextEngine } from './context-engine.js';
 import { ContextEconomyRuntime } from './context-economy.js';
@@ -304,7 +304,7 @@ export class ToolRegistry {
     if (!preview.ok) {
       return { ok: false, response: mapError(preview.error), code: preview.error.code, message: preview.error.message };
     }
-    return { ok: true, value: { ...input, __lnwjudApprovedProjectCommand: preview.value } };
+    return { ok: true, value: { ...input, __inwsusApprovedProjectCommand: preview.value } };
   }
 
   private async resolveActivityWorkspaceId(name: string, input: unknown): Promise<string | undefined> {
@@ -565,7 +565,7 @@ function isSensitiveApprovalKey(key: string): boolean {
 }
 
 function readApprovedProjectCommand(input: Record<string, unknown>): CommandSpec | undefined {
-  const value = input.__lnwjudApprovedProjectCommand;
+  const value = input.__inwsusApprovedProjectCommand;
   if (!isRecord(value)) return undefined;
   const executable = readTrimmedString(value.executable);
   const args = readStringArray(value.args);

@@ -179,15 +179,15 @@ describe('TunnelController lifecycle', () => {
   });
 
   it('releases ownership when secret read or decryption fails after lock acquisition', async () => {
-    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-tunnel-secret-failure-'));
+    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'inwsus-tunnel-secret-failure-'));
     temporaryRoots.push(dataPath);
     vi.stubEnv('APPDATA', path.join(dataPath, 'appdata'));
     const profileDir = path.join(dataPath, 'appdata', 'tunnel-client');
     await (await import('node:fs/promises')).mkdir(profileDir, { recursive: true });
     const clientPath = path.join(dataPath, 'tunnel-client.exe');
     await writeFile(clientPath, 'fixture', 'utf8');
-    await writeFile(path.join(profileDir, 'lnwjud.yaml'), 'mcp:\n  command: fixture\n', 'utf8');
-    await writeFile(path.join(profileDir, 'lnwjud.runtime.secret'), 'encrypted-fixture', 'utf8');
+    await writeFile(path.join(profileDir, 'inwsus.yaml'), 'mcp:\n  command: fixture\n', 'utf8');
+    await writeFile(path.join(profileDir, 'inwsus.runtime.secret'), 'encrypted-fixture', 'utf8');
     const currentOwner: TunnelLockOwner = { pid: 8888, processStartedAt: timestamp(1), acquiredAt: timestamp(2) };
     const controller = new TunnelController({
       getClientPath: (): string => clientPath,
@@ -220,12 +220,12 @@ describe('TunnelController lifecycle', () => {
   });
 
   it('does not start a second tunnel when the shared lock belongs to another owner', async () => {
-    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-tunnel-controller-'));
+    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'inwsus-tunnel-controller-'));
     temporaryRoots.push(dataPath);
     vi.stubEnv('APPDATA', path.join(dataPath, 'appdata'));
     const profileDir = path.join(dataPath, 'appdata', 'tunnel-client');
     await (await import('node:fs/promises')).mkdir(profileDir, { recursive: true });
-    await (await import('node:fs/promises')).writeFile(path.join(profileDir, 'lnwjud.tunnel.lock'), JSON.stringify({
+    await (await import('node:fs/promises')).writeFile(path.join(profileDir, 'inwsus.tunnel.lock'), JSON.stringify({
       version: 1,
       pid: 7123,
       processStartedAt: '2026-08-20T00:00:00.000Z',
@@ -250,12 +250,12 @@ describe('TunnelController lifecycle', () => {
   });
 
   it('keeps verified foreign ownership when the external process probe is unavailable', async () => {
-    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-tunnel-controller-'));
+    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'inwsus-tunnel-controller-'));
     temporaryRoots.push(dataPath);
     vi.stubEnv('APPDATA', path.join(dataPath, 'appdata'));
     const profileDir = path.join(dataPath, 'appdata', 'tunnel-client');
     await (await import('node:fs/promises')).mkdir(profileDir, { recursive: true });
-    await (await import('node:fs/promises')).writeFile(path.join(profileDir, 'lnwjud.tunnel.lock'), JSON.stringify({
+    await (await import('node:fs/promises')).writeFile(path.join(profileDir, 'inwsus.tunnel.lock'), JSON.stringify({
       version: 1,
       pid: 7123,
       processStartedAt: '2026-08-20T00:00:00.000Z',
@@ -278,15 +278,15 @@ describe('TunnelController lifecycle', () => {
   });
 
   it('fails closed without launching when the external process probe is unavailable and no lock exists', async () => {
-    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-tunnel-controller-'));
+    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'inwsus-tunnel-controller-'));
     temporaryRoots.push(dataPath);
     vi.stubEnv('APPDATA', path.join(dataPath, 'appdata'));
     const profileDir = path.join(dataPath, 'appdata', 'tunnel-client');
     await (await import('node:fs/promises')).mkdir(profileDir, { recursive: true });
     const clientPath = path.join(dataPath, 'tunnel-client.exe');
     await writeFile(clientPath, 'fixture', 'utf8');
-    await writeFile(path.join(profileDir, 'lnwjud.yaml'), 'mcp:\n  command: fixture\n', 'utf8');
-    await writeFile(path.join(profileDir, 'lnwjud.runtime.secret'), 'encrypted-fixture', 'utf8');
+    await writeFile(path.join(profileDir, 'inwsus.yaml'), 'mcp:\n  command: fixture\n', 'utf8');
+    await writeFile(path.join(profileDir, 'inwsus.runtime.secret'), 'encrypted-fixture', 'utf8');
     const decryptSecret = vi.fn(async (): Promise<string> => 'must-not-run');
     const controller = new TunnelController({
       getClientPath: (): string => clientPath,
@@ -306,15 +306,15 @@ describe('TunnelController lifecycle', () => {
   });
 
   it('does not acquire ownership or launch a duplicate when another app already has a live tunnel', async () => {
-    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-tunnel-controller-'));
+    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'inwsus-tunnel-controller-'));
     temporaryRoots.push(dataPath);
     vi.stubEnv('APPDATA', path.join(dataPath, 'appdata'));
     const profileDir = path.join(dataPath, 'appdata', 'tunnel-client');
     await (await import('node:fs/promises')).mkdir(profileDir, { recursive: true });
     const clientPath = path.join(dataPath, 'tunnel-client.exe');
     await writeFile(clientPath, 'fixture', 'utf8');
-    await writeFile(path.join(profileDir, 'lnwjud.yaml'), 'mcp:\n  command: fixture\n', 'utf8');
-    await writeFile(path.join(profileDir, 'lnwjud.runtime.secret'), 'encrypted-fixture', 'utf8');
+    await writeFile(path.join(profileDir, 'inwsus.yaml'), 'mcp:\n  command: fixture\n', 'utf8');
+    await writeFile(path.join(profileDir, 'inwsus.runtime.secret'), 'encrypted-fixture', 'utf8');
     const decryptSecret = vi.fn(async (): Promise<string> => 'not-used');
     const controller = new TunnelController({
       getClientPath: (): string => clientPath,
@@ -331,7 +331,7 @@ describe('TunnelController lifecycle', () => {
   });
 
   it('reports an externally running tunnel as health/status evidence', async () => {
-    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-tunnel-controller-'));
+    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'inwsus-tunnel-controller-'));
     temporaryRoots.push(dataPath);
     vi.stubEnv('APPDATA', path.join(dataPath, 'appdata'));
     let running = false;
@@ -445,7 +445,7 @@ describe('TunnelController lifecycle', () => {
   });
 
   it('reads tunnel-client version from injected file metadata without executing it', async () => {
-    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-tunnel-controller-'));
+    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'inwsus-tunnel-controller-'));
     temporaryRoots.push(dataPath);
     const executable = path.join(dataPath, 'tunnel-client.exe');
     await writeFile(executable, 'not executed', 'utf8');
@@ -462,7 +462,7 @@ interface FakeChild extends EventEmitter {
 
 async function ownedController(kill: () => boolean, stopTimeoutMs = 2_000, shutdownOptions: {
   terminateOwnedProcessTree?: (pid: number) => Promise<void>;
-  inspectOwnedProcess?: (pid: number) => Promise<import('@lnwjud/mcp-server').ProcessProbeResult>;
+  inspectOwnedProcess?: (pid: number) => Promise<import('@inwsus/mcp-server').ProcessProbeResult>;
   inspectOwnedProcessTree?: (rootPid: number) => Promise<readonly { readonly pid: number; readonly processStartedAt: string }[]>;
   escalationTimeoutMs?: number;
 } = {}, lockHooks?: NonNullable<Parameters<typeof acquireTunnelLock>[0]['hooks']>): Promise<{
@@ -472,7 +472,7 @@ async function ownedController(kill: () => boolean, stopTimeoutMs = 2_000, shutd
   profileDir: string;
   owner: TunnelLockOwner;
 }> {
-  const dataPath = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-tunnel-controller-'));
+  const dataPath = await mkdtemp(path.join(os.tmpdir(), 'inwsus-tunnel-controller-'));
   temporaryRoots.push(dataPath);
   vi.stubEnv('APPDATA', path.join(dataPath, 'appdata'));
   const profileDir = path.join(dataPath, 'appdata', 'tunnel-client');
@@ -542,13 +542,13 @@ function controllerInternals(controller: TunnelController): {
 }
 
 async function healthController(options: { profile: string; log: string; healthProbeTimeoutMs?: number }): Promise<{ controller: TunnelController }> {
-  const dataPath = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-tunnel-health-'));
+  const dataPath = await mkdtemp(path.join(os.tmpdir(), 'inwsus-tunnel-health-'));
   temporaryRoots.push(dataPath);
   vi.stubEnv('APPDATA', path.join(dataPath, 'appdata'));
   const profileDir = path.join(dataPath, 'appdata', 'tunnel-client');
   await (await import('node:fs/promises')).mkdir(profileDir, { recursive: true });
-  await writeFile(path.join(profileDir, 'lnwjud.yaml'), options.profile, 'utf8');
-  await writeFile(path.join(profileDir, 'lnwjud-tunnel.log'), options.log, 'utf8');
+  await writeFile(path.join(profileDir, 'inwsus.yaml'), options.profile, 'utf8');
+  await writeFile(path.join(profileDir, 'inwsus-tunnel.log'), options.log, 'utf8');
   return { controller: new TunnelController({
     getClientPath: (): string | null => null,
     setClientPath: (): void => {},

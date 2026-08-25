@@ -1,4 +1,4 @@
-import { appError, err, type Result } from '@lnwjud/domain';
+import { appError, err, type Result } from '@inwsus/domain';
 import type { CapabilityService, CapabilityToolName } from './index.js';
 
 export interface CapabilityBackend {

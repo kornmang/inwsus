@@ -2,8 +2,8 @@
 import os from 'node:os';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { ok } from '@lnwjud/domain';
-import type { FileActor } from '@lnwjud/application';
+import { ok } from '@inwsus/domain';
+import type { FileActor } from '@inwsus/application';
 import { UpgradeRuntimeService } from './upgrade-runtime.js';
 
 const actorA: FileActor = { clientId: 'client', clientName: 'test', sessionId: 'session-a' };
@@ -11,7 +11,7 @@ const actorB: FileActor = { clientId: 'client', clientName: 'test', sessionId: '
 
 describe('upgrade runtime multi-session persistence', () => {
   it('merges concurrent checkpoints for the same session while isolating another session', async () => {
-    const directory = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-runtime-concurrency-'));
+    const directory = await mkdtemp(path.join(os.tmpdir(), 'inwsus-runtime-concurrency-'));
     const runtimeStatePath = path.join(directory, 'upgrade-runtime.json');
     const first = new UpgradeRuntimeService({ runtimeStatePath }, actorA);
     const second = new UpgradeRuntimeService({ runtimeStatePath }, actorA);
@@ -33,7 +33,7 @@ describe('upgrade runtime multi-session persistence', () => {
   });
 
   it('merges global plugin mutations from independent sessions without lost updates', async () => {
-    const directory = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-runtime-concurrency-'));
+    const directory = await mkdtemp(path.join(os.tmpdir(), 'inwsus-runtime-concurrency-'));
     const runtimeStatePath = path.join(directory, 'upgrade-runtime.json');
     const first = new UpgradeRuntimeService({ runtimeStatePath }, actorA);
     const second = new UpgradeRuntimeService({ runtimeStatePath }, actorB);
@@ -52,7 +52,7 @@ describe('upgrade runtime multi-session persistence', () => {
   });
 
   it('keeps shared worktree ledger entries session-owned', async () => {
-    const directory = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-runtime-concurrency-'));
+    const directory = await mkdtemp(path.join(os.tmpdir(), 'inwsus-runtime-concurrency-'));
     const runtimeStatePath = path.join(directory, 'upgrade-runtime.json');
     const calls: unknown[] = [];
     const services = {

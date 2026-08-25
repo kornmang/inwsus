@@ -8,7 +8,7 @@ import {
   type ContextDiscoveryMode,
   type ContextPathClassification,
   type ContextTextSummary,
-} from '@lnwjud/search';
+} from '@inwsus/search';
 
 export type ContextDeliveryKind = 'content' | 'diff' | 'reference' | 'unchanged' | 'metadata';
 

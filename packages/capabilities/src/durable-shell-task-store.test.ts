@@ -12,7 +12,7 @@ afterEach(async () => {
 
 describe('durable shell background tasks', () => {
   it('survives a backend/runtime replacement and returns logs and result by task id', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-durable-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-durable-shell-'));
     temporaryRoots.push(root);
     const taskStateDirectory = path.join(root, '.tasks');
     const firstRuntime = new ShellCapabilityBackend({ allowedRoots: [root], taskStateDirectory });
@@ -44,7 +44,7 @@ describe('durable shell background tasks', () => {
   });
 
   it('does not overwrite a very fast durable completion back to running', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-durable-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-durable-shell-'));
     temporaryRoots.push(root);
     const backend = new ShellCapabilityBackend({
       allowedRoots: [root],
@@ -77,7 +77,7 @@ describe('durable shell background tasks', () => {
   });
 
   it('cancels a durable task from a replacement backend', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-durable-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-durable-shell-'));
     temporaryRoots.push(root);
     const taskStateDirectory = path.join(root, '.tasks');
     const firstRuntime = new ShellCapabilityBackend({ allowedRoots: [root], taskStateDirectory });
@@ -105,7 +105,7 @@ describe('durable shell background tasks', () => {
   });
 
   it('keeps a durable auto task running when the original MCP caller aborts after submission', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-durable-shell-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-durable-shell-'));
     temporaryRoots.push(root);
     const taskStateDirectory = path.join(root, '.tasks');
     const backend = new ShellCapabilityBackend({

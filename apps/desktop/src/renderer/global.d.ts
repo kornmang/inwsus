@@ -1,8 +1,8 @@
-import type { LnwjudApi } from '@lnwjud/ipc-contracts';
+import type { InwsusApi } from '@inwsus/ipc-contracts';
 
 declare global {
   interface Window {
-    readonly lnwjud: LnwjudApi;
+    readonly inwsus: InwsusApi;
   }
 }
 

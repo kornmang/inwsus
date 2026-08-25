@@ -1,4 +1,4 @@
-import type { Result } from '@lnwjud/domain';
+import type { Result } from '@inwsus/domain';
 
 export const capabilityToolNames = Object.freeze([
   'shell',

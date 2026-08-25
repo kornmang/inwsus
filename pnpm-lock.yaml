@@ -11,28 +11,28 @@ importers:
       '@eslint/js':
         specifier: 9.33.0
         version: 9.33.0
-      '@lnwjud/application':
+      '@inwsus/application':
         specifier: workspace:*
         version: link:packages/application
-      '@lnwjud/audit':
+      '@inwsus/audit':
         specifier: workspace:*
         version: link:packages/audit
-      '@lnwjud/codex':
+      '@inwsus/codex':
         specifier: workspace:*
         version: link:packages/codex
-      '@lnwjud/domain':
+      '@inwsus/domain':
         specifier: workspace:*
         version: link:packages/domain
-      '@lnwjud/mcp-server':
+      '@inwsus/mcp-server':
         specifier: workspace:*
         version: link:packages/mcp-server
-      '@lnwjud/process':
+      '@inwsus/process':
         specifier: workspace:*
         version: link:packages/process
-      '@lnwjud/storage':
+      '@inwsus/storage':
         specifier: workspace:*
         version: link:packages/storage
-      '@lnwjud/workspace':
+      '@inwsus/workspace':
         specifier: workspace:*
         version: link:packages/workspace
       '@types/node':
@@ -53,82 +53,82 @@ importers:
 
   apps/cli:
     dependencies:
-      '@lnwjud/application':
+      '@inwsus/application':
         specifier: workspace:*
         version: link:../../packages/application
-      '@lnwjud/audit':
+      '@inwsus/audit':
         specifier: workspace:*
         version: link:../../packages/audit
-      '@lnwjud/capabilities':
+      '@inwsus/capabilities':
         specifier: workspace:*
         version: link:../../packages/capabilities
-      '@lnwjud/codex':
+      '@inwsus/codex':
         specifier: workspace:*
         version: link:../../packages/codex
-      '@lnwjud/domain':
+      '@inwsus/domain':
         specifier: workspace:*
         version: link:../../packages/domain
-      '@lnwjud/extensions':
+      '@inwsus/extensions':
         specifier: workspace:*
         version: link:../../packages/extensions
-      '@lnwjud/mcp-server':
+      '@inwsus/mcp-server':
         specifier: workspace:*
         version: link:../../packages/mcp-server
-      '@lnwjud/permissions':
+      '@inwsus/permissions':
         specifier: workspace:*
         version: link:../../packages/permissions
-      '@lnwjud/shared':
+      '@inwsus/shared':
         specifier: workspace:*
         version: link:../../packages/shared
-      '@lnwjud/storage':
+      '@inwsus/storage':
         specifier: workspace:*
         version: link:../../packages/storage
-      '@lnwjud/workspace':
+      '@inwsus/workspace':
         specifier: workspace:*
         version: link:../../packages/workspace
 
   apps/desktop:
     dependencies:
-      '@lnwjud/application':
+      '@inwsus/application':
         specifier: workspace:*
         version: link:../../packages/application
-      '@lnwjud/audit':
+      '@inwsus/audit':
         specifier: workspace:*
         version: link:../../packages/audit
-      '@lnwjud/capabilities':
+      '@inwsus/capabilities':
         specifier: workspace:*
         version: link:../../packages/capabilities
-      '@lnwjud/codex':
+      '@inwsus/codex':
         specifier: workspace:*
         version: link:../../packages/codex
-      '@lnwjud/domain':
+      '@inwsus/domain':
         specifier: workspace:*
         version: link:../../packages/domain
-      '@lnwjud/extensions':
+      '@inwsus/extensions':
         specifier: workspace:*
         version: link:../../packages/extensions
-      '@lnwjud/ipc-contracts':
+      '@inwsus/ipc-contracts':
         specifier: workspace:*
         version: link:../../packages/ipc-contracts
-      '@lnwjud/mcp-server':
+      '@inwsus/mcp-server':
         specifier: workspace:*
         version: link:../../packages/mcp-server
-      '@lnwjud/permissions':
+      '@inwsus/permissions':
         specifier: workspace:*
         version: link:../../packages/permissions
-      '@lnwjud/process':
+      '@inwsus/process':
         specifier: workspace:*
         version: link:../../packages/process
-      '@lnwjud/search':
+      '@inwsus/search':
         specifier: workspace:*
         version: link:../../packages/search
-      '@lnwjud/shared':
+      '@inwsus/shared':
         specifier: workspace:*
         version: link:../../packages/shared
-      '@lnwjud/storage':
+      '@inwsus/storage':
         specifier: workspace:*
         version: link:../../packages/storage
-      '@lnwjud/workspace':
+      '@inwsus/workspace':
         specifier: workspace:*
         version: link:../../packages/workspace
       electron-updater:
@@ -171,37 +171,37 @@ importers:
 
   packages/application:
     dependencies:
-      '@lnwjud/audit':
+      '@inwsus/audit':
         specifier: workspace:*
         version: link:../audit
-      '@lnwjud/codex':
+      '@inwsus/codex':
         specifier: workspace:*
         version: link:../codex
-      '@lnwjud/domain':
+      '@inwsus/domain':
         specifier: workspace:*
         version: link:../domain
-      '@lnwjud/filesystem':
+      '@inwsus/filesystem':
         specifier: workspace:*
         version: link:../filesystem
-      '@lnwjud/git':
+      '@inwsus/git':
         specifier: workspace:*
         version: link:../git
-      '@lnwjud/permissions':
+      '@inwsus/permissions':
         specifier: workspace:*
         version: link:../permissions
-      '@lnwjud/process':
+      '@inwsus/process':
         specifier: workspace:*
         version: link:../process
-      '@lnwjud/project':
+      '@inwsus/project':
         specifier: workspace:*
         version: link:../project
-      '@lnwjud/search':
+      '@inwsus/search':
         specifier: workspace:*
         version: link:../search
-      '@lnwjud/shared':
+      '@inwsus/shared':
         specifier: workspace:*
         version: link:../shared
-      '@lnwjud/workspace':
+      '@inwsus/workspace':
         specifier: workspace:*
         version: link:../workspace
 
@@ -209,22 +209,22 @@ importers:
 
   packages/capabilities:
     dependencies:
-      '@lnwjud/domain':
+      '@inwsus/domain':
         specifier: workspace:*
         version: link:../domain
-      '@lnwjud/process':
+      '@inwsus/process':
         specifier: workspace:*
         version: link:../process
-      '@lnwjud/shared':
+      '@inwsus/shared':
         specifier: workspace:*
         version: link:../shared
 
   packages/codex:
     dependencies:
-      '@lnwjud/domain':
+      '@inwsus/domain':
         specifier: workspace:*
         version: link:../domain
-      '@lnwjud/process':
+      '@inwsus/process':
         specifier: workspace:*
         version: link:../process
 
@@ -232,7 +232,7 @@ importers:
 
   packages/extensions:
     dependencies:
-      '@lnwjud/domain':
+      '@inwsus/domain':
         specifier: workspace:*
         version: link:../domain
       '@modelcontextprotocol/client':
@@ -241,19 +241,19 @@ importers:
 
   packages/filesystem:
     dependencies:
-      '@lnwjud/domain':
+      '@inwsus/domain':
         specifier: workspace:*
         version: link:../domain
-      '@lnwjud/workspace':
+      '@inwsus/workspace':
         specifier: workspace:*
         version: link:../workspace
 
   packages/git:
     dependencies:
-      '@lnwjud/domain':
+      '@inwsus/domain':
         specifier: workspace:*
         version: link:../domain
-      '@lnwjud/process':
+      '@inwsus/process':
         specifier: workspace:*
         version: link:../process
 
@@ -261,25 +261,25 @@ importers:
 
   packages/mcp-server:
     dependencies:
-      '@lnwjud/application':
+      '@inwsus/application':
         specifier: workspace:*
         version: link:../application
-      '@lnwjud/capabilities':
+      '@inwsus/capabilities':
         specifier: workspace:*
         version: link:../capabilities
-      '@lnwjud/domain':
+      '@inwsus/domain':
         specifier: workspace:*
         version: link:../domain
-      '@lnwjud/extensions':
+      '@inwsus/extensions':
         specifier: workspace:*
         version: link:../extensions
-      '@lnwjud/permissions':
+      '@inwsus/permissions':
         specifier: workspace:*
         version: link:../permissions
-      '@lnwjud/search':
+      '@inwsus/search':
         specifier: workspace:*
         version: link:../search
-      '@lnwjud/shared':
+      '@inwsus/shared':
         specifier: workspace:*
         version: link:../shared
       '@modelcontextprotocol/server':
@@ -295,28 +295,28 @@ importers:
 
   packages/permissions:
     dependencies:
-      '@lnwjud/domain':
+      '@inwsus/domain':
         specifier: workspace:*
         version: link:../domain
-      '@lnwjud/shared':
+      '@inwsus/shared':
         specifier: workspace:*
         version: link:../shared
 
   packages/process:
     dependencies:
-      '@lnwjud/domain':
+      '@inwsus/domain':
         specifier: workspace:*
         version: link:../domain
 
   packages/project:
     dependencies:
-      '@lnwjud/domain':
+      '@inwsus/domain':
         specifier: workspace:*
         version: link:../domain
 
   packages/search:
     dependencies:
-      '@lnwjud/domain':
+      '@inwsus/domain':
         specifier: workspace:*
         version: link:../domain
 
@@ -324,22 +324,22 @@ importers:
 
   packages/storage:
     dependencies:
-      '@lnwjud/audit':
+      '@inwsus/audit':
         specifier: workspace:*
         version: link:../audit
-      '@lnwjud/domain':
+      '@inwsus/domain':
         specifier: workspace:*
         version: link:../domain
-      '@lnwjud/workspace':
+      '@inwsus/workspace':
         specifier: workspace:*
         version: link:../workspace
 
   packages/workspace:
     dependencies:
-      '@lnwjud/domain':
+      '@inwsus/domain':
         specifier: workspace:*
         version: link:../domain
-      '@lnwjud/shared':
+      '@inwsus/shared':
         specifier: workspace:*
         version: link:../shared
 

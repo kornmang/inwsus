@@ -7,20 +7,20 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 import { Client, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
-import { UPGRADE_TOOL_CATALOG } from '@lnwjud/mcp-server';
+import { UPGRADE_TOOL_CATALOG } from '@inwsus/mcp-server';
 import { chromium, expect, test, type Page } from '@playwright/test';
 
 const execFileAsync = promisify(execFile);
 const desktopRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const mainEntry = path.join(desktopRoot, 'dist', 'main', 'main.js');
 const electronExecutable = path.join(desktopRoot, 'node_modules', 'electron', 'dist', 'electron.exe');
-const packagedExecutable = process.env.LNWJUD_PACKAGED_EXECUTABLE;
+const packagedExecutable = process.env.INWSUS_PACKAGED_EXECUTABLE;
 
 test('desktop serves the real MCP client development workflow', async () => {
   test.setTimeout(180_000);
   const fixtureRoot = await createFixture();
   const fixtureRealRoot = await realpath(fixtureRoot);
-  const dataRoot = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-mcp-client-data-'));
+  const dataRoot = await mkdtemp(path.join(os.tmpdir(), 'inwsus-mcp-client-data-'));
   let electronProcess: ChildProcess | undefined;
   let browser: Awaited<ReturnType<typeof chromium.connectOverCDP>> | undefined;
   let page: Page | undefined;
@@ -38,11 +38,11 @@ test('desktop serves the real MCP client development workflow', async () => {
       windowsHide: true,
       env: {
         ...process.env,
-        LNWJUD_DATA_PATH: dataRoot,
-        LNWJUD_WORKSPACE: fixtureRoot,
-        LNWJUD_UNRESTRICTED: '1',
-        LNWJUD_E2E_FIXTURE: '1',
-        LNWJUD_E2E_NODE_PATH: process.execPath,
+        INWSUS_DATA_PATH: dataRoot,
+        INWSUS_WORKSPACE: fixtureRoot,
+        INWSUS_UNRESTRICTED: '1',
+        INWSUS_E2E_FIXTURE: '1',
+        INWSUS_E2E_NODE_PATH: process.execPath,
       },
     });
     const stderr: string[] = [];
@@ -69,7 +69,7 @@ test('desktop serves the real MCP client development workflow', async () => {
     expect(endpoint.pathname).toBe('/mcp');
 
     client = new Client(
-      { name: 'lnwjud-desktop-e2e-client', version: '0.1.0' },
+      { name: 'inwsus-desktop-e2e-client', version: '0.1.0' },
       { versionNegotiation: { mode: { pin: '2026-07-28' } } },
     );
     await client.connect(new StreamableHTTPClientTransport(endpoint));
@@ -150,7 +150,7 @@ test('desktop serves the real MCP client development workflow', async () => {
     browser = undefined;
   } finally {
     if (client !== undefined) await client.close().catch(() => undefined);
-    if (page !== undefined) await page.evaluate(() => window.lnwjud.stopMcp()).catch(() => undefined);
+    if (page !== undefined) await page.evaluate(() => window.inwsus.stopMcp()).catch(() => undefined);
     if (browser !== undefined) await browser.close().catch(() => undefined);
     if (electronProcess !== undefined) await terminateProcessTree(electronProcess);
     await Promise.all([removeTemporaryRoot(fixtureRoot), removeTemporaryRoot(dataRoot)]);
@@ -158,18 +158,18 @@ test('desktop serves the real MCP client development workflow', async () => {
 });
 
 async function createFixture(): Promise<string> {
-  const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-mcp-client-'));
+  const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-mcp-client-'));
   await mkdir(path.join(root, 'src'));
   await writeFile(path.join(root, 'src', 'app.ts'), "export const value = 'before';\n", 'utf8');
   await writeFile(path.join(root, '.env'), 'SECRET_NOT_FOR_TOOLS=hidden\n', 'utf8');
   await writeFile(path.join(root, 'package.json'), JSON.stringify({
-    name: 'lnwjud-desktop-flow-fixture',
+    name: 'inwsus-desktop-flow-fixture',
     scripts: { test: "node -e \"process.stdout.write('project-test-pass\\n')\"" },
   }), 'utf8');
   await writeFile(path.join(root, 'package-lock.json'), '{}', 'utf8');
   await execFileAsync('git', ['init', '--quiet'], { cwd: root, windowsHide: true });
-  await execFileAsync('git', ['config', 'user.email', 'lnwjud-test@example.invalid'], { cwd: root, windowsHide: true });
-  await execFileAsync('git', ['config', 'user.name', 'lnwjud desktop e2e'], { cwd: root, windowsHide: true });
+  await execFileAsync('git', ['config', 'user.email', 'inwsus-test@example.invalid'], { cwd: root, windowsHide: true });
+  await execFileAsync('git', ['config', 'user.name', 'inwsus desktop e2e'], { cwd: root, windowsHide: true });
   await execFileAsync('git', ['add', '--', 'package.json', 'package-lock.json', 'src'], { cwd: root, windowsHide: true });
   await execFileAsync('git', ['commit', '--quiet', '-m', 'fixture'], { cwd: root, windowsHide: true });
   return root;

@@ -1,4 +1,4 @@
-import type { DoctorReport, DoctorService } from '@lnwjud/application';
+import type { DoctorReport, DoctorService } from '@inwsus/application';
 
 export interface DoctorCommandRunner {
   run(): Promise<DoctorReport>;

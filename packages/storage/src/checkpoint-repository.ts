@@ -1,4 +1,4 @@
-import type { Checkpoint, CheckpointFile, CheckpointRepository } from '@lnwjud/workspace';
+import type { Checkpoint, CheckpointFile, CheckpointRepository } from '@inwsus/workspace';
 import type { SqliteDatabase } from './database.js';
 import type { CheckpointPayloadCipher } from './checkpoint-cipher.js';
 

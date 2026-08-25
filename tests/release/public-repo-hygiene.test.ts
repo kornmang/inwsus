@@ -17,18 +17,18 @@ async function trackedFiles(): Promise<string[]> {
 }
 
 describe('public repository hygiene', () => {
-  it('ignores exported lnwjud diagnostic text logs at the repository root', async () => {
+  it('ignores exported inwsus diagnostic text logs at the repository root', async () => {
     const ignore = await readFile(path.join(repositoryRoot, '.gitignore'), 'utf8');
-    expect(ignore).toContain('lnwjud-*-logs.txt');
+    expect(ignore).toContain('inwsus-*-logs.txt');
   });
 
   it('does not track generated stdio bundles', async () => {
     const tracked = await trackedFiles();
     const generated = [
-      'apps/desktop/build/lnwjud-mcp-stdio.cjs',
-      'apps/desktop/build/lnwjud-mcp-stdio.cmd',
-      'apps/desktop/build/lnwjud-mcp-stdio.mjs',
-      'apps/desktop/build/lnwjud-node.exe',
+      'apps/desktop/build/inwsus-mcp-stdio.cjs',
+      'apps/desktop/build/inwsus-mcp-stdio.cmd',
+      'apps/desktop/build/inwsus-mcp-stdio.mjs',
+      'apps/desktop/build/inwsus-node.exe',
     ];
 
     for (const file of generated) {
@@ -65,7 +65,7 @@ describe('public repository hygiene', () => {
 
     expect(readme).toContain(`## Current version: v${rootPackage.version as string}`);
     expect(readme).toContain(`The v${rootPackage.version as string} release target and runtime contract`);
-    expect(readme).toContain(`The Windows installer for the current version is \`lnwjud-Setup-${rootPackage.version as string}.exe\``);
+    expect(readme).toContain(`The Windows installer for the current version is \`inwsus-Setup-${rootPackage.version as string}.exe\``);
     expect(readme).not.toContain('current source/release candidate is');
     expect(readme).not.toContain('pending publication');
     expect(readme).toContain('218 configurable tools');
@@ -91,8 +91,8 @@ describe('public repository hygiene', () => {
       'utf8',
     );
 
-    expect(envExample).toContain('LNWJUD_MCP_PORT=18765');
-    expect(envExample).not.toContain('LNWJUD_PORT=3000');
+    expect(envExample).toContain('INWSUS_MCP_PORT=18765');
+    expect(envExample).not.toContain('INWSUS_PORT=3000');
     expect(settings).toContain('OpenAI Secure MCP Tunnel');
     expect(settings).not.toContain('Cloudflare Remote Tunnel');
 

@@ -3,7 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { WorkspaceInfoService } from './workspace-info-service.js';
-import { WorkspaceService, type Workspace, type WorkspaceRepository } from '@lnwjud/workspace';
+import { WorkspaceService, type Workspace, type WorkspaceRepository } from '@inwsus/workspace';
 
 const temporaryRoots: string[] = [];
 
@@ -13,7 +13,7 @@ afterEach(async () => {
 
 describe('WorkspaceInfoService.register', () => {
   it('registers a project under whichever drive-root machine root owns it and is idempotent', async () => {
-    const projectRoot = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-register-'));
+    const projectRoot = await mkdtemp(path.join(os.tmpdir(), 'inwsus-register-'));
     temporaryRoots.push(projectRoot);
     const machineRoot = path.parse(projectRoot).root;
     if (!/^[A-Za-z]:\\$/.test(machineRoot)) return;
@@ -45,7 +45,7 @@ describe('WorkspaceInfoService.register', () => {
     const alternateDrive = machineRoot[0]?.toUpperCase() === 'Z' ? 'Y' : 'Z';
     const outside = await service.register(actor, {
       parentWorkspaceId: machine.value.id,
-      path: `${alternateDrive}:\\outside-lnwjud`,
+      path: `${alternateDrive}:\\outside-inwsus`,
     });
     expect(outside).toMatchObject({ ok: false, error: { code: 'INVALID_INPUT' } });
   });

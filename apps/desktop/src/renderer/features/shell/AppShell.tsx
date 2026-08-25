@@ -1,5 +1,5 @@
 import type { ReactElement, ReactNode } from 'react';
-import type { UiLocale, UpdateStatus } from '@lnwjud/ipc-contracts';
+import type { UiLocale, UpdateStatus } from '@inwsus/ipc-contracts';
 import { createTranslator } from '../../i18n/index.js';
 import type { MessageKey } from '../../i18n/messages.js';
 
@@ -35,7 +35,7 @@ export function AppShell(props: AppShellProps): ReactElement {
       <header className="custom-titlebar">
         <div className="titlebar-drag-region">
           <div className="titlebar-brand">
-            <img src="./favicon.ico" alt="lnwjud logo" className="titlebar-logo" />
+            <img src="./favicon.ico" alt="inwsus logo" className="titlebar-logo" />
             <span className="titlebar-title">{t('brand')}</span>
             <button
               type="button"

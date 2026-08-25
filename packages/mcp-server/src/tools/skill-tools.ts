@@ -10,7 +10,7 @@ export function skillTools(context: McpToolContext): McpToolDefinition[] {
   return [
     defineTool({
       name: 'skills_list',
-      description: 'List local agent skills discovered from Cursor, Claude, Agents, workspace skill roots, and lnwjud settings. Filter with query or source.',
+      description: 'List local agent skills discovered from Cursor, Claude, Agents, workspace skill roots, and inwsus settings. Filter with query or source.',
       ...fullAccess,
       inputSchema: skillsListSchema,
       handler: async (input) => context.services.extensions === undefined
@@ -22,7 +22,7 @@ export function skillTools(context: McpToolContext): McpToolDefinition[] {
     }),
     defineTool({
       name: 'skills_read',
-      description: 'Read a local skill SKILL.md (or a relative file inside the skill folder). Follow the skill instructions with lnwjud tools and mcp_call.',
+      description: 'Read a local skill SKILL.md (or a relative file inside the skill folder). Follow the skill instructions with inwsus tools and mcp_call.',
       ...fullAccess,
       inputSchema: skillsReadSchema,
       handler: async (input) => context.services.extensions === undefined

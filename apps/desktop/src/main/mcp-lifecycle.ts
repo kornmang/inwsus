@@ -2,7 +2,7 @@ import {
   startMcpHttp,
   type McpHttpServerHandle,
   type McpHttpServerOptions,
-} from '@lnwjud/mcp-server';
+} from '@inwsus/mcp-server';
 
 export interface DesktopMcpStatus {
   readonly running: boolean;

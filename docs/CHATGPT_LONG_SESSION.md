@@ -1,6 +1,6 @@
-# ChatGPT Codex App + lnwjud Plugins: คู่มือทำงานยาว (Long Session Guide)
+# ChatGPT Codex App + inwsus Plugins: คู่มือทำงานยาว (Long Session Guide)
 
-> สถานะ: ใช้กับ lnwjud v4.7.1+ ผ่าน ChatGPT โหมดแชท + Plugins / MCP
+> สถานะ: ใช้กับ inwsus v4.7.1+ ผ่าน ChatGPT โหมดแชท + Plugins / MCP
 > เป้าหมาย: ยอมรับว่า AI run มี budget จำกัด แต่ทำให้งานที่เครื่อง **ไม่ถูกตัดตาม AI run** และให้ run ถัดไปต่อใน **แชทเดิม** ได้ทันที
 > นโยบายปัจจุบัน: กลุ่ม `codex_*` ปิดเป็นค่าเริ่มต้นและไม่ advertise ให้ agent เห็น เว้นแต่ผู้ใช้เปิดเอง
 
@@ -10,7 +10,7 @@
 
 ChatGPT/Codex โหมดแชทมี budget ต่อ run และ Plugins ใช้โควต้าของแชท การที่ run จบหรือถูกตัดไม่ได้แปลว่าโปรเซสที่เครื่องต้องจบตามไปด้วย
 
-lnwjud แยกงานออกเป็น 2 แบบ:
+inwsus แยกงานออกเป็น 2 แบบ:
 
 - **งานสั้น/โต้ตอบ**: tool call ปกติ, `project_*`, `search_text`, `read_file_page`
 - **งานยาวที่ต้องรอดข้าม run**: `shell` + `execution: "background"` → ได้ durable `task_id` → งานรันต่อที่เครื่อง → run ถัดไปใช้ `status` / `logs` / `result` ด้วย `task_id` เดิม
@@ -21,7 +21,7 @@ lnwjud แยกงานออกเป็น 2 แบบ:
 
 ## 2. Budget Guard — เตือนก่อน run ถูกตัดกลางงาน
 
-lnwjud เริ่มนับ budget ตั้งแต่ **tool call แรกของ run** ที่ dispatch กลางเดียวกับ progress heartbeat
+inwsus เริ่มนับ budget ตั้งแต่ **tool call แรกของ run** ที่ dispatch กลางเดียวกับ progress heartbeat
 
 เมื่อ elapsed ประมาณ **22 นาทีขึ้นไป** ทุก tool result จะมีข้อความท้ายผลลัพธ์:
 
@@ -143,7 +143,7 @@ If tool schema looks stale, Refresh connector first; open a new chat only if Ref
 
 ### ชั้น C — ChatGPT/Codex App Chat + Plugins (ทางหลัก)
 
-ใช้ lnwjud tools โดยตรง, tracker-first, Budget Guard, `verify_incremental`, durable background และ `session_handoff`
+ใช้ inwsus tools โดยตรง, tracker-first, Budget Guard, `verify_incremental`, durable background และ `session_handoff`
 
 ### ชั้น A — Codex Work delegation (`codex_*`) — ปิดตามนโยบาย
 

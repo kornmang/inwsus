@@ -1,12 +1,12 @@
 import path from 'node:path';
-import { appError, err, ok, type Result } from '@lnwjud/domain';
+import { appError, err, ok, type Result } from '@inwsus/domain';
 import {
   isDriveRoot,
   isWithin,
   type Workspace,
   type WorkspaceRepository,
   type WorkspaceService,
-} from '@lnwjud/workspace';
+} from '@inwsus/workspace';
 import type { FileActor } from './file-service.js';
 
 export type WorkspaceKind = 'machine_root' | 'project';

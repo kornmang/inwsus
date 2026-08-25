@@ -2,7 +2,7 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { ok, type Result } from '@lnwjud/domain';
+import { ok, type Result } from '@inwsus/domain';
 import type { CapabilityBackend } from './local-capability-service.js';
 import { WslCapabilityBackend, WslFilesystemCapabilityBackend } from './wsl-backend.js';
 import { CAPABILITY_TASK_OWNER_METADATA_KEY } from './task-ownership.js';
@@ -33,8 +33,8 @@ describe('WslCapabilityBackend', () => {
 
   it('rejects another registered root when host metadata binds the active workspace root', async () => {
     if (process.platform !== 'win32') return;
-    const activeRoot = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-wsl-active-'));
-    const otherRoot = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-wsl-other-'));
+    const activeRoot = await mkdtemp(path.join(os.tmpdir(), 'inwsus-wsl-active-'));
+    const otherRoot = await mkdtemp(path.join(os.tmpdir(), 'inwsus-wsl-other-'));
     temporaryRoots.push(activeRoot, otherRoot);
     const calls: unknown[] = [];
     const backend = new WslCapabilityBackend({
@@ -45,7 +45,7 @@ describe('WslCapabilityBackend', () => {
 
     await expect(backend.execute({
       operation: 'run', workspaceId: 'ws-active', executable: 'node', arguments: ['script.js'], cwd: otherRoot,
-      dry_run: true, metadata: { 'lnwjud.activeWorkspaceRoot.v1': activeRoot },
+      dry_run: true, metadata: { 'inwsus.activeWorkspaceRoot.v1': activeRoot },
     })).resolves.toMatchObject({ ok: false, error: { code: 'PATH_OUTSIDE_WORKSPACE' } });
     expect(calls).toEqual([]);
   });
@@ -63,14 +63,14 @@ describe('WslCapabilityBackend', () => {
 
     await expect(backend.execute({
       operation: 'run', workspaceId: 'ws-1', executable, arguments: args, cwd: 'C:\\workspace',
-      metadata: { 'lnwjud.activeWorkspaceRoot.v1': 'C:\\workspace' },
+      metadata: { 'inwsus.activeWorkspaceRoot.v1': 'C:\\workspace' },
     })).resolves.toMatchObject({ ok: false, error: { code: 'PERMISSION_REQUIRED' } });
     expect(calls).toEqual([]);
   });
 
   it('allows ordinary WSL copy without confirmation', async () => {
     if (process.platform !== 'win32') return;
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-wsl-copy-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-wsl-copy-'));
     temporaryRoots.push(root);
     const calls: unknown[] = [];
     const backend = new WslCapabilityBackend({
@@ -81,7 +81,7 @@ describe('WslCapabilityBackend', () => {
 
     await expect(backend.execute({
       operation: 'run', workspaceId: 'ws-1', executable: 'cp', arguments: ['source.txt', 'destination.txt'], cwd: root,
-      metadata: { 'lnwjud.activeWorkspaceRoot.v1': root },
+      metadata: { 'inwsus.activeWorkspaceRoot.v1': root },
     })).resolves.toMatchObject({ ok: true });
     expect(calls).toHaveLength(1);
   });

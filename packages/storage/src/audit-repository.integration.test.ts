@@ -2,7 +2,7 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import type { AuditEvent } from '@lnwjud/audit';
+import type { AuditEvent } from '@inwsus/audit';
 import { SqliteAuditRepository } from './audit-repository.js';
 import { SqliteDatabase } from './database.js';
 
@@ -14,7 +14,7 @@ afterEach(async () => {
 
 describe('SqliteAuditRepository', () => {
   it('persists sanitized audit metadata through the audit migration', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-audit-db-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-audit-db-'));
     temporaryRoots.push(root);
     const database = new SqliteDatabase(path.join(root, 'state.db'));
     const repository = new SqliteAuditRepository(database);
@@ -37,7 +37,7 @@ describe('SqliteAuditRepository', () => {
   });
 
   it('round-trips session scope and applies workspace/session filters before LIMIT', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-audit-scope-db-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-audit-scope-db-'));
     temporaryRoots.push(root);
     const database = new SqliteDatabase(path.join(root, 'state.db'));
     const repository = new SqliteAuditRepository(database);
@@ -68,7 +68,7 @@ describe('SqliteAuditRepository', () => {
   });
 
   it('preserves legacy null session scope during migration and can query it explicitly', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-audit-legacy-db-'));
+    const root = await mkdtemp(path.join(os.tmpdir(), 'inwsus-audit-legacy-db-'));
     temporaryRoots.push(root);
     const database = new SqliteDatabase(path.join(root, 'state.db'));
     const repository = new SqliteAuditRepository(database);

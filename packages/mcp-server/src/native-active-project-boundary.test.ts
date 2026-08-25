@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { CAPABILITY_ACTIVE_WORKSPACE_ROOT_METADATA_KEY } from '@lnwjud/capabilities';
-import { ok } from '@lnwjud/domain';
+import { CAPABILITY_ACTIVE_WORKSPACE_ROOT_METADATA_KEY } from '@inwsus/capabilities';
+import { ok } from '@inwsus/domain';
 import { ToolRegistry, type McpApplicationServices, type WorkspaceScope } from './tool-registry.js';
 
 const actor = { clientId: 'native-active-project-test', clientName: 'native active project test' };

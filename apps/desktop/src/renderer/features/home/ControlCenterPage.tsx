@@ -1,5 +1,5 @@
 import { useState, type ReactElement } from 'react';
-import type { DashboardSnapshot, IncidentClassification, UiLocale, WorkspaceSummary } from '@lnwjud/ipc-contracts';
+import type { DashboardSnapshot, IncidentClassification, UiLocale, WorkspaceSummary } from '@inwsus/ipc-contracts';
 import { createTranslator } from '../../i18n/index.js';
 
 interface ControlCenterPageProps {

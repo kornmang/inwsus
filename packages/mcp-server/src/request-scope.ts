@@ -1,6 +1,6 @@
 import { createHash, randomUUID } from 'node:crypto';
-import type { FileActor } from '@lnwjud/application';
-import { CAPABILITY_TASK_OWNER_METADATA_KEY } from '@lnwjud/capabilities';
+import type { FileActor } from '@inwsus/application';
+import { CAPABILITY_TASK_OWNER_METADATA_KEY } from '@inwsus/capabilities';
 
 export type McpTransportKind = 'http' | 'stdio';
 

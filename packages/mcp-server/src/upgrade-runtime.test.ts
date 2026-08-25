@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { mkdtemp } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { ok } from '@lnwjud/domain';
-import type { FileActor } from '@lnwjud/application';
+import { ok } from '@inwsus/domain';
+import type { FileActor } from '@inwsus/application';
 import { UpgradeRuntimeService } from './upgrade-runtime.js';
 import { UPGRADE_TOOL_CATALOG } from './upgrade-catalog.js';
 import { ToolRegistry } from './tool-registry.js';
@@ -107,7 +107,7 @@ describe('upgrade runtime', () => {
   });
 
   it('persists redacted session/task state outside the repository', async () => {
-    const directory = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-runtime-'));
+    const directory = await mkdtemp(path.join(os.tmpdir(), 'inwsus-runtime-'));
     const statePath = path.join(directory, 'runtime.json');
     const first = new UpgradeRuntimeService({ runtimeStatePath: statePath }, actor);
     await first.execute('session_checkpoint', { summary: 'inspect logs', token: 'must-not-be-retained' });

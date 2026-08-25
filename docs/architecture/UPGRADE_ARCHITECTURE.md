@@ -1,4 +1,4 @@
-# lnwjud Upgrade Architecture Contract
+# inwsus Upgrade Architecture Contract
 
 Status: God-Tier local-first implementation checkpoint for `v4.0.0`.
 
@@ -136,7 +136,7 @@ continuation rather than lowering an existing limit silently.
 ### stdio
 
 - MCP protocol is the only stdout payload; diagnostics go to stderr.
-- The packaged direct-node `lnwjud-mcp-stdio.cmd` launcher remains available
+- The packaged direct-node `inwsus-mcp-stdio.cmd` launcher remains available
   for direct local stdio hosts such as Codex CLI. Secure Tunnel does **not** use
   this headless runtime; it forwards to the Desktop loopback HTTP MCP so host
   Active Project and native approval remain authoritative.
@@ -190,7 +190,7 @@ tool call.
 
 `LogHub` merges three sources:
 
-1. `tunnel`: persistent `lnwjud-tunnel.log` tail;
+1. `tunnel`: persistent `inwsus-tunnel.log` tail;
 2. `mcp`: activity NDJSON plus synchronized work-log entries;
 3. `process`: owned-process summaries and output metadata.
 

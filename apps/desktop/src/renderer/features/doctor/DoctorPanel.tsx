@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import type { DoctorReport, UiLocale } from '@lnwjud/ipc-contracts';
+import type { DoctorReport, UiLocale } from '@inwsus/ipc-contracts';
 import { createTranslator } from '../../i18n/index.js';
 
 interface DoctorPanelProps {

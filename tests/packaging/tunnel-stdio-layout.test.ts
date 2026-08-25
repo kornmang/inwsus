@@ -14,25 +14,25 @@ function section(config: string, start: string, end: string): string {
 }
 
 describe('Secure Tunnel packaged stdio layout', () => {
-  it('ships the complete stdio runtime both beside lnwjud.exe and under resources', async () => {
+  it('ships the complete stdio runtime both beside inwsus.exe and under resources', async () => {
     const config = await readFile(path.join(desktopRoot, 'electron-builder.yml'), 'utf8');
     const resources = section(config, 'extraResources', 'extraFiles');
     const files = section(config, 'extraFiles', 'win');
 
-    for (const artifact of ['lnwjud-mcp-stdio.cmd', 'lnwjud-mcp-stdio.cjs', 'lnwjud-node.exe']) {
+    for (const artifact of ['inwsus-mcp-stdio.cmd', 'inwsus-mcp-stdio.cjs', 'inwsus-node.exe']) {
       expect(resources).toContain(`to: ${artifact}`);
       expect(files).toContain(`to: ${artifact}`);
     }
   });
 
   it('keeps the stdio launcher self-contained instead of depending on a developer machine path or system Node', async () => {
-    const launcher = await readFile(path.join(desktopRoot, 'build', 'lnwjud-mcp-stdio.cmd'), 'utf8');
+    const launcher = await readFile(path.join(desktopRoot, 'build', 'inwsus-mcp-stdio.cmd'), 'utf8');
     expect(launcher).toContain('set "BASE=%~dp0"');
-    expect(launcher).toContain('set "NODE_EXE=%BASE%lnwjud-node.exe"');
-    expect(launcher).toContain('set "SCRIPT=%BASE%lnwjud-mcp-stdio.cjs"');
-    expect(launcher).toContain('resources\\lnwjud-node.exe');
-    expect(launcher).toContain('resources\\lnwjud-mcp-stdio.cjs');
-    expect(launcher).not.toMatch(/[A-Z]:\\(?:Users|lnwjud|src|projects)\\/i);
+    expect(launcher).toContain('set "NODE_EXE=%BASE%inwsus-node.exe"');
+    expect(launcher).toContain('set "SCRIPT=%BASE%inwsus-mcp-stdio.cjs"');
+    expect(launcher).toContain('resources\\inwsus-node.exe');
+    expect(launcher).toContain('resources\\inwsus-mcp-stdio.cjs');
+    expect(launcher).not.toMatch(/[A-Z]:\\(?:Users|inwsus|src|projects)\\/i);
     expect(launcher).not.toContain('set "NODE_EXE=node"');
   });
 });

@@ -1,5 +1,5 @@
 {
-  "name": "@lnwjud/application",
+  "name": "@inwsus/application",
   "version": "4.10.0",
   "private": true,
   "type": "module",
@@ -13,17 +13,17 @@
     }
   },
   "dependencies": {
-    "@lnwjud/domain": "workspace:*",
-    "@lnwjud/codex": "workspace:*",
-    "@lnwjud/audit": "workspace:*",
-    "@lnwjud/filesystem": "workspace:*",
-    "@lnwjud/git": "workspace:*",
-    "@lnwjud/permissions": "workspace:*",
-    "@lnwjud/process": "workspace:*",
-    "@lnwjud/project": "workspace:*",
-    "@lnwjud/search": "workspace:*",
-    "@lnwjud/shared": "workspace:*",
-    "@lnwjud/workspace": "workspace:*"
+    "@inwsus/domain": "workspace:*",
+    "@inwsus/codex": "workspace:*",
+    "@inwsus/audit": "workspace:*",
+    "@inwsus/filesystem": "workspace:*",
+    "@inwsus/git": "workspace:*",
+    "@inwsus/permissions": "workspace:*",
+    "@inwsus/process": "workspace:*",
+    "@inwsus/project": "workspace:*",
+    "@inwsus/search": "workspace:*",
+    "@inwsus/shared": "workspace:*",
+    "@inwsus/workspace": "workspace:*"
   },
   "scripts": {
     "test": "vitest run",

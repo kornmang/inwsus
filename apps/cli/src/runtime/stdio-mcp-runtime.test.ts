@@ -2,10 +2,10 @@ import { mkdtemp, readFile, readdir, realpath, rm, writeFile } from 'node:fs/pro
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { SqliteDatabase, SqliteSettingsRepository, SqliteWorkspaceRepository } from '@lnwjud/storage';
-import { permissionProfiles } from '@lnwjud/permissions';
+import { SqliteDatabase, SqliteSettingsRepository, SqliteWorkspaceRepository } from '@inwsus/storage';
+import { permissionProfiles } from '@inwsus/permissions';
 import { createStdioMcpRuntime } from './stdio-mcp-runtime.js';
-import { sharedActivityLeaseDirectoryPath } from '@lnwjud/mcp-server';
+import { sharedActivityLeaseDirectoryPath } from '@inwsus/mcp-server';
 
 const temporaryRoots: string[] = [];
 const TEST_CHECKPOINT_KEY = Buffer.alloc(32, 0x46).toString('base64');
@@ -19,35 +19,35 @@ const workspace = {
 };
 
 beforeEach(() => {
-  process.env.LNWJUD_CHECKPOINT_KEY_BASE64 = TEST_CHECKPOINT_KEY;
+  process.env.INWSUS_CHECKPOINT_KEY_BASE64 = TEST_CHECKPOINT_KEY;
 });
 
 afterEach(async () => {
   delete process.env.TUNNEL_CLIENT_PROFILE_DIR;
-  delete process.env.LNWJUD_CHECKPOINT_KEY_BASE64;
+  delete process.env.INWSUS_CHECKPOINT_KEY_BASE64;
   await Promise.all(temporaryRoots.splice(0).map((root) => rm(root, { recursive: true, force: true })));
 });
 
 describe('stdio MCP runtime', () => {
   it('does not overwrite the Desktop permission profile when using full tunnel access', async () => {
-    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-stdio-profile-'));
+    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'inwsus-stdio-profile-'));
     temporaryRoots.push(dataPath);
-    const database = new SqliteDatabase(path.join(dataPath, 'lnwjud.sqlite'));
+    const database = new SqliteDatabase(path.join(dataPath, 'inwsus.sqlite'));
     new SqliteSettingsRepository(database).set('permission_profile', 'balanced');
     database.close();
 
     const runtime = createStdioMcpRuntime(dataPath, workspace);
     await runtime.close();
 
-    const verificationDatabase = new SqliteDatabase(path.join(dataPath, 'lnwjud.sqlite'));
+    const verificationDatabase = new SqliteDatabase(path.join(dataPath, 'inwsus.sqlite'));
     const profile = new SqliteSettingsRepository(verificationDatabase).get('permission_profile');
     verificationDatabase.close();
     expect(profile).toBe('balanced');
   });
 
   it('owns and cleans the tunnel-profile activity snapshot for the direct STDIO runtime', async () => {
-    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-stdio-activity-'));
-    const profileDirectory = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-stdio-profile-'));
+    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'inwsus-stdio-activity-'));
+    const profileDirectory = await mkdtemp(path.join(os.tmpdir(), 'inwsus-stdio-profile-'));
     temporaryRoots.push(dataPath, profileDirectory);
     process.env.TUNNEL_CLIENT_PROFILE_DIR = profileDirectory;
 
@@ -70,16 +70,16 @@ describe('stdio MCP runtime', () => {
   });
 
   it('uses the selected stdio profile and hides broad workspaces when strict roots are enabled', async () => {
-    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-stdio-strict-data-'));
-    const allowedRaw = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-stdio-strict-allowed-'));
-    const outsideRaw = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-stdio-strict-outside-'));
+    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'inwsus-stdio-strict-data-'));
+    const allowedRaw = await mkdtemp(path.join(os.tmpdir(), 'inwsus-stdio-strict-allowed-'));
+    const outsideRaw = await mkdtemp(path.join(os.tmpdir(), 'inwsus-stdio-strict-outside-'));
     temporaryRoots.push(dataPath, allowedRaw, outsideRaw);
     const allowed = await realpath(allowedRaw);
     const outside = await realpath(outsideRaw);
     await writeFile(path.join(outside, 'outside.txt'), 'outside', 'utf8');
     const allowedWorkspace = { id: 'allowed-workspace', displayName: 'allowed', rootPath: allowed, realRootPath: allowed, createdAt: '2026-08-22T00:00:00.000Z' };
     const outsideWorkspace = { id: 'outside-workspace', displayName: 'outside', rootPath: outside, realRootPath: outside, createdAt: '2026-08-22T00:00:01.000Z' };
-    const database = new SqliteDatabase(path.join(dataPath, 'lnwjud.sqlite'));
+    const database = new SqliteDatabase(path.join(dataPath, 'inwsus.sqlite'));
     const repo = new SqliteWorkspaceRepository(database);
     await repo.insert(allowedWorkspace);
     await repo.insert(outsideWorkspace);
@@ -102,7 +102,7 @@ describe('stdio MCP runtime', () => {
   });
 
   it('keeps a shell background task alive across STDIO runtime replacement', async () => {
-    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-stdio-durable-'));
+    const dataPath = await mkdtemp(path.join(os.tmpdir(), 'inwsus-stdio-durable-'));
     temporaryRoots.push(dataPath);
     const firstRuntime = createStdioMcpRuntime(dataPath, workspace, true);
     const capabilities = firstRuntime.services.capabilities;

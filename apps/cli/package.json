@@ -1,20 +1,20 @@
 {
-  "name": "@lnwjud/cli",
+  "name": "@inwsus/cli",
   "version": "4.10.0",
   "private": true,
   "type": "module",
   "dependencies": {
-    "@lnwjud/application": "workspace:*",
-    "@lnwjud/audit": "workspace:*",
-    "@lnwjud/capabilities": "workspace:*",
-    "@lnwjud/codex": "workspace:*",
-    "@lnwjud/domain": "workspace:*",
-    "@lnwjud/extensions": "workspace:*",
-    "@lnwjud/mcp-server": "workspace:*",
-    "@lnwjud/permissions": "workspace:*",
-    "@lnwjud/shared": "workspace:*",
-    "@lnwjud/storage": "workspace:*",
-    "@lnwjud/workspace": "workspace:*"
+    "@inwsus/application": "workspace:*",
+    "@inwsus/audit": "workspace:*",
+    "@inwsus/capabilities": "workspace:*",
+    "@inwsus/codex": "workspace:*",
+    "@inwsus/domain": "workspace:*",
+    "@inwsus/extensions": "workspace:*",
+    "@inwsus/mcp-server": "workspace:*",
+    "@inwsus/permissions": "workspace:*",
+    "@inwsus/shared": "workspace:*",
+    "@inwsus/storage": "workspace:*",
+    "@inwsus/workspace": "workspace:*"
   },
   "scripts": {
     "test": "vitest run",

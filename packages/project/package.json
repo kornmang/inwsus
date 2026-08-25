@@ -1,5 +1,5 @@
 {
-  "name": "@lnwjud/project",
+  "name": "@inwsus/project",
   "version": "4.10.0",
   "private": true,
   "type": "module",
@@ -13,7 +13,7 @@
     }
   },
   "dependencies": {
-    "@lnwjud/domain": "workspace:*"
+    "@inwsus/domain": "workspace:*"
   },
   "scripts": {
     "test": "vitest run",

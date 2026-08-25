@@ -1,6 +1,6 @@
 import { realpath, stat } from 'node:fs/promises';
 import path from 'node:path';
-import { appError, err, ok, type Result } from '@lnwjud/domain';
+import { appError, err, ok, type Result } from '@inwsus/domain';
 import type { CapabilityBackend } from './local-capability-service.js';
 import { readCapabilityActiveWorkspaceRoot } from './task-ownership.js';
 

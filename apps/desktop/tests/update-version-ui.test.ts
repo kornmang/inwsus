@@ -13,8 +13,8 @@ describe('titlebar update notification', () => {
     expect(shell).toContain('onClick={props.onUpdateAction}');
     expect(shell).toContain("status.phase === 'ready'");
     expect(shell).toContain("status.phase === 'downloading'");
-    expect(app).toContain('window.lnwjud.onUpdateStatus');
-    expect(app).toContain('window.lnwjud.installUpdate()');
+    expect(app).toContain('window.inwsus.onUpdateStatus');
+    expect(app).toContain('window.inwsus.installUpdate()');
     expect(styles).toContain('.titlebar-version.update-ready');
     expect(styles).toContain('@keyframes update-ready-pulse');
   });

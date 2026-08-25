@@ -2,8 +2,8 @@ import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { realpath, stat } from 'node:fs/promises';
 import path from 'node:path';
-import { appError, err, ok, type Result } from '@lnwjud/domain';
-import type { FileActor } from '@lnwjud/application';
+import { appError, err, ok, type Result } from '@inwsus/domain';
+import type { FileActor } from '@inwsus/application';
 import { withReplacementRecoveryDetails } from './replacement-recovery.js';
 import type { McpApplicationServices } from './tools/tool-types.js';
 
@@ -13,7 +13,7 @@ import type { McpApplicationServices } from './tools/tool-types.js';
  * cannot become a filesystem-policy bypass.
  */
 
-const PROVIDER_ENV = 'LNWJUD_PDF_PROVIDER';
+const PROVIDER_ENV = 'INWSUS_PDF_PROVIDER';
 const PROVIDER_CANDIDATES = ['pdftotext.exe', 'pdftotext'];
 const MAX_DOCUMENT_BYTES = 64 * 1024 * 1024;
 const MAX_TEXT_CHARS = 2_000_000;

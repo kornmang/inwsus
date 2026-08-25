@@ -19,11 +19,11 @@ import {
   WINDOWS_CAPABILITY_BRIDGE_SHA256,
   WslCapabilityBackend,
   WslFilesystemCapabilityBackend,
-} from '@lnwjud/capabilities';
-import type { Result } from '@lnwjud/domain';
-import type { DashboardSnapshot } from '@lnwjud/ipc-contracts';
-import { DEFAULT_SHELL_SYNCHRONOUS_WAIT_SECONDS } from '@lnwjud/shared';
-import { allFixedDriveRoots } from '@lnwjud/workspace';
+} from '@inwsus/capabilities';
+import type { Result } from '@inwsus/domain';
+import type { DashboardSnapshot } from '@inwsus/ipc-contracts';
+import { DEFAULT_SHELL_SYNCHRONOUS_WAIT_SECONDS } from '@inwsus/shared';
+import { allFixedDriveRoots } from '@inwsus/workspace';
 
 export interface LocalCapabilityRuntime {
   readonly service: LocalCapabilityService;
@@ -39,7 +39,7 @@ export function createLocalCapabilityRuntime(
 ): LocalCapabilityRuntime {
   const capabilityRootsProvider = async (): Promise<readonly string[]> => {
     const workspaceRoots = await workspaceRootsProvider();
-    const configuredRoots = [...readCapabilityRoots(process.env.LNWJUD_CAPABILITY_ROOTS), ...configuredRootsProvider()];
+    const configuredRoots = [...readCapabilityRoots(process.env.INWSUS_CAPABILITY_ROOTS), ...configuredRootsProvider()];
     const roots = unrestricted
       ? [...workspaceRoots, ...configuredRoots, ...allFixedDriveRoots()]
       : [...workspaceRoots, ...configuredRoots];
@@ -141,7 +141,7 @@ function readCapabilityRoots(value: string | undefined): readonly string[] {
 }
 
 function capabilityBridgeScriptPath(): string {
-  const configured = process.env.LNWJUD_CAPABILITY_BRIDGE_SCRIPT;
+  const configured = process.env.INWSUS_CAPABILITY_BRIDGE_SCRIPT;
   if (configured !== undefined && configured.trim().length > 0) return path.resolve(configured);
   const resourcesPath = (process as NodeJS.Process & { resourcesPath?: string }).resourcesPath;
   const candidates = [
@@ -155,20 +155,20 @@ function capabilityBridgeScriptPath(): string {
 }
 
 function capabilityBridgeExpectedSha256(): string {
-  const configuredScript = process.env.LNWJUD_CAPABILITY_BRIDGE_SCRIPT;
+  const configuredScript = process.env.INWSUS_CAPABILITY_BRIDGE_SCRIPT;
   if (configuredScript === undefined || configuredScript.trim().length === 0) return WINDOWS_CAPABILITY_BRIDGE_SHA256;
-  const configuredHash = process.env.LNWJUD_CAPABILITY_BRIDGE_SHA256?.trim().toLowerCase();
+  const configuredHash = process.env.INWSUS_CAPABILITY_BRIDGE_SHA256?.trim().toLowerCase();
   return configuredHash !== undefined && /^[0-9a-f]{64}$/.test(configuredHash) ? configuredHash : 'missing';
 }
 
 function windowsOcrHelperPath(): string | undefined {
-  const configured = process.env.LNWJUD_WINDOWS_OCR_HELPER;
+  const configured = process.env.INWSUS_WINDOWS_OCR_HELPER;
   if (configured !== undefined && configured.trim().length > 0) return path.resolve(configured);
   const resourcesPath = (process as NodeJS.Process & { resourcesPath?: string }).resourcesPath;
   const candidates = [
-    path.resolve(process.cwd(), 'native', 'windows-ocr', 'bin', 'lnwjud-windows-ocr.exe'),
-    resourcesPath === undefined ? undefined : path.join(resourcesPath, 'windows-ocr', 'lnwjud-windows-ocr.exe'),
-    path.join(path.dirname(process.execPath), 'windows-ocr', 'lnwjud-windows-ocr.exe'),
+    path.resolve(process.cwd(), 'native', 'windows-ocr', 'bin', 'inwsus-windows-ocr.exe'),
+    resourcesPath === undefined ? undefined : path.join(resourcesPath, 'windows-ocr', 'inwsus-windows-ocr.exe'),
+    path.join(path.dirname(process.execPath), 'windows-ocr', 'inwsus-windows-ocr.exe'),
   ].filter((candidate): candidate is string => candidate !== undefined);
   return candidates.find((candidate) => existsSync(candidate));
 }

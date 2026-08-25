@@ -17,17 +17,17 @@ import {
   WorkspaceQueryService,
   type FileActor,
   type DoctorProbeResult,
-} from '@lnwjud/application';
-import { AuditService, type AuditEvent, type AuditEventRepository } from '@lnwjud/audit';
-import { CodexDiscovery, formatCodexDiscoveryError } from '@lnwjud/codex';
-import type { Result } from '@lnwjud/domain';
+} from '@inwsus/application';
+import { AuditService, type AuditEvent, type AuditEventRepository } from '@inwsus/audit';
+import { CodexDiscovery, formatCodexDiscoveryError } from '@inwsus/codex';
+import type { Result } from '@inwsus/domain';
 import {
   EXTENSIONS_SETTINGS_KEY,
   createLocalExtensionsService,
   parseExtensionsSettings,
   type ExtensionsService,
   type ExtensionsSettings,
-} from '@lnwjud/extensions';
+} from '@inwsus/extensions';
 import {
   ActivityTracker,
   composeActivitySinks,
@@ -38,10 +38,10 @@ import {
   type McpApplicationServices,
   type McpHttpServerOptions,
   type WorkspaceScope,
-} from '@lnwjud/mcp-server';
-import { permissionProfiles, type PermissionProfile, type PermissionProfileName } from '@lnwjud/permissions';
-import type { ManagedProcess } from '@lnwjud/process';
-import { PathExecutableResolver } from '@lnwjud/search';
+} from '@inwsus/mcp-server';
+import { permissionProfiles, type PermissionProfile, type PermissionProfileName } from '@inwsus/permissions';
+import type { ManagedProcess } from '@inwsus/process';
+import { PathExecutableResolver } from '@inwsus/search';
 import {
   ALLOW_AI_DELETE_SETTING_KEY,
   DESTRUCTIVE_AUTO_APPROVAL_SETTING_KEY,
@@ -79,10 +79,10 @@ import {
   serializeStringRecordSetting,
   loadCheckpointEncryptionKey,
   type DestructiveAutoApprovalPolicy,
-} from '@lnwjud/shared';
-import { AesGcmCheckpointCipher, SqliteAuditRepository, SqliteBackupService, SqliteCheckpointRepository, SqliteDatabase, SqliteSettingsRepository, SqliteWorkspaceRepository, type BackupReason, type BackupSummary } from '@lnwjud/storage';
-import type { Workspace } from '@lnwjud/workspace';
-import { isDriveRoot, machineRootPath, SecretPolicy, WorkspacePathGuard, WorkspaceService } from '@lnwjud/workspace';
+} from '@inwsus/shared';
+import { AesGcmCheckpointCipher, SqliteAuditRepository, SqliteBackupService, SqliteCheckpointRepository, SqliteDatabase, SqliteSettingsRepository, SqliteWorkspaceRepository, type BackupReason, type BackupSummary } from '@inwsus/storage';
+import type { Workspace } from '@inwsus/workspace';
+import { isDriveRoot, machineRootPath, SecretPolicy, WorkspacePathGuard, WorkspaceService } from '@inwsus/workspace';
 import {
   type AddWorkspaceRequest,
   type BackupSummary as IpcBackupSummary,
@@ -122,7 +122,7 @@ import {
   type UiLocale,
   type WorkLogEntry,
   type WorkspaceSummary,
-} from '@lnwjud/ipc-contracts';
+} from '@inwsus/ipc-contracts';
 import type { DesktopIpcServices } from './main.js';
 import { buildCapabilitySummary, createLocalCapabilityRuntime } from './capability-runtime.js';
 import { LogHub, classifyMcpWorkLogKind } from './log-hub.js';
@@ -160,7 +160,7 @@ export interface DesktopRuntimeOptions {
 }
 
 export function createDesktopRuntime(dataPath: string, options: DesktopRuntimeOptions = {}): DesktopRuntime {
-  const databaseFilename = path.join(dataPath, 'lnwjud.sqlite');
+  const databaseFilename = path.join(dataPath, 'inwsus.sqlite');
   const backupDirectory = path.join(dataPath, 'backups');
   const database = new SqliteDatabase(databaseFilename, { backupDirectory });
   const workspaceRepository = new SqliteWorkspaceRepository(database);
@@ -303,7 +303,7 @@ export function createDesktopRuntime(dataPath: string, options: DesktopRuntimeOp
       '[ERROR] MCP activity logging failed — ' + message,
     );
   });
-  const mcpPort = readMcpPort(process.env.LNWJUD_MCP_PORT ?? settingsRepository.get(USER_SETTING_KEYS.mcpHttpPort) ?? undefined);
+  const mcpPort = readMcpPort(process.env.INWSUS_MCP_PORT ?? settingsRepository.get(USER_SETTING_KEYS.mcpHttpPort) ?? undefined);
   const mcpLifecycle = new DesktopMcpLifecycle({
     createServerOptions: (): McpHttpServerOptions => ({
       port: mcpPort,
@@ -592,7 +592,7 @@ export function createDesktopRuntime(dataPath: string, options: DesktopRuntimeOp
     },
     listProcesses: async (): Promise<readonly ProcessSummary[]> => listTrackedProcesses(processService, trackedProcesses),
     startProcess: async (request: StartProcessRequest): Promise<ProcessSummary> => {
-      if (request.mode === 'fixture' && process.env.LNWJUD_E2E_FIXTURE !== '1') {
+      if (request.mode === 'fixture' && process.env.INWSUS_E2E_FIXTURE !== '1') {
         throw new Error('Fixture process is only available in the desktop test harness');
       }
       const started = request.mode === 'fixture'
@@ -738,7 +738,7 @@ export function createDesktopRuntime(dataPath: string, options: DesktopRuntimeOp
     },
     autoStartMcp: async (): Promise<McpConnectionStatus> => {
       await ensureMachineRoots();
-      const envWorkspacePath = process.env.LNWJUD_WORKSPACE?.trim();
+      const envWorkspacePath = process.env.INWSUS_WORKSPACE?.trim();
       if (envWorkspacePath !== undefined && envWorkspacePath.length > 0) {
         await ensureMachineRoots(envWorkspacePath);
         const resolvedPath = path.resolve(envWorkspacePath);
@@ -779,7 +779,7 @@ export function createDesktopRuntime(dataPath: string, options: DesktopRuntimeOp
 }
 
 function fixtureNodeExecutable(): string {
-  const executable = process.env.LNWJUD_E2E_NODE_PATH;
+  const executable = process.env.INWSUS_E2E_NODE_PATH;
   if (typeof executable !== 'string' || executable.trim().length === 0) {
     throw new Error('Fixture Node executable is not configured');
   }
@@ -952,10 +952,10 @@ function deriveAgentState(running: boolean, inFlightCount: number): AgentState {
 }
 
 function buildConnectionModes(httpUrl: string | null): ConnectionModes {
-  const packaged = process.env.LNWJUD_PACKAGED_EXECUTABLE?.trim();
+  const packaged = process.env.INWSUS_PACKAGED_EXECUTABLE?.trim();
   const stdioCommand = packaged && packaged.length > 0
     ? `${packaged} --mcp-stdio`
-    : 'lnwjud.exe --mcp-stdio';
+    : 'inwsus.exe --mcp-stdio';
   return { httpUrl, stdioCommand };
 }
 
@@ -971,7 +971,7 @@ function readUserSettings(settingsRepository: SqliteSettingsRepository, env: Nod
     capabilityRoots: parsePathList(settingsRepository.get(USER_SETTING_KEYS.capabilityRoots)),
     pdfProviderPath: settingsRepository.get(USER_SETTING_KEYS.pdfProviderPath)?.trim() ?? '',
     lspCommands: parseStringRecordSetting(settingsRepository.get(USER_SETTING_KEYS.lspCommands)),
-    mcpHttpPort: readMcpPort(env.LNWJUD_MCP_PORT ?? settingsRepository.get(USER_SETTING_KEYS.mcpHttpPort) ?? undefined),
+    mcpHttpPort: readMcpPort(env.INWSUS_MCP_PORT ?? settingsRepository.get(USER_SETTING_KEYS.mcpHttpPort) ?? undefined),
     codexToolsEnabled: parseBooleanSetting(settingsRepository.get(USER_SETTING_KEYS.codexToolsEnabled), DEFAULT_CODEX_TOOLS_ENABLED),
     updateAutoCheck: parseBooleanSetting(settingsRepository.get(USER_SETTING_KEYS.updateAutoCheck), true),
     updateCheckOnStartup: parseBooleanSetting(settingsRepository.get(USER_SETTING_KEYS.updateCheckOnStartup), true),
@@ -1076,7 +1076,7 @@ export const DEFAULT_MCP_HTTP_PORT = 18_765;
 function readMcpPort(value: string | undefined): number {
   if (value === undefined || value.trim().length === 0) return DEFAULT_MCP_HTTP_PORT;
   const port = Number(value);
-  if (!Number.isInteger(port) || port < 0 || port > 65_535) throw new Error('LNWJUD_MCP_PORT must be an integer from 0 to 65535');
+  if (!Number.isInteger(port) || port < 0 || port > 65_535) throw new Error('INWSUS_MCP_PORT must be an integer from 0 to 65535');
   if (port === 5_000) return DEFAULT_MCP_HTTP_PORT;
   return port;
 }

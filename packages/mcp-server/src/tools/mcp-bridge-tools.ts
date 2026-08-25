@@ -15,7 +15,7 @@ export function mcpBridgeTools(context: McpToolContext): McpToolDefinition[] {
   return [
     defineTool({
       name: 'mcp_list',
-      description: 'List local MCP servers discovered from Cursor, Claude Desktop, and lnwjud settings. This inspection is read-only and does not flatten child tools into the lnwjud catalog.',
+      description: 'List local MCP servers discovered from Cursor, Claude Desktop, and inwsus settings. This inspection is read-only and does not flatten child tools into the inwsus catalog.',
       ...readOnlyInspection,
       inputSchema: mcpListSchema,
       handler: async () => context.services.extensions === undefined

@@ -1,7 +1,7 @@
 import { readdir, readFile, stat } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { appError, err, ok, type Result } from '@lnwjud/domain';
+import { appError, err, ok, type Result } from '@inwsus/domain';
 import { isSkillRootEnabled } from './allowlist.js';
 import type { ExtensionsSettings, SkillContent, SkillSummary } from './types.js';
 

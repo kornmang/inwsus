@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import type { DashboardSnapshot, DestructiveDeletePolicy, PermissionProfileName, UiLocale, UserSettings } from '@lnwjud/ipc-contracts';
+import type { DashboardSnapshot, DestructiveDeletePolicy, PermissionProfileName, UiLocale, UserSettings } from '@inwsus/ipc-contracts';
 import { createTranslator } from '../../i18n/index.js';
 import { SettingSwitch } from './SettingSwitch.js';
 import { UserConfigPanel, type UserConfigSection } from './UserConfigPanel.js';
@@ -178,15 +178,15 @@ export function SettingsPage(props: SettingsPageProps): ReactElement {
 
   async function scheduleRestore(backupId: string): Promise<void> {
     const confirmed = window.confirm(props.locale === 'th'
-      ? 'กู้ฐานข้อมูลโปรแกรมจาก Backup ชุดนี้เมื่อเปิด lnwjud ครั้งถัดไป? ระบบจะสร้าง Backup ฉุกเฉินของฐานข้อมูลปัจจุบันก่อนแทนที่'
-      : 'Restore the application database from this backup on the next lnwjud start? An emergency backup of the current database will be created before replacement.');
+      ? 'กู้ฐานข้อมูลโปรแกรมจาก Backup ชุดนี้เมื่อเปิด inwsus ครั้งถัดไป? ระบบจะสร้าง Backup ฉุกเฉินของฐานข้อมูลปัจจุบันก่อนแทนที่'
+      : 'Restore the application database from this backup on the next inwsus start? An emergency backup of the current database will be created before replacement.');
     if (!confirmed) return;
     setBackupBusy(true);
     setBackupError(null);
     try {
       const restartRequired = await props.onScheduleRestoreBackup(backupId);
       setBackupMessage(restartRequired
-        ? (props.locale === 'th' ? 'เตรียม Restore แล้ว — ปิดและเปิด lnwjud ใหม่เพื่อใช้ข้อมูลชุดนี้' : 'Restore scheduled — restart lnwjud to apply it.')
+        ? (props.locale === 'th' ? 'เตรียม Restore แล้ว — ปิดและเปิด inwsus ใหม่เพื่อใช้ข้อมูลชุดนี้' : 'Restore scheduled — restart inwsus to apply it.')
         : (props.locale === 'th' ? 'เตรียม Restore แล้ว' : 'Restore scheduled.'));
     } catch (cause: unknown) {
       setBackupError(cause instanceof Error ? cause.message : 'Could not schedule restore');

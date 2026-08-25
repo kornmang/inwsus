@@ -1,7 +1,7 @@
 import { McpServer, type CallToolResult } from '@modelcontextprotocol/server';
-import type { DiagnosticLogger, FileActor } from '@lnwjud/application';
-import type { PermissionProfile } from '@lnwjud/permissions';
-import { APP_NAME, APP_VERSION, type DestructiveAutoApprovalPolicy } from '@lnwjud/shared';
+import type { DiagnosticLogger, FileActor } from '@inwsus/application';
+import type { PermissionProfile } from '@inwsus/permissions';
+import { APP_NAME, APP_VERSION, type DestructiveAutoApprovalPolicy } from '@inwsus/shared';
 import { readTraceContext, type ActivitySink, type ActivityTracker } from './activity-tracker.js';
 import { withProgressHeartbeat, type ProgressNotifyContext } from './progress-heartbeat.js';
 import { IncrementalVerifier } from './incremental-verifier.js';

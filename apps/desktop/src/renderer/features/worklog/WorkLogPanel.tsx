@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactElement } from 'react';
-import type { InFlightWorkItem, WorkLogEntry, WorkspaceSummary } from '@lnwjud/ipc-contracts';
+import type { InFlightWorkItem, WorkLogEntry, WorkspaceSummary } from '@inwsus/ipc-contracts';
 import { copyTextToClipboard } from '../../clipboard.js';
 import type { MessageKey } from '../../i18n/messages.js';
 

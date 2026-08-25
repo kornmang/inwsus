@@ -17,7 +17,7 @@ describe('MCP stdio transport', () => {
       diagnostics += chunk.toString('utf8');
     });
     const client = new Client(
-      { name: 'lnwjud-stdio-test-client', version: '0.1.0' },
+      { name: 'inwsus-stdio-test-client', version: '0.1.0' },
       { versionNegotiation: { mode: { pin: '2026-07-28' } } },
     );
 
@@ -29,7 +29,7 @@ describe('MCP stdio transport', () => {
       expect(first.tools.map((tool) => tool.name)).toHaveLength(212);
       expect(first.tools.some((tool) => tool.name.startsWith('codex_'))).toBe(false);
       expect(second.tools.map((tool) => tool.name)).toEqual(first.tools.map((tool) => tool.name));
-      expect(diagnostics).toContain('lnwjud-stdio-test-diagnostic');
+      expect(diagnostics).toContain('inwsus-stdio-test-diagnostic');
     } finally {
       await client.close();
     }

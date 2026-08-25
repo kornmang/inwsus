@@ -1,5 +1,5 @@
 {
-  "name": "@lnwjud/storage",
+  "name": "@inwsus/storage",
   "version": "4.10.0",
   "private": true,
   "type": "module",
@@ -13,9 +13,9 @@
     }
   },
   "dependencies": {
-    "@lnwjud/audit": "workspace:*",
-    "@lnwjud/domain": "workspace:*",
-    "@lnwjud/workspace": "workspace:*"
+    "@inwsus/audit": "workspace:*",
+    "@inwsus/domain": "workspace:*",
+    "@inwsus/workspace": "workspace:*"
   },
   "scripts": {
     "test": "vitest run",

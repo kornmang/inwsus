@@ -1,6 +1,6 @@
-import { err, ok, type Result } from '@lnwjud/domain';
-import type { CapabilityService } from '@lnwjud/capabilities';
-import type { ExtensionsService } from '@lnwjud/extensions';
+import { err, ok, type Result } from '@inwsus/domain';
+import type { CapabilityService } from '@inwsus/capabilities';
+import type { ExtensionsService } from '@inwsus/extensions';
 import type {
   ApplyPatchRequest,
   CheckpointService,
@@ -19,7 +19,7 @@ import type {
   WorkspaceIndexService,
   WorkspaceQueryService,
   WriteFileRequest,
-} from '@lnwjud/application';
+} from '@inwsus/application';
 import type { z } from 'zod';
 import type { ContextEconomyRuntime } from '../context-economy.js';
 

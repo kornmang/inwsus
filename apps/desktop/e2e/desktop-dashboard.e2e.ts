@@ -9,13 +9,13 @@ import { chromium, expect, test, type Page } from '@playwright/test';
 const desktopRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const mainEntry = path.join(desktopRoot, 'dist', 'main', 'main.js');
 const electronExecutable = path.join(desktopRoot, 'node_modules', 'electron', 'dist', 'electron.exe');
-const packagedExecutable = process.env.LNWJUD_PACKAGED_EXECUTABLE;
+const packagedExecutable = process.env.INWSUS_PACKAGED_EXECUTABLE;
 
 test('control center auto-starts MCP and supports project + doctor journey', async () => {
   test.setTimeout(90_000);
-  const fixtureRoot = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-dashboard-'));
+  const fixtureRoot = await mkdtemp(path.join(os.tmpdir(), 'inwsus-dashboard-'));
   const fixtureRealRoot = await realpath(fixtureRoot);
-  const dataRoot = await mkdtemp(path.join(os.tmpdir(), 'lnwjud-dashboard-data-'));
+  const dataRoot = await mkdtemp(path.join(os.tmpdir(), 'inwsus-dashboard-data-'));
   const gitCeilingDirectories = [path.dirname(fixtureRoot), path.dirname(fixtureRealRoot)].filter((value, index, values) => values.indexOf(value) === index).join(path.delimiter);
   await writeFile(path.join(fixtureRoot, '.env'), 'SECRET_NOT_FOR_UI=do-not-display\n', 'utf8');
   const devToolsPort = await findEphemeralPort();
@@ -29,11 +29,11 @@ test('control center auto-starts MCP and supports project + doctor journey', asy
     windowsHide: true,
     env: {
       ...process.env,
-      LNWJUD_DATA_PATH: dataRoot,
-      LNWJUD_WORKSPACE: fixtureRoot,
-      LNWJUD_UNRESTRICTED: '1',
-      LNWJUD_E2E_FIXTURE: '1',
-      LNWJUD_E2E_NODE_PATH: process.execPath,
+      INWSUS_DATA_PATH: dataRoot,
+      INWSUS_WORKSPACE: fixtureRoot,
+      INWSUS_UNRESTRICTED: '1',
+      INWSUS_E2E_FIXTURE: '1',
+      INWSUS_E2E_NODE_PATH: process.execPath,
       GIT_CEILING_DIRECTORIES: gitCeilingDirectories,
     },
   });

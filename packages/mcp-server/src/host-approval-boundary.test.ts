@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { ok } from '@lnwjud/domain';
-import { permissionProfiles, type PermissionProfile } from '@lnwjud/permissions';
-import { DEFAULT_DESTRUCTIVE_AUTO_APPROVAL_POLICY, type DestructiveAutoApprovalPolicy } from '@lnwjud/shared';
+import { ok } from '@inwsus/domain';
+import { permissionProfiles, type PermissionProfile } from '@inwsus/permissions';
+import { DEFAULT_DESTRUCTIVE_AUTO_APPROVAL_POLICY, type DestructiveAutoApprovalPolicy } from '@inwsus/shared';
 import { ToolRegistry, type McpApplicationServices, type WorkspaceScope } from './tool-registry.js';
 
 const actor = { clientId: 'host-approval', clientName: 'host-approval-test' };
@@ -42,8 +42,8 @@ describe('mandatory independent host approval', () => {
   });
 
   it.each([
-    ['scheduler run', 'scheduler', { action: 'run', task_name: 'LnwjudTask', userConfirmed: true }],
-    ['scheduler delete', 'scheduler', { action: 'delete', task_name: 'LnwjudTask', userConfirmed: true }],
+    ['scheduler run', 'scheduler', { action: 'run', task_name: 'InwsusTask', userConfirmed: true }],
+    ['scheduler delete', 'scheduler', { action: 'delete', task_name: 'InwsusTask', userConfirmed: true }],
     ['hook removal', 'hook_remove', { name: 'audit', userConfirmed: true }],
     ['plugin removal', 'plugin_remove', { name: 'safe-plugin', userConfirmed: true }],
     ['plugin enable', 'plugin_enable', { name: 'safe-plugin', userConfirmed: true }],

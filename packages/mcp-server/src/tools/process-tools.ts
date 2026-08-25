@@ -1,4 +1,4 @@
-import type { CommandSpec } from '@lnwjud/domain';
+import type { CommandSpec } from '@inwsus/domain';
 import { defineTool, missingService, type McpToolContext, type McpToolDefinition } from './tool-types.js';
 import { processHandleSchema, processLogsSchema, processStartSchema, processStopSchema, projectCommandSchema } from './schemas.js';
 
@@ -97,8 +97,8 @@ function projectCommandTools(context: McpToolContext): McpToolDefinition[] {
 }
 
 function readApprovedProjectCommand(input: unknown): CommandSpec | undefined {
-  if (typeof input !== 'object' || input === null || !('__lnwjudApprovedProjectCommand' in input)) return undefined;
-  const value = (input as { __lnwjudApprovedProjectCommand?: unknown }).__lnwjudApprovedProjectCommand;
+  if (typeof input !== 'object' || input === null || !('__inwsusApprovedProjectCommand' in input)) return undefined;
+  const value = (input as { __inwsusApprovedProjectCommand?: unknown }).__inwsusApprovedProjectCommand;
   if (typeof value !== 'object' || value === null) return undefined;
   const executable = (value as { executable?: unknown }).executable;
   const args = (value as { args?: unknown }).args;

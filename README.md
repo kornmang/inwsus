@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="assets/logo/logo-256x256.png" width="160" alt="lnwjud logo" />
+  <img src="assets/logo/logo-256x256.png" width="160" alt="inwsus logo" />
 </p>
 
-<h1 align="center">lnwjud</h1>
+<h1 align="center">inwsus</h1>
 
 <p align="center">
   <strong>Windows-first local AI-agent runtime and MCP gateway</strong><br />
@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/engasnm111/lnwjud/releases/latest"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/engasnm111/lnwjud" /></a>
+  <a href="https://github.com/engasnm111/inwsus/releases/latest"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/engasnm111/inwsus" /></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg" /></a>
   <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%20x64-0078D4" />
   <img alt="Node" src="https://img.shields.io/badge/Node.js-24.x-339933" />
@@ -19,9 +19,9 @@
 
 ---
 
-## What is lnwjud?
+## What is inwsus?
 
-lnwjud is a Windows-first local development gateway that exposes trusted local
+inwsus is a Windows-first local development gateway that exposes trusted local
 capabilities through the [Model Context Protocol (MCP)](https://modelcontextprotocol.io).
 It is designed for AI-assisted software development where the agent needs more
 than a text-only chat: it may need to inspect a repository, search code, edit
@@ -30,14 +30,14 @@ Windows UI state, automate a managed browser, work with WSL, or call an
 additional local MCP server.
 
 The runtime stays on the Windows machine. Local filesystem paths, processes,
-SQLite state, credentials, and capability backends are owned by lnwjud on that
+SQLite state, credentials, and capability backends are owned by inwsus on that
 machine. Remote AI clients only receive the MCP requests and results that travel
 through the connection mode you choose.
 
-For ChatGPT web and other supported OpenAI surfaces, lnwjud supports the official
+For ChatGPT web and other supported OpenAI surfaces, inwsus supports the official
 [OpenAI Secure MCP Tunnel](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels).
-The tunnel is outbound-only: `tunnel-client` runs beside lnwjud, reaches OpenAI
-over outbound HTTPS, forwards MCP work to lnwjud's Desktop loopback HTTP MCP,
+The tunnel is outbound-only: `tunnel-client` runs beside inwsus, reaches OpenAI
+over outbound HTTPS, forwards MCP work to inwsus's Desktop loopback HTTP MCP,
 and returns the response without opening a public inbound port on the Windows
 machine.
 
@@ -63,13 +63,13 @@ capabilities are additive.
 
 - Adds first-class project lifecycle management in the Desktop Projects page: active projects can be archived, archived projects can be restored, and project registrations can be removed with a two-step confirmation.
 - Treats archived workspaces as inactive trust-boundary entries: they remain in SQLite for management/history labels but are excluded from normal runtime/MCP workspace lookup until restored.
-- Makes project removal registration-only. Removing a project from lnwjud does **not** delete its directory, files, Git repository, audit history, or checkpoints; system/machine-root workspaces are protected from archive/remove actions.
+- Makes project removal registration-only. Removing a project from inwsus does **not** delete its directory, files, Git repository, audit history, or checkpoints; system/machine-root workspaces are protected from archive/remove actions.
 - Repairs selected-workspace state after archive/removal, stops the workspace index watcher, blocks lifecycle changes while tracked Desktop work is active, and restores an archived registration instead of creating a duplicate when the same path is added again.
 - Keeps Home/Git selectors limited to active workspaces while Projects, Work Log, and Live Logs retain the management/history context needed to understand archived workspaces.
 
 ### What's new in v4.9.0
 
-- Adds real multi-workspace / multi-session operation on one lnwjud installation: Desktop workspace selection no longer restarts the MCP listener, HTTP/STDIO sessions have stable ownership boundaries, and process/Codex/shell/WSL/task handles are isolated by session and workspace.
+- Adds real multi-workspace / multi-session operation on one inwsus installation: Desktop workspace selection no longer restarts the MCP listener, HTTP/STDIO sessions have stable ownership boundaries, and process/Codex/shell/WSL/task handles are isolated by session and workspace.
 - Makes destructive authorization request-scoped instead of relying on the Desktop-selected project, while keeping destructive auto-approval disabled by default, preserving Protected Critical Files, and supporting recoverable delete/restore.
 - Makes shared activity and durable runtime state safe for concurrent owners with per-owner activity leases, session-namespaced state, atomic writes, inter-process locking, shared plugin/worktree ledgers, and fail-closed checkpoint persistence under I/O contention.
 - Propagates workspace/session metadata through audit, Work Log, Live Logs, and process feeds; adds workspace/session filters, badges, scoped clear controls, and filtered log export without splitting global settings.
@@ -156,7 +156,7 @@ capabilities are additive.
   and confirmation gating.
 - Wave 6: read-only SQLite `db_inspect`/`db_query` (workspace-confined,
   single SELECT/PRAGMA), a minimal stdio LSP client behind
-  `lsp_diagnostics`/`lsp_rename` (`LNWJUD_LSP_<LANGUAGE>_COMMAND`), and a
+  `lsp_diagnostics`/`lsp_rename` (`INWSUS_LSP_<LANGUAGE>_COMMAND`), and a
   persisted Git worktree ownership ledger with `git_worktree_remove`.
   DAP stays contract-only by design.
 - Wave 7: PowerPoint `read`/`save_as` and read-only Outlook folder/message
@@ -246,7 +246,7 @@ Authoritative in-repository references:
 
 ## Security model you should understand before using it
 
-lnwjud is intentionally powerful. It is intended for a machine and workspace you
+inwsus is intentionally powerful. It is intended for a machine and workspace you
 trust, not as a sandbox for unknown code.
 
 - **Unrestricted mode is enabled by default for read/discovery compatibility.** Fixed local drives can be registered as machine roots and inspected by the local-agent runtime. Unrestricted mode does not widen the host-selected Active Project mutation boundary, bypass command policy, or bypass trusted host approval.
@@ -286,12 +286,12 @@ full scans can still inspect paths allowed by the active workspace/policy.
 
 | Client / use case | Connection | What must run on Windows | Notes |
 | --- | --- | --- | --- |
-| ChatGPT web developer-mode app | OpenAI Secure MCP Tunnel | `tunnel-client` + lnwjud Desktop | Private outbound-only path to the Desktop loopback HTTP MCP; no public MCP port |
-| Codex CLI or another local MCP host | Local stdio MCP | `lnwjud-mcp-stdio.cmd` | Lowest-overhead local MCP path |
-| Local MCP client / dashboard diagnostics | Loopback Streamable HTTP | lnwjud Desktop | Defaults to `http://127.0.0.1:18765/mcp`; actual URL is shown in the UI |
+| ChatGPT web developer-mode app | OpenAI Secure MCP Tunnel | `tunnel-client` + inwsus Desktop | Private outbound-only path to the Desktop loopback HTTP MCP; no public MCP port |
+| Codex CLI or another local MCP host | Local stdio MCP | `inwsus-mcp-stdio.cmd` | Lowest-overhead local MCP path |
+| Local MCP client / dashboard diagnostics | Loopback Streamable HTTP | inwsus Desktop | Defaults to `http://127.0.0.1:18765/mcp`; actual URL is shown in the UI |
 | Supported OpenAI API/Codex surface | Secure MCP Tunnel | `tunnel-client` + local MCP target | Tunnel association and Platform permissions apply |
 
-The desktop HTTP server starts automatically after lnwjud resolves a workspace.
+The desktop HTTP server starts automatically after inwsus resolves a workspace.
 If the preferred port `18765` is busy, the server can fall back to an ephemeral
 loopback port; always use the endpoint shown in the dashboard. The **Start
 Connection** button is useful after a manual stop, while **Stop Connection**
@@ -299,19 +299,19 @@ stops the current local HTTP listener.
 
 ## Quick start: install the Windows release
 
-### 1. Install lnwjud Desktop
+### 1. Install inwsus Desktop
 
 1. Download the latest published installer from
-   [GitHub Releases](https://github.com/engasnm111/lnwjud/releases/latest).
-   The Windows installer for the current version is `lnwjud-Setup-4.10.0.exe`; download the published artifact from GitHub Releases.
-2. Run the NSIS installer and launch **lnwjud Agent Control Center**.
-3. Add or select the project/workspace you want lnwjud to operate on.
+   [GitHub Releases](https://github.com/engasnm111/inwsus/releases/latest).
+   The Windows installer for the current version is `inwsus-Setup-4.10.0.exe`; download the published artifact from GitHub Releases.
+2. Run the NSIS installer and launch **inwsus Agent Control Center**.
+3. Add or select the project/workspace you want inwsus to operate on.
 4. Review **Settings** before attaching an AI client, especially Permission
    Profile and Unrestricted Mode.
 
 The graphical desktop app and the packaged **local STDIO** launcher are
 self-contained. The installer ships Electron for the dashboard and a private
-Node.js 24 runtime for `lnwjud-mcp-stdio.cmd`, so end users do **not** need a
+Node.js 24 runtime for `inwsus-mcp-stdio.cmd`, so end users do **not** need a
 separate system Node.js installation. Secure Tunnel uses the running Desktop HTTP
 MCP plus the separately downloaded official `tunnel-client.exe`; it does not
 spawn the packaged STDIO launcher.
@@ -324,7 +324,7 @@ requires **Tunnels Read + Manage**; running `tunnel-client` or selecting a
 tunnel while creating the ChatGPT app requires **Tunnels Read + Use**.
 
 1. Open [OpenAI Platform tunnel settings](https://platform.openai.com/settings/organization/tunnels).
-2. Create a tunnel named `lnwjud` and associate it with the Platform organization
+2. Create a tunnel named `inwsus` and associate it with the Platform organization
    that owns it and the ChatGPT workspace that should use it.
 3. Create a restricted runtime API key with **Tunnels Read + Use**.
 4. Open the official [openai/tunnel-client releases](https://github.com/openai/tunnel-client/releases)
@@ -332,9 +332,9 @@ tunnel while creating the ChatGPT app requires **Tunnels Read + Use**.
 
 #### Which tunnel-client ZIP should Windows users download?
 
-For lnwjud, use the **full tunnel-client** archive. Do not choose a
+For inwsus, use the **full tunnel-client** archive. Do not choose a
 `tunnel-client-runtime-*` or `tunnel-client-runtime-cloudflared-*` archive:
-the runtime variants are intended for run-only deployments, while lnwjud's Setup
+the runtime variants are intended for run-only deployments, while inwsus's Setup
 Wizard uses onboarding/profile-management commands such as `init` and
 `doctor` in addition to `run`.
 
@@ -352,42 +352,42 @@ tunnel-client-v0.0.12-windows-amd64.zip
 
 Use `tunnel-client-v0.0.12-windows-arm64.zip` only on Windows ARM64 devices.
 Do not download `Source code (zip)`, SPDX/license files, or the runtime-only
-archives for this lnwjud Setup Wizard flow. After extracting the ZIP, keep
+archives for this inwsus Setup Wizard flow. After extracting the ZIP, keep
 `tunnel-client.exe` in a stable folder, for example
 `C:\Tools\tunnel-client\tunnel-client.exe`.
 
-5. Open **lnwjud → Settings → OpenAI Secure MCP Tunnel**. Save the runtime API
+5. Open **inwsus → Settings → OpenAI Secure MCP Tunnel**. Save the runtime API
    key, browse to the extracted `tunnel-client.exe`, paste the tunnel ID, and
    click **Configure Tunnel**. This is the recommended end-user path; no manual
    PowerShell `init` is required.
-6. The Setup Wizard starts or reuses lnwjud's **Desktop loopback HTTP MCP**,
-   creates or repairs `%APPDATA%/tunnel-client/lnwjud.yaml` with
+6. The Setup Wizard starts or reuses inwsus's **Desktop loopback HTTP MCP**,
+   creates or repairs `%APPDATA%/tunnel-client/inwsus.yaml` with
    `sample_mcp_remote_no_auth`, and runs `tunnel-client doctor`. Secure
-   Tunnel no longer spawns a separate headless lnwjud MCP runtime, so the
+   Tunnel no longer spawns a separate headless inwsus MCP runtime, so the
    Desktop-selected **Active Project** and native exact-action approval dialog
    remain authoritative for remote ChatGPT calls.
 
-If you intentionally need to initialize the profile by hand, keep lnwjud running
-and copy the **Local MCP endpoint** shown by lnwjud (it is loopback-only and ends
+If you intentionally need to initialize the profile by hand, keep inwsus running
+and copy the **Local MCP endpoint** shown by inwsus (it is loopback-only and ends
 in `/mcp`):
 
 ```powershell
 $env:CONTROL_PLANE_API_KEY = '<runtime-key-for-this-session>'
 $tc = 'C:/path/to/tunnel-client.exe'
 $profileDir = Join-Path $env:APPDATA 'tunnel-client'
-$mcpEndpoint = 'http://127.0.0.1:<port>/mcp' # copy the actual endpoint shown by lnwjud
+$mcpEndpoint = 'http://127.0.0.1:<port>/mcp' # copy the actual endpoint shown by inwsus
 
 & $tc init `
   --force `
   --sample sample_mcp_remote_no_auth `
-  --profile lnwjud `
+  --profile inwsus `
   --profile-dir $profileDir `
   --tunnel-id 'tunnel_0123456789abcdef0123456789abcdef' `
   --control-plane-api-key-ref 'env:CONTROL_PLANE_API_KEY' `
   --health-listen-addr '127.0.0.1:0' `
   --mcp-server-url $mcpEndpoint
 
-& $tc doctor --profile lnwjud --profile-dir $profileDir --explain
+& $tc doctor --profile inwsus --profile-dir $profileDir --explain
 Remove-Item Env:CONTROL_PLANE_API_KEY -ErrorAction SilentlyContinue
 ```
 
@@ -395,27 +395,27 @@ Remove-Item Env:CONTROL_PLANE_API_KEY -ErrorAction SilentlyContinue
 
 In **Settings → OpenAI Secure MCP Tunnel**:
 
-1. Save the runtime API key. lnwjud encrypts it locally with Windows DPAPI. The
+1. Save the runtime API key. inwsus encrypts it locally with Windows DPAPI. The
    generated tunnel profile stores only the reference `env:CONTROL_PLANE_API_KEY`,
    never the literal runtime key.
 2. Browse to and save the path to `tunnel-client.exe`.
 3. Paste the OpenAI tunnel ID and click **Configure Tunnel**. The wizard replaces
-   or repairs the lnwjud-owned profile so `mcp.server_urls` points to the Desktop
+   or repairs the inwsus-owned profile so `mcp.server_urls` points to the Desktop
    loopback MCP endpoint and `control_plane.api_key` is the environment reference.
 4. After Configure Tunnel succeeds, confirm
-   `%APPDATA%/tunnel-client/lnwjud.yaml` exists and click **Start Tunnel**.
+   `%APPDATA%/tunnel-client/inwsus.yaml` exists and click **Start Tunnel**.
 5. Open **Live Logs** or run **Doctor** if the tunnel fails to start.
 
 The desktop tunnel controller repairs stale stdio profiles into Desktop HTTP
 profiles before Doctor/Start, runs `tunnel-client doctor` before launch, starts
 the client with a seven-day MCP connection ceiling, detects externally started
-lnwjud tunnel processes, and performs bounded reconnect attempts after unexpected
+inwsus tunnel processes, and performs bounded reconnect attempts after unexpected
 exits. If an older profile contains `commands:`, a build-machine path such as
-`D:/lnwjud/lnwjud-mcp-stdio.cmd`, or a literal `control_plane.api_key`,
+`D:/inwsus/inwsus-mcp-stdio.cmd`, or a literal `control_plane.api_key`,
 Configure Tunnel/Start Tunnel repairs it to the current Desktop loopback `/mcp`
 endpoint and the `env:CONTROL_PLANE_API_KEY` secret reference before Doctor/Run.
 
-### 4. Add lnwjud to ChatGPT
+### 4. Add inwsus to ChatGPT
 
 For current ChatGPT developer-mode MCP testing, use the official
 [Connect and test your plugin](https://developers.openai.com/plugins/deploy/connect-chatgpt)
@@ -426,7 +426,7 @@ The stable flow is:
    and workspace policy allow it.
 2. Open [ChatGPT Plugins](https://chatgpt.com/plugins) and select the plus button.
 3. Enter a name/description, choose **Tunnel** under Connection, and select the
-   associated `lnwjud` tunnel or enter its `tunnel_id`.
+   associated `inwsus` tunnel or enter its `tunnel_id`.
 4. Create the connection and review the discovered tools and metadata.
 5. Confirm that the default runtime exposes **212 tools** (or **218** when Codex delegation is explicitly enabled) and run a read-only
    smoke test before trying writes.
@@ -434,21 +434,21 @@ The stable flow is:
 Example smoke test:
 
 ```text
-Use lnwjud to list registered workspaces, report Git status for the selected project, and summarize the top-level project tree. Do not modify anything.
+Use inwsus to list registered workspaces, report Git status for the selected project, and summarize the top-level project tree. Do not modify anything.
 ```
 
 ## Quick start: install the Windows release (ภาษาไทย)
 
-ส่วนนี้สำหรับผู้ใช้ Windows ที่ต้องการติดตั้ง lnwjud แล้วเชื่อมกับ ChatGPT ผ่าน
+ส่วนนี้สำหรับผู้ใช้ Windows ที่ต้องการติดตั้ง inwsus แล้วเชื่อมกับ ChatGPT ผ่าน
 OpenAI Secure MCP Tunnel แบบง่ายที่สุด โดย **ไม่ต้องติดตั้ง Node.js เพิ่ม**
-Secure Tunnel จะส่งงานเข้าที่ Desktop loopback HTTP MCP ของ lnwjud โดยตรง
+Secure Tunnel จะส่งงานเข้าที่ Desktop loopback HTTP MCP ของ inwsus โดยตรง
 ส่วน private Node runtime ที่มากับตัวติดตั้งยังคงใช้สำหรับ local stdio เช่น Codex CLI
 
-### 1. ติดตั้ง lnwjud
+### 1. ติดตั้ง inwsus
 
-1. ดาวน์โหลด `lnwjud-Setup-4.10.0.exe` จากหน้า GitHub Releases ของ lnwjud
+1. ดาวน์โหลด `inwsus-Setup-4.10.0.exe` จากหน้า GitHub Releases ของ inwsus
 2. เปิดตัวติดตั้งและติดตั้งตามปกติ
-3. เปิด **lnwjud Agent Control Center**
+3. เปิด **inwsus Agent Control Center**
 4. เพิ่มหรือเลือก Project/Workspace ที่ต้องการให้ ChatGPT ทำงานด้วย
 
 ### 2. สร้าง OpenAI Tunnel และ Runtime API key
@@ -484,7 +484,7 @@ tunnel-client-v0.0.12-windows-arm64.zip
 
 **ไม่ต้องโหลด** `tunnel-client-runtime-*`,
 `tunnel-client-runtime-cloudflared-*`, `Source code (zip)`, ไฟล์ license,
-หรือ SPDX สำหรับการตั้งค่า lnwjud แบบปกติ เพราะ Setup Wizard ต้องใช้ full
+หรือ SPDX สำหรับการตั้งค่า inwsus แบบปกติ เพราะ Setup Wizard ต้องใช้ full
 `tunnel-client` ที่มีคำสั่ง `init`, `doctor` และ `run` ครบ
 
 แตก ZIP แล้วเก็บ `tunnel-client.exe` ไว้ในตำแหน่งถาวร เช่น:
@@ -493,7 +493,7 @@ tunnel-client-v0.0.12-windows-arm64.zip
 C:\Tools\tunnel-client\tunnel-client.exe
 ```
 
-### 4. ตั้งค่า Tunnel ใน lnwjud
+### 4. ตั้งค่า Tunnel ใน inwsus
 
 เปิด **Settings → OpenAI Secure MCP Tunnel** แล้วทำตามลำดับนี้:
 
@@ -504,14 +504,14 @@ C:\Tools\tunnel-client\tunnel-client.exe
 5. รอให้ Configure/Doctor ผ่าน
 6. กด **Start Tunnel**
 
-ตรงนี้ **ไม่ต้องพิมพ์ path ของ `lnwjud-mcp-stdio.cmd` เอง** โปรแกรมจะ
+ตรงนี้ **ไม่ต้องพิมพ์ path ของ `inwsus-mcp-stdio.cmd` เอง** โปรแกรมจะ
 เปิด/ใช้ Local MCP ของ Desktop แล้วสร้างหรือซ่อม
-`%APPDATA%\tunnel-client\lnwjud.yaml` ให้ `mcp.server_urls` ชี้ไปที่
+`%APPDATA%\tunnel-client\inwsus.yaml` ให้ `mcp.server_urls` ชี้ไปที่
 `http://127.0.0.1:<port>/mcp` อัตโนมัติ และบังคับให้
 `control_plane.api_key` เป็น `env:CONTROL_PLANE_API_KEY` แทนการเก็บ key จริงใน YAML
 
 ถ้าเคยใช้รุ่นเก่าแล้ว YAML ค้าง `commands:`, path เช่น
-`D:/lnwjud/lnwjud-mcp-stdio.cmd` / `E:/lnwjud/lnwjud-mcp-stdio.cmd` หรือมี
+`D:/inwsus/inwsus-mcp-stdio.cmd` / `E:/inwsus/inwsus-mcp-stdio.cmd` หรือมี
 Runtime API key จริงอยู่ใน `control_plane.api_key` ให้กด **Configure Tunnel**
 ใหม่ โปรแกรมจะเปลี่ยน profile เป็น Desktop HTTP และ secret reference ให้เอง
 
@@ -521,8 +521,8 @@ Runtime API key จริงอยู่ใน `control_plane.api_key` ให้
 2. เปิดหน้า Plugins/Connections ของ ChatGPT แล้วกดเพิ่ม connection
 3. เลือก Connection แบบ **Tunnel**
 4. เลือก tunnel ที่สร้างไว้ หรือใส่ `tunnel_id`
-5. สร้าง connection แล้วตรวจว่าเห็น tools ของ lnwjud
-6. ถ้าเพิ่งแก้ Tunnel หรืออัปเดต lnwjud ให้กด Refresh connector ก่อน ถ้ายัง stale
+5. สร้าง connection แล้วตรวจว่าเห็น tools ของ inwsus
+6. ถ้าเพิ่งแก้ Tunnel หรืออัปเดต inwsus ให้กด Refresh connector ก่อน ถ้ายัง stale
    ค่อยเปิดแชทใหม่
 
 ### 6. ทดสอบแบบ Read-only ก่อน
@@ -530,11 +530,11 @@ Runtime API key จริงอยู่ใน `control_plane.api_key` ให้
 ลองสั่ง ChatGPT ก่อนด้วยงานที่ไม่แก้ไฟล์ เช่น:
 
 ```text
-Use lnwjud to list registered workspaces, show Git status for the selected project, and summarize the top-level project tree. Do not modify anything.
+Use inwsus to list registered workspaces, show Git status for the selected project, and summarize the top-level project tree. Do not modify anything.
 ```
 
 ถ้าคำสั่งนี้ทำงานได้ แปลว่า ChatGPT → OpenAI Tunnel → tunnel-client →
-lnwjud Desktop HTTP MCP เชื่อมต่อครบแล้ว จากนั้นจึงค่อยลองงานเขียนไฟล์หรือ
+inwsus Desktop HTTP MCP เชื่อมต่อครบแล้ว จากนั้นจึงค่อยลองงานเขียนไฟล์หรือ
 คำสั่งที่ต้องมี native approval ใน Desktop
 
 ## Quick start: build from source
@@ -550,8 +550,8 @@ Requirements for source development:
 - `rg` (ripgrep) recommended.
 
 ```powershell
-git clone https://github.com/engasnm111/lnwjud.git
-Set-Location .\lnwjud
+git clone https://github.com/engasnm111/inwsus.git
+Set-Location .\inwsus
 corepack enable
 corepack pnpm@10.15.0 install --frozen-lockfile
 Copy-Item .env.example .env
@@ -574,24 +574,24 @@ The generated x64 NSIS installer is written under
 
 ## Run in the Windows system tray
 
-Closing the main lnwjud window hides it instead of shutting down the desktop
+Closing the main inwsus window hides it instead of shutting down the desktop
 runtime. The MCP listener, Live Logs, tunnel controller, and background services
-continue running and the lnwjud icon remains in the Windows notification area.
+continue running and the inwsus icon remains in the Windows notification area.
 Use the tray menu to reopen the dashboard, check for updates, or quit the process
 completely.
 
 ## The packaged stdio launcher
 
-`lnwjud.exe` is the graphical desktop entrypoint. **Direct local STDIO clients**
+`inwsus.exe` is the graphical desktop entrypoint. **Direct local STDIO clients**
 such as Codex CLI should use the generated launcher below. Secure MCP Tunnel does
 not use this launcher; it forwards to the Desktop loopback HTTP MCP:
 
 ```text
-lnwjud-mcp-stdio.cmd --workspace D:\projects\my-app
+inwsus-mcp-stdio.cmd --workspace D:\projects\my-app
 ```
 
-The build generates `lnwjud-mcp-stdio.cjs`, `lnwjud-mcp-stdio.cmd`, and a
-private `lnwjud-node.exe` copied from the pinned Node.js 24 build runtime.
+The build generates `inwsus-mcp-stdio.cjs`, `inwsus-mcp-stdio.cmd`, and a
+private `inwsus-node.exe` copied from the pinned Node.js 24 build runtime.
 These generated runtime files are intentionally ignored by Git. The Windows
 package copies them next to the installed application and into its resources
 directory, and the launcher uses only this bundled runtime rather than a system
@@ -602,10 +602,10 @@ Node installation or `PATH`.
 The packaged stdio launcher keeps the historical behavior by default: the permission profile is `full` and machine-drive roots are registered as before. You can opt into a narrower policy per launch:
 
 ```text
-lnwjud-mcp-stdio.cmd --workspace D:\\projects\\my-app --profile safe --strict-roots --allowed-root D:\\projects\\my-app
+inwsus-mcp-stdio.cmd --workspace D:\\projects\\my-app --profile safe --strict-roots --allowed-root D:\\projects\\my-app
 ```
 
-Supported direct-stdio profiles are `safe`, `balanced`, `full`, and `custom`. Equivalent environment variables are `LNWJUD_STDIO_PROFILE`, `LNWJUD_STRICT_ROOTS`, and semicolon-separated `LNWJUD_ALLOWED_ROOTS`. OpenAI Secure MCP Tunnel does not use the headless stdio policy; it uses the running Desktop MCP permission profile, Active Project, and native host approval. In strict-root mode lnwjud skips automatic whole-drive registration and exposes only explicitly allowed canonical roots; absolute paths outside those roots fail closed. Existing realpath/reparse-point and secret-policy checks still apply. Strict roots are a filesystem/capability boundary, not an OS sandbox: spawned programs still run under the Windows user token.
+Supported direct-stdio profiles are `safe`, `balanced`, `full`, and `custom`. Equivalent environment variables are `INWSUS_STDIO_PROFILE`, `INWSUS_STRICT_ROOTS`, and semicolon-separated `INWSUS_ALLOWED_ROOTS`. OpenAI Secure MCP Tunnel does not use the headless stdio policy; it uses the running Desktop MCP permission profile, Active Project, and native host approval. In strict-root mode inwsus skips automatic whole-drive registration and exposes only explicitly allowed canonical roots; absolute paths outside those roots fail closed. Existing realpath/reparse-point and secret-policy checks still apply. Strict roots are a filesystem/capability boundary, not an OS sandbox: spawned programs still run under the Windows user token.
 
 The **AI Destructive Actions** setting is now deliberately narrow. Only the exact `delete_file` operation can be scoped auto-approved, and only when its saved policy is enabled, the target matches the host-selected Active Project, Recovery Trash is available, and the target is not a protected critical path, workspace root, non-empty directory, unsafe/broad pattern, outside path, or reparse escape. Git deletion/discard, shell/WSL deletion, process/project/Codex execution, child MCP calls, Office/native mutations, and remote mutations are never toggle-auto-approved. Approval-required actions need explicit chat confirmation plus independent trusted host exact-action approval; the Desktop dialog is cancel-first, while standalone/headless runtimes without a trusted provider fail closed. Recovery Center derives and displays the local Recovery Trash path from the configured data root (`<dataRoot>/recovery-trash`). Approved arbitrary commands/scripts remain opaque execution rather than an OS sandbox and are not automatically recoverable through Recovery Trash.
 
@@ -620,7 +620,7 @@ The **AI Destructive Actions** setting is now deliberately narrow. Only the exac
 ### Optional dependencies
 
 - Codex CLI for `codex_*` delegation tools.
-- `rg` for fast code search; lnwjud has bounded fallbacks where supported.
+- `rg` for fast code search; inwsus has bounded fallbacks where supported.
 - Chrome/Chromium for managed CDP/browser capabilities.
 - WSL for `wsl_exec` and `wsl_fs`.
 - Microsoft Office applications for Office automation actions that require the
@@ -638,7 +638,7 @@ The **AI Destructive Actions** setting is now deliberately narrow. Only the exac
 - ChatGPT Developer mode access according to the target plan/workspace policy.
 - Outbound HTTPS from the Windows host to `api.openai.com:443` (or the documented
   mTLS control-plane host when configured).
-- No inbound firewall rule or public lnwjud MCP port is required for Secure MCP
+- No inbound firewall rule or public inwsus MCP port is required for Secure MCP
   Tunnel.
 
 ## Install from source
@@ -646,8 +646,8 @@ The **AI Destructive Actions** setting is now deliberately narrow. Only the exac
 ### Clone and install dependencies
 
 ```powershell
-git clone https://github.com/engasnm111/lnwjud.git
-Set-Location .\lnwjud
+git clone https://github.com/engasnm111/inwsus.git
+Set-Location .\inwsus
 corepack pnpm@10.15.0 install --frozen-lockfile
 ```
 
@@ -665,7 +665,7 @@ Copy-Item .env.example .env
 One command from the repository root:
 
 ```powershell
-Set-Location .\lnwjud
+Set-Location .\inwsus
 corepack pnpm@10.15.0 desktop
 ```
 
@@ -677,32 +677,32 @@ records, loopback MCP lifecycle, and Secure Tunnel controls.
 Optional environment:
 
 ```powershell
-$env:LNWJUD_DATA_PATH = "$env:LOCALAPPDATA\lnwjud"
-$env:LNWJUD_WORKSPACE = "D:\projects\my-app"
+$env:INWSUS_DATA_PATH = "$env:LOCALAPPDATA\inwsus"
+$env:INWSUS_WORKSPACE = "D:\projects\my-app"
 corepack pnpm@10.15.0 desktop
 ```
 
-Use the same `LNWJUD_DATA_PATH` for desktop UI and the packaged stdio launcher
+Use the same `INWSUS_DATA_PATH` for desktop UI and the packaged stdio launcher
 so ChatGPT tool activity appears in the Work Log. The launcher is the same
 direct MCP entrypoint used by the Codex/tunnel integration.
 
 ### Build a Windows installer
 
 ```powershell
-Set-Location .\lnwjud
+Set-Location .\inwsus
 corepack pnpm@10.15.0 package:windows
 ```
 
 The x64 NSIS installer is written to:
 
 ```text
-apps/desktop/dist/installers/lnwjud-Setup-4.10.0.exe
+apps/desktop/dist/installers/inwsus-Setup-4.10.0.exe
 ```
 
 The installer is per-user by default. A common installed executable path is:
 
 ```text
-C:/Users/<WindowsUser>/AppData/Local/Programs/lnwjud/lnwjud.exe
+C:/Users/<WindowsUser>/AppData/Local/Programs/inwsus/inwsus.exe
 ```
 
 Always use the path shown by the installed shortcut or Get-Command.
@@ -711,7 +711,7 @@ Always use the path shown by the installed shortcut or Get-Command.
 
 ### Add a workspace
 
-1. Start lnwjud (`pnpm desktop` or the installed app).
+1. Start inwsus (`pnpm desktop` or the installed app).
 2. On Home or Projects, add the project directory path.
 3. The selected project is persisted; switching projects restarts MCP automatically.
 4. Desktop MCP uses the selected Permission profile; stdio/tunnel MCP uses its separately configured STDIO profile (backward-compatible default: `full`) and optional Strict Roots.
@@ -747,14 +747,14 @@ exact-action approval. Disk format, shutdown, and reboot stay hard-blocked.
 ### Optional local capability roots
 
 The local desktop capability layer can receive additional roots through the
-semicolon-separated environment variable LNWJUD_CAPABILITY_ROOTS:
+semicolon-separated environment variable INWSUS_CAPABILITY_ROOTS:
 
 ```powershell
-$env:LNWJUD_CAPABILITY_ROOTS = 'E:/work;E:/projects'
+$env:INWSUS_CAPABILITY_ROOTS = 'E:/work;E:/projects'
 ```
 
 In the default unrestricted mode, all fixed-drive roots are available to local
-capability read/discovery tools. `LNWJUD_CAPABILITY_ROOTS` is optional extra
+capability read/discovery tools. `INWSUS_CAPABILITY_ROOTS` is optional extra
 configuration; it is not a visibility ignore list. Core file tools still require
 a registered workspace, and mutation-capable tools still require the exact
 Active Project and normal confirmation/host-approval boundaries.
@@ -783,13 +783,13 @@ Local Codex clients can use stdio directly; they do not need Secure MCP Tunnel.
 Point the entry at the stdio-capable installed executable:
 
 ```powershell
-codex mcp add lnwjud -- "$env:LOCALAPPDATA\Programs\lnwjud\lnwjud-mcp-stdio.cmd" --workspace E:\lnwjud
+codex mcp add inwsus -- "$env:LOCALAPPDATA\Programs\inwsus\inwsus-mcp-stdio.cmd" --workspace E:\inwsus
 codex mcp list
 ```
 
-The stdio launcher is `lnwjud-mcp-stdio.cmd` shipped next to the desktop app
-(not the GUI `lnwjud.exe`). It exposes the full tool catalog, including
-skills/MCP bridge meta-tools, and uses the bundled private `lnwjud-node.exe`;
+The stdio launcher is `inwsus-mcp-stdio.cmd` shipped next to the desktop app
+(not the GUI `inwsus.exe`). It exposes the full tool catalog, including
+skills/MCP bridge meta-tools, and uses the bundled private `inwsus-node.exe`;
 no separate Node.js installation is required for an installed release.
 
 The same server can be added in ChatGPT desktop or an IDE extension under
@@ -799,9 +799,9 @@ In Codex, /mcp lists active servers.
 Example user-scoped or trusted project-scoped config.toml:
 
 ```toml
-[mcp_servers.lnwjud]
-command = "C:/Users/<WindowsUser>/AppData/Local/Programs/lnwjud/lnwjud-mcp-stdio.cmd"
-args = ["--workspace", "E:/lnwjud"]
+[mcp_servers.inwsus]
+command = "C:/Users/<WindowsUser>/AppData/Local/Programs/inwsus/inwsus-mcp-stdio.cmd"
+args = ["--workspace", "E:/inwsus"]
 startup_timeout_sec = 20
 tool_timeout_sec = 3600
 ```
@@ -812,7 +812,7 @@ belongs in this local MCP entry.
 ## Create an OpenAI Secure MCP Tunnel
 
 This is the path that lets ChatGPT web, which cannot read local files or local
-Codex configuration, call lnwjud.
+Codex configuration, call inwsus.
 
 ### 1. Create or select a Platform tunnel
 
@@ -863,15 +863,15 @@ automatically. Manual initialization is still supported when you need it:
 
 ```powershell
 $env:CONTROL_PLANE_API_KEY = '<runtime-key-for-this-session>'
-$mcpEndpoint = 'http://127.0.0.1:<port>/mcp' # copy the actual Local MCP endpoint shown by lnwjud
+$mcpEndpoint = 'http://127.0.0.1:<port>/mcp' # copy the actual Local MCP endpoint shown by inwsus
 
-& $tc init --force --sample sample_mcp_remote_no_auth --profile lnwjud --tunnel-id 'tunnel_0123456789abcdef0123456789abcdef' --control-plane-api-key-ref 'env:CONTROL_PLANE_API_KEY' --health-listen-addr '127.0.0.1:0' --mcp-server-url $mcpEndpoint
+& $tc init --force --sample sample_mcp_remote_no_auth --profile inwsus --tunnel-id 'tunnel_0123456789abcdef0123456789abcdef' --control-plane-api-key-ref 'env:CONTROL_PLANE_API_KEY' --health-listen-addr '127.0.0.1:0' --mcp-server-url $mcpEndpoint
 ```
 
 The Secure Tunnel profile stores a loopback HTTP MCP URL and an
 `env:CONTROL_PLANE_API_KEY` secret reference instead of a source-tree command or
 literal runtime key. Direct local stdio hosts can still use
-`lnwjud-mcp-stdio.cmd`, but the OpenAI Secure Tunnel path intentionally goes
+`inwsus-mcp-stdio.cmd`, but the OpenAI Secure Tunnel path intentionally goes
 through the Desktop HTTP runtime so Active Project selection and native approval
 stay host-owned.
 
@@ -885,25 +885,25 @@ Manual session (still supported):
 ```powershell
 $env:CONTROL_PLANE_API_KEY = '<runtime-key-for-this-session>'
 $env:MCP_CONNECTION_MAX_TTL = '168h0m0s'
-& $tc doctor --profile lnwjud --explain
+& $tc doctor --profile inwsus --explain
 if ($LASTEXITCODE -ne 0) { throw 'tunnel-client doctor failed' }
-& $tc run --profile lnwjud --mcp.connection-max-ttl 168h0m0s
+& $tc run --profile inwsus --mcp.connection-max-ttl 168h0m0s
 ```
 
-Keep lnwjud and `tunnel-client` running while ChatGPT is using the connector.
-The tunnel forwards to lnwjud's Desktop loopback HTTP MCP, so Work Log entries,
+Keep inwsus and `tunnel-client` running while ChatGPT is using the connector.
+The tunnel forwards to inwsus's Desktop loopback HTTP MCP, so Work Log entries,
 Active Project selection, and native approval remain in the same Desktop runtime.
 
 ### 6. Verify the tunnel target locally
 
 ```powershell
 Test-Path -LiteralPath $tc
-Get-Content (Join-Path $env:APPDATA 'tunnel-client\lnwjud.yaml') | Select-String 'server_urls:|url:'
+Get-Content (Join-Path $env:APPDATA 'tunnel-client\inwsus.yaml') | Select-String 'server_urls:|url:'
 ```
 
 The `main` MCP channel must point to a loopback URL ending in `/mcp` (for
 example `http://127.0.0.1:<port>/mcp`). It must not point to a source checkout,
-a public/LAN MCP address, or `lnwjud-mcp-stdio.cmd` for the Secure Tunnel flow.
+a public/LAN MCP address, or `inwsus-mcp-stdio.cmd` for the Secure Tunnel flow.
 
 ## Start the tunnel automatically at Windows logon
 
@@ -917,20 +917,20 @@ is not written in plain text to the profile or task command line.
 $secretDir = Join-Path $env:APPDATA 'tunnel-client'
 New-Item -ItemType Directory -Path $secretDir -Force | Out-Null
 $secureKey = Read-Host 'Tunnel runtime API key' -AsSecureString
-$secureKey | ConvertFrom-SecureString | Set-Content (Join-Path $secretDir 'lnwjud.runtime.secret')
+$secureKey | ConvertFrom-SecureString | Set-Content (Join-Path $secretDir 'inwsus.runtime.secret')
 ```
 
 The encrypted value is tied to the same Windows user and machine.
 
 ### Create a runner script
 
-Save as start-lnwjud-tunnel.ps1:
+Save as start-inwsus-tunnel.ps1:
 
 ```powershell
 $ErrorActionPreference = 'Stop'
 $tc = 'C:/Users/<WindowsUser>/Downloads/tunnel/tunnel-client.exe'
-$profile = 'lnwjud'
-$secretPath = Join-Path $env:APPDATA 'tunnel-client/lnwjud.runtime.secret'
+$profile = 'inwsus'
+$secretPath = Join-Path $env:APPDATA 'tunnel-client/inwsus.runtime.secret'
 
 if (-not (Test-Path $tc)) { throw "Missing tunnel-client: $tc" }
 if (-not (Test-Path $secretPath)) { throw "Missing encrypted runtime key: $secretPath" }
@@ -956,24 +956,24 @@ finally {
 Run once as the same Windows user who saved the DPAPI secret:
 
 ```powershell
-$runner = 'C:/Users/<WindowsUser>/Downloads/tunnel/start-lnwjud-tunnel.ps1'
+$runner = 'C:/Users/<WindowsUser>/Downloads/tunnel/start-inwsus-tunnel.ps1'
 $userId = "$env:USERDOMAIN/$env:USERNAME"
 $argument = '-NoProfile -ExecutionPolicy Bypass -File "' + $runner + '"'
 $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument $argument
 $trigger = New-ScheduledTaskTrigger -AtLogOn -User $userId
 $principal = New-ScheduledTaskPrincipal -UserId $userId -LogonType InteractiveToken -RunLevel Limited
-Register-ScheduledTask -TaskName 'lnwjud Secure MCP Tunnel' -Action $action -Trigger $trigger -Principal $principal -Force
+Register-ScheduledTask -TaskName 'inwsus Secure MCP Tunnel' -Action $action -Trigger $trigger -Principal $principal -Force
 ```
 
 Check or start it:
 
 ```powershell
-Get-ScheduledTask -TaskName 'lnwjud Secure MCP Tunnel'
-Start-ScheduledTask -TaskName 'lnwjud Secure MCP Tunnel'
+Get-ScheduledTask -TaskName 'inwsus Secure MCP Tunnel'
+Start-ScheduledTask -TaskName 'inwsus Secure MCP Tunnel'
 ```
 
 Use Run only when user is logged on and a limited principal unless your
-organization has a documented service-account design. lnwjud does not need an
+organization has a documented service-account design. inwsus does not need an
 administrator token for normal workspace operations.
 
 ## Add the connector in ChatGPT Developer mode
@@ -992,24 +992,24 @@ Enterprise/Edu administrators may need to enable this before it appears.
 
 1. Open [ChatGPT Plugins](https://chatgpt.com/plugins).
 2. Select the plus (+) button.
-3. Enter a name such as lnwjud and a short description such as
+3. Enter a name such as inwsus and a short description such as
    Local Windows development workspace gateway.
 4. Under Connection, choose Tunnel.
 5. Select the tunnel or enter its tunnel_id.
 6. Create the connection and review the discovered tools and schemas.
 
-lnwjud does not expose an OAuth login endpoint. Do not invent OAuth URLs or
+inwsus does not expose an OAuth login endpoint. Do not invent OAuth URLs or
 paste the runtime key into the ChatGPT connector form. Tunnel authentication is
 handled by tunnel-client; ChatGPT selects the OpenAI-hosted tunnel. Choose a
 no-extra-auth option only when the tunnel form offers it.
 
 ### Attach it to a new chat
 
-Start a new conversation, open the tools menu, and add the lnwjud connection.
+Start a new conversation, open the tools menu, and add the inwsus connection.
 A good smoke test is:
 
 ```text
-Use lnwjud to inspect the available workspace and report only registered workspace IDs and display names. Do not read file contents yet.
+Use inwsus to inspect the available workspace and report only registered workspace IDs and display names. Do not read file contents yet.
 ```
 
 Then test a read-only project flow:
@@ -1027,7 +1027,7 @@ This index is generated from the current `ToolRegistry`, not copied from an olde
 
 | # | Tool | Permission | Runtime description |
 | ---: | --- | --- | --- |
-| 1 | `workspace_list` | DANGEROUS | List all registered workspaces/drive roots available to lnwjud. Call this first to discover workspace IDs. Entries include kind=machine_root\|project. |
+| 1 | `workspace_list` | DANGEROUS | List all registered workspaces/drive roots available to inwsus. Call this first to discover workspace IDs. Entries include kind=machine_root\|project. |
 | 2 | `workspace_register` | WRITE | Register an existing project directory under a machine-root drive. parentWorkspaceId must be a machine root from workspace_list. Idempotent for the same path. |
 | 3 | `workspace_info` | READ | Return the configured workspace summary. |
 | 4 | `workspace_tree` | READ | List a bounded workspace tree. Absolute path does not require workspaceId. |
@@ -1074,7 +1074,7 @@ This index is generated from the current `ToolRegistry`, not copied from an olde
 | 45 | `vision_annotated_capture` | READ | Capture a local Windows screen/region/window and return a short-lived Set-of-Marks observation with numbered bounds, a content hash, and an annotated PNG. This tool only observes; use ui_target_action for a separately gated action. |
 | 46 | `ui_target_action` | DANGEROUS | Act on one mark from a current vision_annotated_capture observation. The observation ID, optional hash, TTL, workspace owner, and current Accessibility element are checked before the action is sent. |
 | 47 | `window` | DANGEROUS | Direct native Windows window management. List, inspect, activate, move, resize, minimize, maximize, restore, or close windows without raw coordinates when a window operation is sufficient. |
-| 48 | `health` | READ | Diagnostics only. Check all lnwjud backends or one public tool after a failure, when asked for status, or while diagnosing permissions. Do not use as a preflight before normal work. |
+| 48 | `health` | READ | Diagnostics only. Check all inwsus backends or one public tool after a failure, when asked for status, or while diagnosing permissions. Do not use as a preflight before normal work. |
 | 49 | `system_info` | READ | Read-only system information: OS, CPU, memory, disks, battery, uptime, and top processes by memory. Use for environment checks and diagnostics. |
 | 50 | `notification` | EXECUTE | Show a Windows notification (toast when BurntToast is installed, balloon otherwise). Use to tell the user when a long task finishes. |
 | 51 | `file_dialog` | EXECUTE | Open a native Windows file open/save dialog and return the chosen path(s). The dialog does not read or write files itself; use the guarded file tools afterwards. |
@@ -1086,9 +1086,9 @@ This index is generated from the current `ToolRegistry`, not copied from an olde
 | 57 | `scheduler` | DANGEROUS | Manage Windows scheduled tasks with schtasks.exe. list is read-only; create, run, and delete always require explicit chat confirmation and userConfirmed: true. |
 | 58 | `wsl_exec` | EXECUTE | Non-blocking WSL2 developer runner. MCP run calls are ALWAYS forced to background and return a task_id immediately; foreground/auto requests are normalized by the server. Follow with status/logs/result; wait uses the user-configurable MCP poll window (5-60 seconds, default 5). After one or two checks still show running, do not keep polling in the same chat turn: preserve task_id and return control so the durable task can continue without risking a ChatGPT turn timeout. It executes one Linux executable with argv, an explicit distribution, and a Windows workspace cwd, and never accepts shell command strings. Full Access runs ordinary WSL commands without confirmation. Destructive/data-loss forms ask unless an exact scoped WSL destructive family is enabled for auto-approval; broad, recursive, outside-project, or unparseable forms remain interactive. Active Project remains the default cwd/ownership context, while an explicitly requested external cwd may be used when the capability policy allows it; the Linux executable itself is not restricted to the Active Project. |
 | 59 | `wsl_fs` | READ | Translate paths and inspect metadata between a registered Windows workspace and WSL without exposing raw \\wsl$ read/write access. |
-| 60 | `skills_list` | DANGEROUS | List local agent skills discovered from Cursor, Claude, Agents, workspace skill roots, and lnwjud settings. Filter with query or source. |
-| 61 | `skills_read` | DANGEROUS | Read a local skill SKILL.md (or a relative file inside the skill folder). Follow the skill instructions with lnwjud tools and mcp_call. |
-| 62 | `mcp_list` | READ | List local MCP servers discovered from Cursor, Claude Desktop, and lnwjud settings. This inspection is read-only and does not flatten child tools into the lnwjud catalog. |
+| 60 | `skills_list` | DANGEROUS | List local agent skills discovered from Cursor, Claude, Agents, workspace skill roots, and inwsus settings. Filter with query or source. |
+| 61 | `skills_read` | DANGEROUS | Read a local skill SKILL.md (or a relative file inside the skill folder). Follow the skill instructions with inwsus tools and mcp_call. |
+| 62 | `mcp_list` | READ | List local MCP servers discovered from Cursor, Claude Desktop, and inwsus settings. This inspection is read-only and does not flatten child tools into the inwsus catalog. |
 | 63 | `mcp_describe` | READ | Connect to one local MCP server (if needed) and return its tool names, descriptions, and input schemas. This operation only inspects the child tool catalog. |
 | 64 | `mcp_call` | DANGEROUS | Call a tool on a discovered local MCP server. Child side effects and filesystem/network scope are controlled by that child server, so every mcp_call is treated as opaque mutation and requires explicit chat plus host exact-action approval. |
 | 65 | `workspace_context` | READ | Aggregate ranked workspace context with snippets, symbols, Git/test relevance, economy metadata, and continuation; automatic discovery can be explicitly expanded. |
@@ -1383,7 +1383,7 @@ persisted by this telemetry.
 | codex_run | EXECUTE | Delegates an instruction to local Codex in workspace-write sandbox mode after exact approval and returns codexTaskId |
 | codex_task_status | READ | Reads state for an owned Codex task |
 | codex_task_logs | READ | Reads bounded logs for an owned Codex task |
-| codex_stop | EXECUTE | Stops only a Codex task launched by lnwjud |
+| codex_stop | EXECUTE | Stops only a Codex task launched by inwsus |
 
 Typical flow: codex_run → inspect task status/logs → inspect git_diff → run checks.
 Codex still operates as an opaque child agent; the workspace-write sandbox
@@ -1417,9 +1417,9 @@ and policy-bounded; a permission profile never grants free-form shell strings.
 ### Skills and local MCP bridge
 
 These meta-tools discover local agent skills and other MCP servers on the
-machine (Cursor `mcp.json`, Claude Desktop config, plus lnwjud settings). They
-do not flatten every child tool into the lnwjud catalog. Default mode enables
-all discovered servers except lnwjud itself (recursion guard).
+machine (Cursor `mcp.json`, Claude Desktop config, plus inwsus settings). They
+do not flatten every child tool into the inwsus catalog. Default mode enables
+all discovered servers except inwsus itself (recursion guard).
 
 | Tool | Permission | What it does |
 | --- | --- | --- |
@@ -1434,7 +1434,7 @@ Secure MCP Tunnel, but the permission profile is not a bypass. Child `mcp_call`
 side effects are treated as opaque mutation and still require independent host
 exact-action approval. A standalone/headless runtime with no trusted approval
 provider denies the mutation instead of granting it from the `full` profile.
-Disable individual servers through the lnwjud `extensions` settings JSON
+Disable individual servers through the inwsus `extensions` settings JSON
 (`disabledServers`) when needed.
 
 Settings key `extensions` (SQLite) example:
@@ -1492,7 +1492,7 @@ Project mutation boundary, shared command/Git policy, independent host approval,
 or hard blocks. Enable the visibility mode either way:
 
 - Settings → Unrestricted mode (checkbox; restart the app to apply), or
-- `$env:LNWJUD_UNRESTRICTED = '1'` before launching lnwjud (the tunnel script
+- `$env:INWSUS_UNRESTRICTED = '1'` before launching inwsus (the tunnel script
   below sets this automatically for the stdio runtime).
 
 When enabled:
@@ -1518,7 +1518,7 @@ automatically recoverable through Recovery Trash.
 
 The desktop app includes a Live Logs screen (sidebar) with three tabs:
 
-- Tunnel — tails `%APPDATA%\tunnel-client\lnwjud-tunnel.log` continuously
+- Tunnel — tails `%APPDATA%\tunnel-client\inwsus-tunnel.log` continuously
 - MCP activity — every tool call received by MCP appears immediately
 - Processes — state and recent output of managed processes
 
@@ -1527,7 +1527,7 @@ and "Pop out viewer" opens a compact separate window. The viewer can also be
 launched directly:
 
 ```powershell
-& "$env:LOCALAPPDATA\Programs\lnwjud\lnwjud.exe" --log-viewer
+& "$env:LOCALAPPDATA\Programs\inwsus\inwsus.exe" --log-viewer
 ```
 
 The app is single-instance: launching with `--log-viewer` while the dashboard
@@ -1550,15 +1550,15 @@ Tunnel button, and both reflect the same state:
 
 ## Run the tunnel with a resilient script
 
-The repository ships `scripts/start-lnwjud-tunnel.ps1`. Copy it anywhere and
+The repository ships `scripts/start-inwsus-tunnel.ps1`. Copy it anywhere and
 run it instead of a manual `tunnel-client run`:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\<WindowsUser>\Downloads\tunnel\start-lnwjud-tunnel.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\<WindowsUser>\Downloads\tunnel\start-inwsus-tunnel.ps1"
 ```
 
 The script sets `--mcp.connection-max-ttl 168h0m0s` (prevents the 10-minute
-disconnect), writes `lnwjud-tunnel.log`, aligns `LNWJUD_DATA_PATH` with the
+disconnect), writes `inwsus-tunnel.log`, aligns `INWSUS_DATA_PATH` with the
 desktop app so ChatGPT activity shows in the Work Log and Live Logs, enables
 unrestricted read/discovery mode, restarts the tunnel automatically when it
 drops (including TTL shutdowns that exit 0), avoids double-starting, and opens
@@ -1587,7 +1587,7 @@ The classification is evidence-based, not a remote root-cause guarantee:
 - `healthy_or_inconclusive` — the collected evidence cannot safely select one
   of the cases above. Collect the report before restarting layers.
 
-Desktop Start Tunnel and `start-lnwjud-tunnel.ps1` share one profile lock. The
+Desktop Start Tunnel and `start-inwsus-tunnel.ps1` share one profile lock. The
 losing launcher reports the actual owner PID and does not start or stop another
 owner's `tunnel-client`. A stale lock is reclaimed only when the recorded PID
 and process start time no longer match; do not manually delete a lock merely to
@@ -1604,13 +1604,13 @@ current client rather than copying a fixed port:
 
 ```powershell
 $profile = Join-Path $env:APPDATA 'tunnel-client'
-$tc = if ($env:LNWJUD_TUNNEL_CLIENT_PATH) { $env:LNWJUD_TUNNEL_CLIENT_PATH } else { Join-Path $env:USERPROFILE 'Downloads\tunnel\tunnel-client.exe' }
+$tc = if ($env:INWSUS_TUNNEL_CLIENT_PATH) { $env:INWSUS_TUNNEL_CLIENT_PATH } else { Join-Path $env:USERPROFILE 'Downloads\tunnel\tunnel-client.exe' }
 if (-not (Test-Path -LiteralPath $tc -PathType Leaf)) { throw "Missing tunnel-client executable: $tc" }
-if (-not (Test-Path -LiteralPath (Join-Path $profile 'lnwjud.yaml') -PathType Leaf)) { throw "Missing configured profile: $(Join-Path $profile 'lnwjud.yaml')" }
-Get-Content (Join-Path $profile 'lnwjud.tunnel.lock') -ErrorAction SilentlyContinue
-& $tc doctor --profile lnwjud --profile-dir $profile --explain
+if (-not (Test-Path -LiteralPath (Join-Path $profile 'inwsus.yaml') -PathType Leaf)) { throw "Missing configured profile: $(Join-Path $profile 'inwsus.yaml')" }
+Get-Content (Join-Path $profile 'inwsus.tunnel.lock') -ErrorAction SilentlyContinue
+& $tc doctor --profile inwsus --profile-dir $profile --explain
 if ($LASTEXITCODE -ne 0) { throw 'tunnel-client doctor failed' }
-$match = Select-String -LiteralPath (Join-Path $profile 'lnwjud-tunnel.log') -Pattern 'health.*(?:listening|listen_addr).*?(127\.0\.0\.1|localhost):(\d{2,5})' | Select-Object -Last 1
+$match = Select-String -LiteralPath (Join-Path $profile 'inwsus-tunnel.log') -Pattern 'health.*(?:listening|listen_addr).*?(127\.0\.0\.1|localhost):(\d{2,5})' | Select-Object -Last 1
 if ($null -eq $match) { throw 'No runtime health address was reported by the configured tunnel' }
 $address = [regex]::Match($match.Line, '(127\.0\.0\.1|localhost):(\d{2,5})').Value
 Invoke-WebRequest -UseBasicParsing "http://$address/healthz"
@@ -1660,7 +1660,7 @@ They do not persist full prompts, environment variables, bearer tokens, API
 keys, passwords, or unlimited terminal history. Existing-file writes checkpoint
 before overwrite where supported; native/binary replacement paths use Recovery
 Trash backups where the provider can be made recoverable. Opaque external
-mutation is explicitly not represented as recoverable when lnwjud cannot own a
+mutation is explicitly not represented as recoverable when inwsus cannot own a
 pre-image.
 
 ### Explicitly unavailable tools
@@ -1686,22 +1686,22 @@ launch; standalone `git_reset` / `git_clean` capabilities do not exist.
 
 | Symptom | Fix |
 | --- | --- |
-| Secure Tunnel profile still contains `mcp.commands` or `lnwjud-mcp-stdio.cmd` | Open lnwjud Desktop → Settings → OpenAI Secure MCP Tunnel → Configure Tunnel. v4.10.0 rewrites the profile to the current Desktop loopback HTTP `/mcp` endpoint. |
-| Direct local stdio launcher is missing | This affects local stdio hosts such as Codex CLI, not Secure Tunnel. Reinstall the current Windows package and confirm `lnwjud-mcp-stdio.cmd`, `lnwjud-mcp-stdio.cjs`, and `lnwjud-node.exe` are shipped beside lnwjud.exe or under resources. |
-| profile_load says the YAML file is missing | Run init with profile lnwjud and verify %APPDATA%/tunnel-client/lnwjud.yaml |
+| Secure Tunnel profile still contains `mcp.commands` or `inwsus-mcp-stdio.cmd` | Open inwsus Desktop → Settings → OpenAI Secure MCP Tunnel → Configure Tunnel. v4.10.0 rewrites the profile to the current Desktop loopback HTTP `/mcp` endpoint. |
+| Direct local stdio launcher is missing | This affects local stdio hosts such as Codex CLI, not Secure Tunnel. Reinstall the current Windows package and confirm `inwsus-mcp-stdio.cmd`, `inwsus-mcp-stdio.cjs`, and `inwsus-node.exe` are shipped beside inwsus.exe or under resources. |
+| profile_load says the YAML file is missing | Run init with profile inwsus and verify %APPDATA%/tunnel-client/inwsus.yaml |
 | doctor rejects the key | Use a runtime key with Tunnels Read + Use; do not substitute an Admin or unrelated project key |
 | Tunnel is not listed in ChatGPT | Associate it with the target ChatGPT workspace and verify Tunnels Read + Use |
-| ChatGPT reports no tools | Check that lnwjud Desktop is running, the profile `server_urls` points to its loopback `/mcp` endpoint, doctor/tunnel health passes, then Refresh connector. |
-| Tunnel doctor cannot reach local MCP | Keep lnwjud Desktop running and use Configure Tunnel again so the profile receives the current loopback `/mcp` endpoint. |
+| ChatGPT reports no tools | Check that inwsus Desktop is running, the profile `server_urls` points to its loopback `/mcp` endpoint, doctor/tunnel health passes, then Refresh connector. |
+| Tunnel doctor cannot reach local MCP | Keep inwsus Desktop running and use Configure Tunnel again so the profile receives the current loopback `/mcp` endpoint. |
 | WORKSPACE_NOT_FOUND | Use the exact registered workspace ID, not a path or display name |
 | PATH_OUTSIDE_WORKSPACE | Register/select the correct root and use a workspace-relative path |
 | A secret file is denied | Check the active read/Strict Roots policy and that the intended root is registered; do not weaken mutation scope to make a read succeed |
 | process_start refuses PowerShell/CMD or an interpreter-style command | Use a policy-supported executable + argv inside the Active Project; free-form inline command strings and prohibited destructive forms fail closed |
 | Child process windows are visible | This is expected for the current visible-window Windows build; use handles/logs to manage them |
-| codex_status is unavailable | Install Codex or continue with process_* and project_*; lnwjud does not inspect credentials |
-| Tunnel disconnects with context canceled / context deadline exceeded | MCP connection TTL teardown; start-lnwjud-tunnel.ps1 restarts even on exit 0. After restart, Refresh the connector or send a new ChatGPT message |
+| codex_status is unavailable | Install Codex or continue with process_* and project_*; inwsus does not inspect credentials |
+| Tunnel disconnects with context canceled / context deadline exceeded | MCP connection TTL teardown; start-inwsus-tunnel.ps1 restarts even on exit 0. After restart, Refresh the connector or send a new ChatGPT message |
 | ChatGPT advertises old tools | Restart server/tunnel, Refresh the connector, and start a new conversation |
-| Long tool run looks dead / silent | lnwjud emits progress heartbeats every ~15s after the first 15s; ensure tunnel-client is current and TTL is set via `--mcp.connection-max-ttl 168h0m0s` |
+| Long tool run looks dead / silent | inwsus emits progress heartbeats every ~15s after the first 15s; ensure tunnel-client is current and TTL is set via `--mcp.connection-max-ttl 168h0m0s` |
 
 For ambiguous failures, call health locally and run tunnel-client doctor
 --explain before restarting both layers.
@@ -1755,7 +1755,7 @@ not want to publish a personal email address should configure a GitHub-provided
 - [Contributing guide](CONTRIBUTING.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Security Policy](SECURITY.md)
-- [Issue tracker](https://github.com/engasnm111/lnwjud/issues)
+- [Issue tracker](https://github.com/engasnm111/inwsus/issues)
 
 Please use the security policy instead of public issues for vulnerability details.
 ## Development and verification

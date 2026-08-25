@@ -1,11 +1,11 @@
 import { realpath, stat } from 'node:fs/promises';
 import path from 'node:path';
-import { appError, err, ok, type CommandSpec, type Result } from '@lnwjud/domain';
-import { CommandPolicy, DefaultPermissionEngine, permissionProfiles, type PermissionEngine, type PermissionProfile } from '@lnwjud/permissions';
-import { ProcessManager, type LogQuery, type ManagedProcess, type ManagedProcessStart, type ProcessLogResult } from '@lnwjud/process';
-import { JsCommandDetector, ProjectDetector, type ProjectCommandKind } from '@lnwjud/project';
-import { prohibitedAgentCommandReason, riskyAgentCommandReason } from '@lnwjud/shared';
-import { WorkspacePathGuard, type Workspace, type WorkspaceRepository } from '@lnwjud/workspace';
+import { appError, err, ok, type CommandSpec, type Result } from '@inwsus/domain';
+import { CommandPolicy, DefaultPermissionEngine, permissionProfiles, type PermissionEngine, type PermissionProfile } from '@inwsus/permissions';
+import { ProcessManager, type LogQuery, type ManagedProcess, type ManagedProcessStart, type ProcessLogResult } from '@inwsus/process';
+import { JsCommandDetector, ProjectDetector, type ProjectCommandKind } from '@inwsus/project';
+import { prohibitedAgentCommandReason, riskyAgentCommandReason } from '@inwsus/shared';
+import { WorkspacePathGuard, type Workspace, type WorkspaceRepository } from '@inwsus/workspace';
 import type { FileActor } from './file-service.js';
 import { ProjectService } from './project-service.js';
 

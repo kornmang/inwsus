@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { syncMachineRoots } from '@lnwjud/application';
-import { startMcpStdio } from '@lnwjud/mcp-server';
+import { syncMachineRoots } from '@inwsus/application';
+import { startMcpStdio } from '@inwsus/mcp-server';
 import {
   STDIO_ALLOWED_ROOTS_SETTING_KEY,
   STDIO_PERMISSION_PROFILE_SETTING_KEY,
@@ -11,10 +11,10 @@ import {
   parseAllowedRoots,
   parseBooleanSetting,
   parseStdioPermissionProfile,
-  resolveLnwjudDataPath,
-} from '@lnwjud/shared';
-import { applyPendingSqliteRestoreSync, SqliteBackupService, SqliteDatabase, SqliteSettingsRepository, SqliteWorkspaceRepository } from '@lnwjud/storage';
-import { machineRootPath, normalizeWorkspaceRoot, WorkspaceService, type Workspace } from '@lnwjud/workspace';
+  resolveInwsusDataPath,
+} from '@inwsus/shared';
+import { applyPendingSqliteRestoreSync, SqliteBackupService, SqliteDatabase, SqliteSettingsRepository, SqliteWorkspaceRepository } from '@inwsus/storage';
+import { machineRootPath, normalizeWorkspaceRoot, WorkspaceService, type Workspace } from '@inwsus/workspace';
 import { createStdioMcpRuntime } from '../runtime/stdio-mcp-runtime.js';
 import { StrictWorkspaceRepository, canonicalizeAllowedRoots, requestedPathInsideAllowedRoot } from '../runtime/strict-workspace-repository.js';
 import { resetWorkspaceRegistrations } from '../runtime/workspace-reset.js';
@@ -41,32 +41,32 @@ function hasFlag(flag: string): boolean {
 }
 
 function resolveDataPath(): string {
-  return resolveLnwjudDataPath(process.env);
+  return resolveInwsusDataPath(process.env);
 }
 
 async function main(): Promise<void> {
   const dataPath = resolveDataPath();
   fs.mkdirSync(dataPath, { recursive: true });
-  const restore = applyPendingSqliteRestoreSync(path.join(dataPath, 'lnwjud.sqlite'), path.join(dataPath, 'backups'));
-  if (restore.error !== undefined) process.stderr.write(`lnwjud MCP stdio: scheduled restore failed: ${restore.error}\n`);
-  if (restore.applied) process.stderr.write(`lnwjud MCP stdio: restored database from ${restore.backupId ?? 'scheduled backup'}\n`);
+  const restore = applyPendingSqliteRestoreSync(path.join(dataPath, 'inwsus.sqlite'), path.join(dataPath, 'backups'));
+  if (restore.error !== undefined) process.stderr.write(`inwsus MCP stdio: scheduled restore failed: ${restore.error}\n`);
+  if (restore.applied) process.stderr.write(`inwsus MCP stdio: restored database from ${restore.backupId ?? 'scheduled backup'}\n`);
 
-  const database = new SqliteDatabase(path.join(dataPath, 'lnwjud.sqlite'), { backupDirectory: path.join(dataPath, 'backups') });
+  const database = new SqliteDatabase(path.join(dataPath, 'inwsus.sqlite'), { backupDirectory: path.join(dataPath, 'backups') });
   const rawWorkspaceRepository = new SqliteWorkspaceRepository(database);
   const settingsRepository = new SqliteSettingsRepository(database);
 
   const profileName = parseStdioPermissionProfile(
     readArg('--profile')
-      ?? process.env.LNWJUD_STDIO_PROFILE
+      ?? process.env.INWSUS_STDIO_PROFILE
       ?? settingsRepository.get(STDIO_PERMISSION_PROFILE_SETTING_KEY),
     'full',
   );
   const strictRootsEnabled = hasFlag('--strict-roots')
-    || (process.env.LNWJUD_STRICT_ROOTS !== undefined
-      ? parseBooleanSetting(process.env.LNWJUD_STRICT_ROOTS, false)
+    || (process.env.INWSUS_STRICT_ROOTS !== undefined
+      ? parseBooleanSetting(process.env.INWSUS_STRICT_ROOTS, false)
       : parseBooleanSetting(settingsRepository.get(STDIO_STRICT_ROOTS_SETTING_KEY), false));
   const cliAllowedRoots = readArgs('--allowed-root');
-  const envAllowedRoots = parseAllowedRoots(process.env.LNWJUD_ALLOWED_ROOTS);
+  const envAllowedRoots = parseAllowedRoots(process.env.INWSUS_ALLOWED_ROOTS);
   const storedAllowedRoots = parseAllowedRoots(settingsRepository.get(STDIO_ALLOWED_ROOTS_SETTING_KEY));
   const configuredAllowedRoots = cliAllowedRoots.length > 0
     ? cliAllowedRoots
@@ -77,20 +77,20 @@ async function main(): Promise<void> {
 
   const rawWorkspaceService = new WorkspaceService(rawWorkspaceRepository);
   const reset = hasFlag('--reset-workspaces')
-    || process.env.LNWJUD_RESET_WORKSPACES === '1'
-    || process.env.LNWJUD_RESET_WORKSPACES === 'true';
+    || process.env.INWSUS_RESET_WORKSPACES === '1'
+    || process.env.INWSUS_RESET_WORKSPACES === 'true';
   if (reset) {
     const backupService = new SqliteBackupService(database, {
-      databaseFilename: path.join(dataPath, 'lnwjud.sqlite'),
+      databaseFilename: path.join(dataPath, 'inwsus.sqlite'),
       backupDirectory: path.join(dataPath, 'backups'),
     });
     const result = await resetWorkspaceRegistrations(
       rawWorkspaceService,
       backupService,
-      readArg('--confirm-reset-workspaces') ?? process.env.LNWJUD_CONFIRM_RESET_WORKSPACES,
+      readArg('--confirm-reset-workspaces') ?? process.env.INWSUS_CONFIRM_RESET_WORKSPACES,
     );
     process.stderr.write(
-      `lnwjud MCP stdio: cleared ${result.deleted} previous workspace registration(s)`
+      `inwsus MCP stdio: cleared ${result.deleted} previous workspace registration(s)`
       + `${result.backupId === null ? '' : ` after backup ${result.backupId}`}\n`,
     );
   }
@@ -103,20 +103,20 @@ async function main(): Promise<void> {
     ? isUnrestricted(process.env, settingsRepository.get(UNRESTRICTED_SETTING_KEY))
     : false;
 
-  const requestedRaw = readArg('--workspace') ?? process.env.LNWJUD_WORKSPACE;
+  const requestedRaw = readArg('--workspace') ?? process.env.INWSUS_WORKSPACE;
   const requestedPath = path.resolve(
     requestedRaw && requestedRaw.trim().length > 0
       ? requestedRaw
       : strictAllowedRoots?.[0] ?? machineRootPath(),
   );
   if (!fs.existsSync(requestedPath)) {
-    process.stderr.write(`lnwjud MCP stdio: workspace path does not exist: ${requestedPath}\n`);
+    process.stderr.write(`inwsus MCP stdio: workspace path does not exist: ${requestedPath}\n`);
     process.exit(2);
   }
 
   let workspace: Workspace;
   if (strictAllowedRoots !== undefined) {
-    process.env.LNWJUD_CAPABILITY_ROOTS = strictAllowedRoots.join(';');
+    process.env.INWSUS_CAPABILITY_ROOTS = strictAllowedRoots.join(';');
     for (const root of strictAllowedRoots) {
       const normalized = normalizeWorkspaceRoot(root).toLowerCase();
       const existing = (await workspaceService.list()).find((entry) => normalizeWorkspaceRoot(entry.realRootPath).toLowerCase() === normalized);
@@ -131,7 +131,7 @@ async function main(): Promise<void> {
     workspace = selected;
   } else {
     const restrictedRoot = machineRootPath(requestedPath);
-    process.env.LNWJUD_CAPABILITY_ROOTS = process.env.LNWJUD_CAPABILITY_ROOTS?.trim()
+    process.env.INWSUS_CAPABILITY_ROOTS = process.env.INWSUS_CAPABILITY_ROOTS?.trim()
       || restrictedRoot.replace(/\\/g, '/');
     const machineRoot = await syncMachineRoots(workspaceService, unrestricted, requestedPath);
     if (machineRoot === null) throw new Error('Could not register machine root');
@@ -148,7 +148,7 @@ async function main(): Promise<void> {
   }
 
   for (const entry of await workspaceService.list()) {
-    process.stderr.write(`lnwjud workspace id=${entry.id} root=${entry.realRootPath}\n`);
+    process.stderr.write(`inwsus workspace id=${entry.id} root=${entry.realRootPath}\n`);
   }
   database.close();
 
@@ -158,7 +158,7 @@ async function main(): Promise<void> {
   });
   await runtime.activityReady;
   process.stderr.write(
-    `lnwjud MCP stdio ready primary=${workspace.id} root=${workspace.realRootPath} profile=${profileName}`
+    `inwsus MCP stdio ready primary=${workspace.id} root=${workspace.realRootPath} profile=${profileName}`
       + `${unrestricted ? ' unrestricted=1' : ''}${strictAllowedRoots === undefined ? '' : ` strict_roots=${strictAllowedRoots.length}`}\n`,
   );
 
@@ -182,11 +182,11 @@ async function main(): Promise<void> {
     activeWorkspaceScopeProvider: runtime.activeWorkspaceScopeProvider,
     onError: (error): void => {
       if (/EPIPE|ECONNRESET|broken pipe/i.test(error.message)) {
-        process.stderr.write(`lnwjud MCP stdio: peer closed (${error.message})\n`);
+        process.stderr.write(`inwsus MCP stdio: peer closed (${error.message})\n`);
         void shutdown();
         return;
       }
-      process.stderr.write(`lnwjud MCP stdio error: ${error.message}\n`);
+      process.stderr.write(`inwsus MCP stdio error: ${error.message}\n`);
     },
   });
 
@@ -200,6 +200,6 @@ async function main(): Promise<void> {
 }
 
 main().catch((error: unknown) => {
-  process.stderr.write(`lnwjud MCP stdio failed: ${error instanceof Error ? error.message : 'unknown'}\n`);
+  process.stderr.write(`inwsus MCP stdio failed: ${error instanceof Error ? error.message : 'unknown'}\n`);
   process.exit(1);
 });

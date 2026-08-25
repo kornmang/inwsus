@@ -1,6 +1,6 @@
 import { createHash, randomUUID } from 'node:crypto';
-import { appError, err, ok, type Result } from '@lnwjud/domain';
-import type { CapabilityService } from '@lnwjud/capabilities';
+import { appError, err, ok, type Result } from '@inwsus/domain';
+import type { CapabilityService } from '@inwsus/capabilities';
 
 interface Bounds {
   readonly x: number;

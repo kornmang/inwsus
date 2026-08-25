@@ -1,5 +1,5 @@
 import { useState, type FormEvent, type ReactElement } from 'react';
-import type { WorkspaceSummary } from '@lnwjud/ipc-contracts';
+import type { WorkspaceSummary } from '@inwsus/ipc-contracts';
 
 interface WorkspacePanelProps {
   readonly selectedWorkspace: WorkspaceSummary | null;

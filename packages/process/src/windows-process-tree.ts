@@ -39,9 +39,19 @@ export class WindowsProcessTree implements ProcessTreeTerminator {
     try {
       taskkillExitCode = await this.taskkill(pid);
     } catch (error: unknown) {
+      // The root process may have exited on its own (a natural race with our termination
+      // attempt) in the time it took to spawn and run taskkill. When that has genuinely
+      // happened, `child.exitCode`/`signalCode` is now a directly verifiable fact — the
+      // process is confirmed gone — so treat it as a successfully verified termination
+      // instead of surfacing a spurious failure that would otherwise leave the caller
+      // waiting forever on a completion that nothing will ever resolve.
+      if (child.exitCode !== null || child.signalCode !== null) return;
       throw new Error('Process tree termination could not be started', { cause: error });
     }
-    if (taskkillExitCode !== 0) throw new Error(`Process tree termination exited with code ${taskkillExitCode ?? 'unknown'}`);
+    if (taskkillExitCode !== 0) {
+      if (child.exitCode !== null || child.signalCode !== null) return;
+      throw new Error(`Process tree termination exited with code ${taskkillExitCode ?? 'unknown'}`);
+    }
     this.acceptedTreeStops.add(child);
     await this.waitForExit(child);
   }

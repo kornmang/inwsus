@@ -1,6 +1,6 @@
 # inwsus Release Checklist
 
-**Current version:** `v4.10.0` - Windows installer `inwsus-Setup-4.10.0.exe`; MCP registry **218 configurable tools / 212 advertised by default**.
+**Current version:** `v4.11.0` - Windows installer `inwsus-Setup-4.11.0.exe`; MCP registry **218 configurable tools / 212 advertised by default**.
 
 Run the release verification from PowerShell at the repository root. The automated gate must fail fast on any non-zero stage and `git diff --check` must pass before packaging or publishing.
 

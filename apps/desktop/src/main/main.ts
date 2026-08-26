@@ -1075,6 +1075,12 @@ function configureUpdateCheckSchedule(): void {
   updateCheckScheduler.start();
 }
 
+function summarizeUpdaterLogMessage(message: unknown): string {
+  const text = typeof message === 'string' ? message : message instanceof Error ? message.message : String(message);
+  const firstLine = text.split('\n')[0]?.trim() ?? text;
+  return firstLine.length > 200 ? `${firstLine.slice(0, 200)}…` : firstLine;
+}
+
 function initAutoUpdater(runtime: DesktopRuntime): void {
   if (!app.isPackaged) {
     patchUpdateStatus({ phase: 'unavailable', message: nativeMessages(desktopLocale).updaterUnavailablePackagedOnly, canInstall: false });
@@ -1083,6 +1089,16 @@ function initAutoUpdater(runtime: DesktopRuntime): void {
   try {
     autoUpdater.autoDownload = desktopUserSettings.updateAutoDownload;
     autoUpdater.autoInstallOnAppQuit = false;
+    // electron-updater's default logger (console) prints the full Error object — stack trace
+    // plus the raw HTTP response headers baked into HttpError#message — on every failed check.
+    // That is expected noise when no GitHub release exists yet (see the 'error' handler below),
+    // so replace it with a one-line summary instead of surfacing a scary multi-line dump.
+    const updaterLogger: { info(message?: unknown): void; warn(message?: unknown): void; error(message?: unknown): void } = {
+      info: (message?: unknown): void => { console.log(`[AutoUpdater] ${summarizeUpdaterLogMessage(message)}`); },
+      warn: (message?: unknown): void => { console.log(`[AutoUpdater] ${summarizeUpdaterLogMessage(message)}`); },
+      error: (message?: unknown): void => { console.log(`[AutoUpdater] ${summarizeUpdaterLogMessage(message)}`); },
+    };
+    autoUpdater.logger = updaterLogger;
     updateInstallCoordinator = new UpdateInstallCoordinator({
       activeCallCount: (): number => runtime.activityTracker.listInFlight().length,
       activityRevision: (): number => runtime.activityTracker.revision(),
@@ -1206,7 +1222,10 @@ function initAutoUpdater(runtime: DesktopRuntime): void {
       const requestedFromTray = pendingUpdateCheckSource === 'tray';
       pendingUpdateCheckSource = null;
       recordUpdaterEvent(`error:${err.message}`);
-      console.error('[AutoUpdater] error:', err.message);
+      // Non-fatal by design: log a single concise line (not the full HttpError dump, which
+      // already includes response headers in its .message) so a routine "no release yet" 404
+      // does not read like a crash. The full message is still kept for the in-app status/UI.
+      console.log(`[AutoUpdater] update check failed (non-fatal): ${summarizeUpdaterLogMessage(err.message)}`);
       const messages = nativeMessages(desktopLocale);
       const message = err.message || messages.updaterCheckFailed;
       patchUpdateStatus({

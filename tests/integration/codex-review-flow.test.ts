@@ -160,12 +160,20 @@ async function createFixture(): Promise<string> {
 }
 
 function fakeCodexSource(): string {
+  // NOTE: the 'hold' invocation (used to exercise codex_stop) must NOT touch reviewed.ts.
+  // It is killed with a forceful `taskkill /T /F` (see WindowsProcessTree.stop), which can
+  // land mid-write and truncate the file this test's final assertion depends on. Keeping
+  // the two invocations' side effects disjoint removes the race entirely instead of trying
+  // to time around it.
   return [
     "import { writeFile } from 'node:fs/promises';",
     "import path from 'node:path';",
     "process.stdout.write('fake-codex-started\\n');",
-    "await writeFile(path.join(process.cwd(), 'src', 'reviewed.ts'), 'export const reviewed = true;\\n', 'utf8');",
-    "if (process.argv[2]?.includes('hold')) await new Promise(() => { setInterval(() => {}, 1000); });",
+    "if (process.argv[2]?.includes('hold')) {",
+    "  await new Promise(() => { setInterval(() => {}, 1000); });",
+    "} else {",
+    "  await writeFile(path.join(process.cwd(), 'src', 'reviewed.ts'), 'export const reviewed = true;\\n', 'utf8');",
+    "}",
   ].join('\n');
 }
 

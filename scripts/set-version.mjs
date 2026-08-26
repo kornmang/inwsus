@@ -72,21 +72,7 @@ async function syncAllVersions() {
   await writeFile(sharedPath, sharedContent, 'utf8');
   console.log(`Updated packages/shared/src/index.ts -> ${name} v${version}`);
 
-  // 6. Update tests/packaging/desktop-packaging.test.ts
-  const testPackagingPath = path.join(rootDir, 'tests', 'packaging', 'desktop-packaging.test.ts');
-  try {
-    let testContent = await readFile(testPackagingPath, 'utf8');
-    testContent = testContent
-      .replace(/pins the product release to v[0-9.]+/g, `pins the product release to v${version}`)
-      .replace(/expect\(rootPackage\.version\)\.toBe\(['"][^'"]+['"]\);/g, `expect(rootPackage.version).toBe('${version}');`)
-      .replace(/expect\(desktopPackage\.version\)\.toBe\(['"][^'"]+['"]\);/g, `expect(desktopPackage.version).toBe('${version}');`);
-    await writeFile(testPackagingPath, testContent, 'utf8');
-    console.log(`Updated tests/packaging/desktop-packaging.test.ts -> v${version}`);
-  } catch {
-    // skip if missing
-  }
-
-  // 7. Update README.md installer references
+  // 6. Update README.md installer references
   const readmePath = path.join(rootDir, 'README.md');
   try {
     let readmeContent = await readFile(readmePath, 'utf8');
@@ -106,7 +92,7 @@ async function syncAllVersions() {
     // skip if missing
   }
 
-  // 8. Update current-version Markdown references without rewriting release history.
+  // 7. Update current-version Markdown references without rewriting release history.
   const markdownTargets = [
     ['.github/RELEASE_CHECKLIST.md', (content) => content
       .replace(/\*\*Current (?:version|release candidate):\*\* `v[0-9.]+`/g, `**Current version:** ` + '`v' + version + '`')

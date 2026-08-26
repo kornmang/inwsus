@@ -1,9 +1,14 @@
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { APP_VERSION, type DashboardSnapshot } from '@inwsus/ipc-contracts';
+import { APP_VERSION as SHARED_APP_VERSION } from '@inwsus/shared';
 import { AppShell } from '../src/renderer/features/shell/AppShell.js';
 import { SettingsPage } from '../src/renderer/features/settings/SettingsPage.js';
+
+const repositoryRoot = path.resolve(import.meta.dirname, '..', '..', '..');
 
 const noop = async (): Promise<void> => undefined;
 const recoveryTrashPath = 'C:\\Users\\Tester\\AppData\\Roaming\\inwsus\\recovery-trash';
@@ -92,13 +97,18 @@ function recoveryMarkup(locale: 'th' | 'en'): string {
 }
 
 describe('mutation safety UI contract', () => {
-  it('renders the actual 4.10.0 application version', () => {
-    expect(APP_VERSION).toBe('4.10.0');
+  it('keeps ipc-contracts and shared APP_VERSION in sync with the root package.json', async () => {
+    const rootPackage = JSON.parse(await readFile(path.join(repositoryRoot, 'package.json'), 'utf8')) as { version?: unknown };
+    expect(APP_VERSION).toBe(rootPackage.version);
+    expect(SHARED_APP_VERSION).toBe(rootPackage.version);
+  });
+
+  it('renders the running application version into the shell markup', () => {
     const markup = renderToStaticMarkup(createElement(AppShell, {
       locale: 'en', appVersion: APP_VERSION, mcpRunning: false, updateStatus: null, screen: 'settings',
       onNavigate: () => undefined, onLocaleChange: () => undefined, onUpdateAction: () => undefined, children: createElement('div'),
     }));
-    expect(markup).toContain('v4.10.0');
+    expect(markup).toContain(`v${APP_VERSION}`);
   });
 
   it('renders all destructive auto-approval settings and keeps critical/recovery safeguards locked', () => {

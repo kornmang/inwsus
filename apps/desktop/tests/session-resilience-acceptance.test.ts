@@ -89,6 +89,17 @@ describe('session resilience acceptance', () => {
     }
   }, 30_000);
 
+  // 30s budget, matching the sibling acceptance test above: this test does genuinely
+  // serial, unavoidable work -- two PowerShell process spawns (runPowerShellFile for
+  // the tunnel-starter script, startPowerShellHolder for the lock holder) plus real
+  // lock acquire/release round trips and process-exit waits. PowerShell cold start is
+  // roughly 0.3-0.7s per spawn on a fast, uncontended machine and several times slower
+  // on the 2-core windows-latest GitHub Actions runner under load, so the previous 15s
+  // budget left almost no margin (see also the currentOwner() memoization below, which
+  // removed two further redundant PowerShell spawns this test used to pay for on every
+  // call to it). This is not papering over a race -- there is no race here, just real
+  // serial process-startup and I/O cost that a slow/contended runner can push close to
+  // a tight budget.
   it('keeps the desktop lock and production launcher to one owner in either winner order without running tunnel-client', async () => {
     const root = await temporaryDirectory();
     const profileDirectory = path.join(root, 'tunnel-client');
@@ -124,7 +135,7 @@ describe('session resilience acceptance', () => {
     const afterRelease = await acquireTunnelLock({ profileDirectory, owner: await currentOwner() });
     expect(afterRelease.acquired).toBe(true);
     if (afterRelease.acquired) expect(await afterRelease.release()).toBe(true);
-  }, 15_000);
+  }, 30_000);
 
   it('uses the same critical section across a TypeScript stale reclaim and PowerShell publisher', async () => {
     const root = await temporaryDirectory();
@@ -372,9 +383,20 @@ async function temporaryDirectory(): Promise<string> {
   return root;
 }
 
+// The vitest worker process's start time never changes for the lifetime of the
+// process, so the (expensive, cold-start-heavy) PowerShell CIM query behind it
+// only needs to run once per test file rather than once per call site. Several
+// tests call currentOwner() more than once (each acquire/release round trip),
+// and each uncached call was spawning a fresh powershell.exe just to re-derive
+// an already-known, unchanging value.
+let cachedProcessStartedAt: Promise<string> | undefined;
+
 async function currentOwner(): Promise<TunnelLockOwner> {
-  const result = await runPowerShell("$p = Get-CimInstance Win32_Process -Filter \"ProcessId = $env:INWSUS_ACCEPTANCE_PID\"; $p.CreationDate.ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ss.fffZ', [Globalization.CultureInfo]::InvariantCulture)", { INWSUS_ACCEPTANCE_PID: String(process.pid) });
-  const startedAt = result.stdout;
+  if (cachedProcessStartedAt === undefined) {
+    cachedProcessStartedAt = runPowerShell("$p = Get-CimInstance Win32_Process -Filter \"ProcessId = $env:INWSUS_ACCEPTANCE_PID\"; $p.CreationDate.ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ss.fffZ', [Globalization.CultureInfo]::InvariantCulture)", { INWSUS_ACCEPTANCE_PID: String(process.pid) })
+      .then((result) => result.stdout);
+  }
+  const startedAt = await cachedProcessStartedAt;
   return { pid: process.pid, processStartedAt: startedAt, acquiredAt: new Date().toISOString() };
 }
 

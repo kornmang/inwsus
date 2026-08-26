@@ -14,7 +14,7 @@ files:
   - package.json
 publish:
   provider: github
-  owner: engasnm111
+  owner: kornmang
   repo: inwsus
   releaseType: release
 extraResources:

@@ -33,7 +33,6 @@ export function DoctorPanel({ locale = 'th', report, onRunDoctor }: DoctorPanelP
           icon={<Stethoscope size={32} />}
           title={t('doctor.noReport')}
           description={locale === 'th' ? 'กด "รัน Doctor" เพื่อเริ่มตรวจสอบระบบ' : 'Run Doctor to check system health and dependencies.'}
-          action={<Button type="button" size="sm" icon={<Refresh size={14} />} onClick={() => { void onRunDoctor(); }}>{t('doctor.run')}</Button>}
         />
       ) : (
         <div className="doctor-list">

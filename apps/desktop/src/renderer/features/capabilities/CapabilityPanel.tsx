@@ -1,5 +1,7 @@
 import type { ReactElement } from 'react';
 import type { DashboardSnapshot } from '@inwsus/ipc-contracts';
+import { Badge, Button, Card } from '../../components/ui/index.js';
+import { Globe } from '../../components/icons/index.js';
 
 interface CapabilityPanelProps {
   readonly capabilities: DashboardSnapshot['capabilities'];
@@ -11,41 +13,48 @@ export function CapabilityPanel({ capabilities, onLaunchManagedBrowser, browserB
   const readyCount = capabilities.filter((capability) => capability.available && capability.ready).length;
   const availableCount = capabilities.filter((capability) => capability.available).length;
   return (
-    <section className="card capability-card" aria-label="Local computer capabilities">
-      <div className="section-heading">
-        <div>
-          <p className="card-label">LOCAL COMPUTER ACCESS</p>
-          <h2>7 MCP tools</h2>
+    <Card
+      className="capability-card"
+      aria-label="Local computer capabilities"
+      eyebrow="Local computer access"
+      title="7 MCP tools"
+      actions={<Badge tone="neutral">{readyCount}/7 ready · {availableCount}/7 available</Badge>}
+    >
+      {capabilities.length === 0 ? (
+        <p className="agent-status-row__meta">No capability data reported yet.</p>
+      ) : (
+        <div className="capability-grid">
+          {capabilities.map((capability) => {
+            const ready = capability.available && capability.ready;
+            const available = capability.available;
+            const tone = ready ? 'success' : available ? 'info' : 'neutral';
+            return (
+              <article className="capability-row" key={capability.name}>
+                <div className="capability-row__text">
+                  <strong>{capability.name}</strong>
+                  <p>{capability.title}</p>
+                  <small>{capability.description}</small>
+                </div>
+                <div className="capability-row__actions">
+                  <Badge tone={tone}>{ready ? 'READY' : available ? 'AVAILABLE' : 'UNAVAILABLE'}</Badge>
+                  {capability.name === 'dom_cdp' && available && !ready ? (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      icon={<Globe size={14} />}
+                      loading={browserBusy}
+                      disabled={browserBusy}
+                      onClick={() => { void onLaunchManagedBrowser(); }}
+                    >
+                      {browserBusy ? 'Launching…' : 'Launch managed Chrome'}
+                    </Button>
+                  ) : null}
+                </div>
+              </article>
+            );
+          })}
         </div>
-        <span>{readyCount}/7 ready · {availableCount}/7 available</span>
-      </div>
-      <div className="capability-grid">
-        {capabilities.map((capability) => {
-          const ready = capability.available && capability.ready;
-          const available = capability.available;
-          return (
-            <article className="capability-row" key={capability.name}>
-              <div>
-                <strong>{capability.name}</strong>
-                <p>{capability.title}</p>
-                <small>{capability.description}</small>
-                {capability.name === 'dom_cdp' && available && !ready ? (
-                  <button
-                    type="button"
-                    disabled={browserBusy}
-                    onClick={() => { void onLaunchManagedBrowser(); }}
-                  >
-                    {browserBusy ? 'Launching...' : 'Launch managed Chrome'}
-                  </button>
-                ) : null}
-              </div>
-              <span className={ready ? 'capability-ready' : available ? 'capability-available' : 'capability-unavailable'}>
-                {ready ? 'READY' : available ? 'AVAILABLE' : 'UNAVAILABLE'}
-              </span>
-            </article>
-          );
-        })}
-      </div>
-    </section>
+      )}
+    </Card>
   );
 }

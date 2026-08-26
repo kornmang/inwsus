@@ -1,0 +1,1212 @@
+/* ==========================================================================
+   pages-ops.css — Work Log, Live Logs, Settings, and Doctor pages.
+
+   Owns both the visual re-skin (color/spacing/radius/type, scoped to the
+   classes used by worklog/live/settings/doctor) and the layout-critical
+   flex/min-height/overflow rules for `.live-logs-page`, `.log-stream`,
+   `.log-viewer-window`, `.log-viewer-shell` that tests/live-logs-layout.test.ts
+   asserts on directly. `.page-content`, `.page-heading`, `.page-subtitle`,
+   `.heading-actions`, `.viewport-list-page` are shared shell classes and
+   live in styles/shell.css instead.
+   ========================================================================== */
+
+/* ---------- Shared panel chrome (worklog / live logs / doctor) ----------
+   The generic bordered-surface look for `.panel` itself lives in
+   primitives.css (shared with Git/Projects/Doctor). This file only adds the
+   flex/scroll layout that Work Log and Live Logs need on top of it. */
+
+.log-panel,
+.worklog-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.worklog-panel:not(.compact) {
+  flex: 1;
+  min-height: 0;
+}
+
+.worklog-panel.compact {
+  flex: initial;
+}
+
+.live-logs-page .log-panel,
+.log-viewer-shell .log-panel {
+  flex: 1;
+  min-height: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+
+/* ---------- Action bars (filter / clear / pause / export buttons) ---------- */
+
+.worklog-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.worklog-actions .ui-button--secondary.active {
+  background: var(--accent-subtle);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+
+/* Visually join the view-filter pair into one segmented control so it reads
+   as a single choice, distinct from the destructive clear actions. */
+.segmented-control {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.segmented-control .ui-button {
+  border: none;
+  border-right: 1px solid var(--border);
+  border-radius: 0;
+}
+
+.segmented-control .ui-button:last-child {
+  border-right: none;
+}
+
+/* A visible gap between the (non-destructive) filter segmented control and
+   the destructive clear-session/workspace/all group reduces mis-clicks. */
+.worklog-actions__destructive {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: var(--space-4);
+}
+
+/* ---------- Scope filter bar ---------- */
+
+.scope-filter-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.scope-filter-bar label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 180px;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.scope-filter-bar select {
+  min-width: 180px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  padding: var(--space-2) var(--space-3);
+  min-height: 32px;
+  transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+}
+
+.scope-filter-bar select:hover {
+  border-color: var(--border-strong);
+}
+
+.scope-filter-bar select:focus-visible,
+.log-filter:focus-visible,
+.worklog-search:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Search / filter inputs ---------- */
+
+.log-filter,
+.worklog-search {
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-4);
+  transition: border-color var(--dur-fast) var(--ease);
+}
+
+.log-filter:hover,
+.worklog-search:hover {
+  border-color: var(--border-strong);
+}
+
+.log-filter::placeholder,
+.worklog-search::placeholder {
+  color: var(--text-subtle);
+}
+
+/* ---------- Scope badges ---------- */
+
+.scope-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-right: var(--space-2);
+  vertical-align: middle;
+}
+
+.scope-badge {
+  display: inline-flex;
+  align-items: center;
+  max-width: 150px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-inset);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  line-height: var(--leading-relaxed);
+  padding: 0 var(--space-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scope-badge.workspace {
+  border-color: var(--info-bg);
+  background: var(--info-bg);
+  color: var(--info);
+}
+
+.scope-badge.session {
+  border-color: var(--success-bg);
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+/* ---------- Log / Work Log streams ---------- */
+
+.worklog-stream,
+.log-stream {
+  min-width: 0;
+  min-height: 220px;
+  max-height: 600px;
+  overflow-y: auto;
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--leading-tight);
+  padding: var(--space-3);
+}
+
+/* When the stream holds nothing but its EmptyState, centre that state in
+   the box instead of leaving it stranded at the top of a tall, tinted
+   void — and drop back to the ordinary page surface so it doesn't read
+   as a big empty tan block. */
+.worklog-stream:has(> .ui-empty-state),
+.log-stream:has(> .ui-empty-state) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-elevated);
+  font-family: var(--font);
+}
+
+.log-stream {
+  max-height: none;
+}
+
+.worklog-panel:not(.compact) .worklog-stream {
+  flex: 1;
+  max-height: none;
+}
+
+.worklog-panel.compact .worklog-stream {
+  max-height: 380px;
+}
+
+.live-logs-page .log-stream {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+  overflow-y: auto;
+}
+
+.log-viewer-shell .log-stream {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+  overflow-y: auto;
+}
+
+.worklog-line {
+  display: grid;
+  grid-template-columns: 84px 72px 140px minmax(0, 1fr) auto 34px;
+  align-items: baseline;
+  min-width: 0;
+}
+
+.log-line {
+  display: grid;
+  grid-template-columns: 84px 64px minmax(0, 1fr) 34px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-width: 0;
+}
+
+.log-line.has-kind {
+  grid-template-columns: 84px 64px 84px minmax(0, 1fr) 34px;
+}
+
+.worklog-line,
+.log-line {
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.worklog-line:hover,
+.log-line:hover {
+  background: var(--bg-inset);
+}
+
+.worklog-line strong,
+.worklog-line .worklog-summary,
+.worklog-line span {
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.log-line span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.log-line time,
+.worklog-line time {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* Level / event tags — color comes from semantic tokens only. */
+.worklog-line .tag,
+.log-line .tag {
+  color: var(--text-muted);
+  font-weight: var(--weight-semibold);
+  flex-shrink: 0;
+}
+
+.log-line .event-tag {
+  font-weight: var(--weight-semibold);
+  white-space: nowrap;
+}
+
+.log-message {
+  min-width: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.worklog-line .task-tag,
+.log-line .event-tag.task {
+  color: var(--info);
+}
+
+.worklog-line .result-tag,
+.log-line .event-tag.result {
+  color: var(--success);
+}
+
+.worklog-line.error .tag,
+.worklog-line .error-tag,
+.log-line .event-tag.error,
+.log-line.error .tag,
+.log-line.error {
+  color: var(--danger);
+}
+
+.log-line.warn .tag {
+  color: var(--warning);
+}
+
+.worklog-line.inflight {
+  color: var(--text-subtle);
+}
+
+.worklog-error-detail {
+  color: var(--danger);
+}
+
+.worklog-line em {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  flex-shrink: 0;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.worklog-line .worklog-duration {
+  flex-shrink: 0;
+}
+
+/* ---------- Copy button ---------- */
+
+.row-copy-button {
+  width: 28px;
+  height: 26px;
+  min-width: 28px;
+  padding: 0;
+  align-self: start;
+  cursor: pointer;
+  font-size: var(--text-md);
+  line-height: 1;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.row-copy-button:hover {
+  color: var(--accent);
+  border-color: var(--border-strong);
+  background: var(--bg-inset);
+}
+
+.row-copy-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.row-copy-button:active {
+  background: var(--accent-subtle);
+}
+
+/* ---------- Log tabs ---------- */
+
+.log-tabs {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.log-tab {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  padding: var(--space-2) var(--space-4);
+  transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.log-tab:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-inset);
+}
+
+.log-tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.log-tab.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--text-on-accent);
+  font-weight: var(--weight-semibold);
+}
+
+.log-tabs-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.log-tabs-toolbar .log-tabs {
+  margin-bottom: var(--space-4);
+}
+
+/* ---------- Work Log page heading ---------- */
+
+.worklog-page .page-heading,
+.live-logs-page .page-heading {
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.live-logs-page .heading-actions {
+  gap: var(--space-2);
+}
+
+.live-logs-page {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ---------- Standalone log viewer window/shell ---------- */
+
+.log-viewer-window {
+  overflow: hidden;
+}
+
+.log-viewer-shell {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  height: auto;
+  padding: var(--space-4) var(--space-5) var(--page-bottom-gap);
+  overflow: hidden;
+}
+
+.log-viewer-shell .log-tabs-toolbar {
+  flex-shrink: 0;
+}
+
+.log-viewer-window .titlebar-center .hint {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Doctor panel
+   ========================================================================== */
+
+.doctor-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.doctor-panel__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.doctor-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.doctor-check__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.doctor-check__message {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+.doctor-check.doctor-fail {
+  border-color: var(--danger-bg);
+}
+
+.doctor-check.doctor-warn {
+  border-color: var(--warning-bg);
+}
+
+/* ==========================================================================
+   Settings page
+   ========================================================================== */
+
+.settings-page-v2 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.settings-page-heading {
+  gap: var(--space-2);
+}
+
+.settings-eyebrow {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.settings-health-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  padding: var(--space-1) var(--space-3);
+}
+
+.settings-health-chip .status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--success);
+}
+
+.settings-shell-v2 {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.settings-subnav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-elevated);
+  padding: var(--space-2);
+}
+
+.settings-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
+  padding: var(--space-3);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.settings-nav-item:hover {
+  background: var(--bg-inset);
+}
+
+.settings-nav-item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.settings-nav-item.is-active {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+
+.settings-nav-icon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.settings-nav-item.is-active .settings-nav-icon {
+  color: var(--accent);
+}
+
+.settings-nav-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.settings-nav-copy strong {
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+}
+
+.settings-nav-copy small {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settings-nav-chevron {
+  margin-left: auto;
+  color: var(--text-subtle);
+  flex-shrink: 0;
+}
+
+.settings-content-v2 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.settings-section-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.settings-section-kicker {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.settings-section-header h2 {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text);
+}
+
+.settings-section-header p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-base);
+}
+
+/* Card look for every settings section — flat surface, border, no glow. */
+.settings-card,
+.settings-card-polished {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  padding: var(--space-5);
+  box-shadow: none;
+}
+
+.settings-card-polished::before {
+  content: none;
+}
+
+.settings-card-heading {
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-bottom: 0;
+}
+
+.settings-heading-copy {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.settings-card-heading-title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.settings-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background: var(--accent-subtle);
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.settings-card-title {
+  margin: 0;
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  color: var(--text);
+}
+
+.pill-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-sm);
+  background: var(--accent-subtle);
+  color: var(--accent);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  padding: var(--space-1) var(--space-2);
+  letter-spacing: var(--tracking-eyebrow);
+  white-space: nowrap;
+}
+
+.setting-grid {
+  display: grid;
+  gap: var(--space-4);
+  /* Fields hold mixed control types (a ~32px select/input next to a
+     multi-row textarea) — default to natural height so the shorter
+     control doesn't get stretched into dead space by the grid row.
+     `.align-center` opts a row back into vertical centering when every
+     item in it is the same short height (e.g. a switch next to a select). */
+  align-items: start;
+}
+
+.setting-grid.two-col {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.setting-grid.four-col {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+.setting-grid.align-center {
+  align-items: center;
+}
+
+/* An odd number of items in a 2-col grid leaves the last one stranded alone
+   in the left column — span it full width instead so the rhythm stays
+   consistent rather than jumping between full/half widths. */
+.setting-grid.two-col > *:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+.setting-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.field-label {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+.setting-field input,
+.setting-field select,
+.setting-field textarea,
+.settings-card-polished input,
+.settings-card-polished select,
+.settings-card-polished textarea,
+.settings-card input,
+.settings-card select,
+.settings-card textarea,
+.settings-input,
+.settings-select,
+.settings-textarea {
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--text-base);
+  padding: var(--space-2) var(--space-3);
+  min-height: 32px;
+  transition: border-color var(--dur-fast) var(--ease);
+}
+
+.setting-field textarea,
+.settings-textarea {
+  min-height: unset;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+.setting-field input:hover,
+.setting-field select:hover,
+.setting-field textarea:hover,
+.settings-card-polished input:hover,
+.settings-card-polished select:hover,
+.settings-card-polished textarea:hover,
+.settings-input:hover,
+.settings-select:hover,
+.settings-textarea:hover {
+  border-color: var(--border-strong);
+}
+
+.setting-field input:focus-visible,
+.setting-field select:focus-visible,
+.setting-field textarea:focus-visible,
+.settings-card-polished input:focus-visible,
+.settings-card-polished select:focus-visible,
+.settings-card-polished textarea:focus-visible,
+.settings-input:focus-visible,
+.settings-select:focus-visible,
+.settings-textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-color: var(--accent);
+}
+
+.setting-field input::placeholder,
+.setting-field textarea::placeholder,
+.settings-card-polished input::placeholder,
+.settings-card-polished textarea::placeholder,
+.settings-input::placeholder,
+.settings-textarea::placeholder {
+  color: var(--text-subtle);
+}
+
+.switch-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* ---------- Setting switch (refit to Switch behaviour, contract §4/§6) ---------- */
+
+.setting-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  width: 100%;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+}
+
+.setting-switch:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--bg-inset);
+}
+
+.setting-switch:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.setting-switch:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Compact: track only, meant for a card header's actions slot next to the
+   title — no row border/background/padding of its own. */
+.setting-switch--compact {
+  width: auto;
+  border: none;
+  background: none;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.setting-switch--compact:hover:not(:disabled),
+.setting-switch--compact.is-on {
+  border: none;
+  background: none;
+}
+
+.setting-switch__copy {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.setting-switch__copy strong {
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.setting-switch__copy small {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  overflow-wrap: anywhere;
+}
+
+.setting-switch__track {
+  position: relative;
+  flex-shrink: 0;
+  width: 36px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  background: var(--border-strong);
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.setting-switch__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-full);
+  background: var(--bg-elevated);
+  transition: transform var(--dur-fast) var(--ease);
+}
+
+.setting-switch.is-on .setting-switch__track {
+  background: var(--accent);
+}
+
+.setting-switch.is-on .setting-switch__thumb {
+  transform: translateX(16px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .setting-switch__track,
+  .setting-switch__thumb {
+    transition: none;
+  }
+}
+
+.codex-tool-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.codex-tool-preview span {
+  border-radius: var(--radius-sm);
+  background: var(--bg-inset);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  padding: var(--space-1) var(--space-2);
+}
+
+.mcp-server-settings-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.mcp-server-settings-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  padding: var(--space-4);
+}
+
+.empty-setting-state {
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  padding: var(--space-4);
+  text-align: center;
+}
+
+.settings-mini-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.settings-mini-heading strong {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--text);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* The trailing meta note (a scope hint or an item count) reads as styled
+   metadata, not stray text, when it is a Badge rather than a bare span. */
+.settings-mini-heading .ui-badge {
+  flex-shrink: 0;
+}
+
+.tunnel-setup-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-subtle);
+  padding: var(--space-4);
+}
+
+.settings-save-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  padding: var(--space-4) var(--space-5);
+  position: sticky;
+  bottom: 0;
+}
+
+.settings-save-bar.is-dirty {
+  border-color: var(--accent-border);
+}
+
+.save-state-copy {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.settings-backup-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.backup-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  padding: var(--space-3) var(--space-4);
+}
+
+.backup-item button {
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text);
+  font-size: var(--text-sm);
+  padding: var(--space-1) var(--space-3);
+  transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+
+.backup-item button:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--bg-inset);
+}
+
+.backup-item button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.backup-item button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.settings-path-display {
+  display: block;
+  border-radius: var(--radius-sm);
+  background: var(--bg-inset);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  padding: var(--space-2) var(--space-3);
+  overflow-wrap: anywhere;
+}
+
+.password-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.password-input-wrapper input {
+  flex: 1;
+  min-width: 0;
+}
+
+.inline-actions,
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.form-row {
+  gap: var(--space-2);
+}
+
+.form-row input,
+.form-row select {
+  flex: 1 1 12rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.max-field-width {
+  max-width: 420px;
+}
+
+.hint {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+/* Generic buttons inside settings that are not (yet) the Button primitive
+   (Browse…, Save Key, Configure Tunnel, Discard, etc.) — kept token-only. */
+.settings-content-v2 button:not(.ui-button):not(.setting-switch):not(.settings-nav-item):not(.danger-soft-button) {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text);
+  font-family: var(--font);
+  font-weight: var(--weight-medium);
+  font-size: var(--text-base);
+  padding: var(--space-2) var(--space-4);
+  min-height: 32px;
+  transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+
+.settings-content-v2 button:not(.ui-button):not(.setting-switch):not(.settings-nav-item):hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--bg-inset);
+}
+
+.settings-content-v2 button:not(.ui-button):not(.setting-switch):not(.settings-nav-item):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.settings-content-v2 button:not(.ui-button):not(.setting-switch):not(.settings-nav-item):disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 860px) {
+  .settings-shell-v2 {
+    grid-template-columns: 1fr;
+  }
+}

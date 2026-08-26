@@ -1,0 +1,14 @@
+/* Icon alignment helpers. Icons are inline SVG (components/icons/*) and inherit
+   color via currentColor — no color rules belong in this file. */
+
+.icon {
+  display: inline-flex;
+  flex: none;
+  vertical-align: -2px;
+}
+
+.icon-inline {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}

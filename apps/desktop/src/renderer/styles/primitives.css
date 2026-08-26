@@ -1,0 +1,533 @@
+/* ==========================================================================
+   Primitive component styling: components/ui/*.
+   Requires styles/tokens.css to be loaded first.
+   ========================================================================== */
+
+/* ---------- Button ---------- */
+
+.ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  font-family: var(--font);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+  white-space: nowrap;
+}
+
+.ui-button--md {
+  min-height: 32px;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-base);
+}
+
+.ui-button--sm {
+  min-height: 28px;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+}
+
+.ui-button--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--text-on-accent);
+}
+
+.ui-button--primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.ui-button--primary:active:not(:disabled) {
+  background: var(--accent-active);
+  border-color: var(--accent-active);
+}
+
+.ui-button--secondary {
+  background: var(--bg-elevated);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.ui-button--secondary:hover:not(:disabled) {
+  background: var(--bg-subtle);
+  border-color: var(--border-strong);
+}
+
+.ui-button--secondary:active:not(:disabled) {
+  background: var(--bg-inset);
+}
+
+.ui-button--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text);
+}
+
+.ui-button--ghost:hover:not(:disabled) {
+  background: var(--bg-inset);
+}
+
+.ui-button--ghost:active:not(:disabled) {
+  background: var(--accent-subtle);
+}
+
+/* Danger is outline-at-rest across the whole app: transparent surface with a
+   danger border/text, filling solid only on hover/active. This keeps a
+   destructive action visible without every screen being dotted with solid
+   red buttons at rest. */
+.ui-button--danger {
+  background: transparent;
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.ui-button--danger:hover:not(:disabled) {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: var(--text-on-accent);
+}
+
+.ui-button--danger:active:not(:disabled) {
+  background: var(--danger-active);
+  border-color: var(--danger-active);
+  color: var(--text-on-accent);
+}
+
+.ui-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ui-button__icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.ui-button__spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  opacity: 0.7;
+  animation: ui-spin var(--dur) linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-button__spinner {
+    animation: none;
+  }
+}
+
+@keyframes ui-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Card ---------- */
+
+.ui-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.ui-card--compact {
+  padding: var(--space-4);
+}
+
+.ui-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.ui-card__header-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.ui-card__eyebrow {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.ui-card__title {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  color: var(--text);
+}
+
+.ui-card__description {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-normal);
+  color: var(--text-muted);
+  line-height: var(--leading-normal);
+}
+
+.ui-card__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+/* Card body holds arbitrary stacked children (a heading, fields, grids,
+   alerts, hints, …) passed as `children` rather than the `title`/
+   `description` props — give them a uniform rhythm here once so every Card
+   consumer gets consistent title→body and inter-element spacing without
+   having to add its own gap. See DESIGN_CONTRACT.md §3 (card title → body). */
+.ui-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  font-size: var(--text-base);
+  color: var(--text);
+}
+
+/* ---------- Panel (generic bordered surface used directly by a few pages
+   instead of the Card component — Work Log, Live Logs, Git, Projects list,
+   Doctor) ---------- */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-elevated);
+  padding: var(--space-5);
+  transition: border-color var(--dur-fast) var(--ease);
+}
+
+.panel:hover {
+  border-color: var(--border-strong);
+}
+
+/* ---------- Badge ---------- */
+
+.ui-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
+  white-space: nowrap;
+}
+
+.ui-badge--neutral {
+  background: var(--bg-inset);
+  color: var(--text-muted);
+}
+
+.ui-badge--success {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.ui-badge--danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.ui-badge--warning {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+.ui-badge--info {
+  background: var(--info-bg);
+  color: var(--info);
+}
+
+.ui-badge--accent {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+
+.ui-badge__icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ---------- StatusDot ---------- */
+
+.ui-status-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.ui-status-dot__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.ui-status-dot__dot--neutral {
+  background: var(--text-subtle);
+}
+
+.ui-status-dot__dot--success {
+  background: var(--success);
+}
+
+.ui-status-dot__dot--danger {
+  background: var(--danger);
+}
+
+.ui-status-dot__dot--warning {
+  background: var(--warning);
+}
+
+.ui-status-dot__dot--info {
+  background: var(--info);
+}
+
+.ui-status-dot__dot--accent {
+  background: var(--accent);
+}
+
+.ui-status-dot__dot--pulse {
+  animation: ui-status-dot-pulse 1.8s var(--ease) infinite;
+}
+
+@keyframes ui-status-dot-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.82);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-status-dot__dot--pulse {
+    animation: none;
+  }
+}
+
+/* ---------- Alert ---------- */
+
+.ui-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-left-width: 3px;
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+}
+
+.ui-alert--info {
+  border-left-color: var(--info);
+  background: var(--info-bg);
+}
+
+.ui-alert--success {
+  border-left-color: var(--success);
+  background: var(--success-bg);
+}
+
+.ui-alert--warning {
+  border-left-color: var(--warning);
+  background: var(--warning-bg);
+}
+
+.ui-alert--danger {
+  border-left-color: var(--danger);
+  background: var(--danger-bg);
+}
+
+.ui-alert__icon {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.ui-alert--info .ui-alert__icon {
+  color: var(--info);
+}
+
+.ui-alert--success .ui-alert__icon {
+  color: var(--success);
+}
+
+.ui-alert--warning .ui-alert__icon {
+  color: var(--warning);
+}
+
+.ui-alert--danger .ui-alert__icon {
+  color: var(--danger);
+}
+
+.ui-alert__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  flex: 1;
+}
+
+.ui-alert__title {
+  font-weight: var(--weight-semibold);
+  color: var(--text);
+}
+
+.ui-alert__message {
+  color: var(--text-muted);
+}
+
+.ui-alert__action {
+  flex-shrink: 0;
+}
+
+/* ---------- Field ---------- */
+
+.ui-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.ui-field__label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text);
+}
+
+.ui-field__required {
+  color: var(--danger);
+}
+
+.ui-field__hint {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.ui-field__error {
+  font-size: var(--text-sm);
+  color: var(--danger);
+}
+
+.ui-field--error .ui-field__label {
+  color: var(--danger);
+}
+
+/* ---------- EmptyState ---------- */
+
+.ui-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-2);
+  padding: var(--space-12) var(--space-6);
+  color: var(--text-muted);
+}
+
+/* Compact variant for an empty state nested inside an already-bordered card
+   section (a small "no items yet" row list) — the full padding above is
+   sized for a standalone panel and reads as a large dead gap in a tighter
+   context. */
+.ui-empty-state--compact {
+  padding: var(--space-6) var(--space-4);
+}
+
+.ui-empty-state__icon {
+  display: inline-flex;
+  color: var(--text-muted);
+  margin-bottom: var(--space-2);
+}
+
+.ui-empty-state__title {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  color: var(--text);
+}
+
+.ui-empty-state__description {
+  font-size: var(--text-base);
+  max-width: 360px;
+  line-height: var(--leading-normal);
+}
+
+.ui-empty-state__action {
+  margin-top: var(--space-2);
+}
+
+/* ---------- SectionHeading ---------- */
+
+.ui-section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.ui-section-heading__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.ui-section-heading__eyebrow {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.ui-section-heading__title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--text);
+  margin: 0;
+}
+
+.ui-section-heading__description {
+  font-size: var(--text-base);
+  color: var(--text-muted);
+  line-height: var(--leading-normal);
+}
+
+.ui-section-heading__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+

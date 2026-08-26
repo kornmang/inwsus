@@ -2,6 +2,17 @@ import type { ReactElement, ReactNode } from 'react';
 import type { UiLocale, UpdateStatus } from '@inwsus/ipc-contracts';
 import { createTranslator } from '../../i18n/index.js';
 import type { MessageKey } from '../../i18n/messages.js';
+import { StatusDot } from '../../components/ui/index.js';
+import {
+  Activity,
+  GitBranch,
+  Home,
+  LayoutGrid,
+  ScrollText,
+  Settings,
+  Stethoscope,
+  type IconProps,
+} from '../../components/icons/index.js';
 
 export type Screen = 'home' | 'projects' | 'git' | 'worklog' | 'live' | 'settings' | 'doctor';
 
@@ -17,46 +28,47 @@ interface AppShellProps {
   readonly children: ReactNode;
 }
 
-const navItems: ReadonlyArray<{ readonly screen: Screen; readonly key: MessageKey }> = [
-  { screen: 'home', key: 'nav.home' },
-  { screen: 'projects', key: 'nav.projects' },
-  { screen: 'git', key: 'nav.git' },
-  { screen: 'worklog', key: 'nav.workLog' },
-  { screen: 'live', key: 'nav.live' },
-  { screen: 'settings', key: 'nav.settings' },
-  { screen: 'doctor', key: 'nav.doctor' },
+const navItems: ReadonlyArray<{
+  readonly screen: Screen;
+  readonly key: MessageKey;
+  readonly icon: (props: IconProps) => ReactElement;
+}> = [
+  { screen: 'home', key: 'nav.home', icon: Home },
+  { screen: 'projects', key: 'nav.projects', icon: LayoutGrid },
+  { screen: 'git', key: 'nav.git', icon: GitBranch },
+  { screen: 'worklog', key: 'nav.workLog', icon: ScrollText },
+  { screen: 'live', key: 'nav.live', icon: Activity },
+  { screen: 'settings', key: 'nav.settings', icon: Settings },
+  { screen: 'doctor', key: 'nav.doctor', icon: Stethoscope },
 ];
 
 export function AppShell(props: AppShellProps): ReactElement {
   const t = createTranslator(props.locale);
   return (
     <div className="window-container">
-      {/* Modern Luxury Dark Gold Titlebar */}
       <header className="custom-titlebar">
         <div className="titlebar-drag-region">
           <div className="titlebar-brand">
             <img src="./favicon.ico" alt="inwsus logo" className="titlebar-logo" />
             <span className="titlebar-title">{t('brand')}</span>
-            <button
-              type="button"
-              className={`titlebar-version update-${props.updateStatus?.phase ?? 'idle'}`}
-              onClick={props.onUpdateAction}
-              title={props.updateStatus?.message ?? (props.locale === 'th' ? 'กดเพื่อตรวจอัปเดต' : 'Check for updates')}
-              aria-label={props.updateStatus?.canInstall === true
-                ? (props.locale === 'th' ? `ติดตั้งอัปเดต ${props.updateStatus.availableVersion ?? ''}` : `Install update ${props.updateStatus.availableVersion ?? ''}`)
-                : (props.locale === 'th' ? 'ตรวจอัปเดต' : 'Check for updates')}
-              aria-busy={props.updateStatus?.phase === 'checking' || props.updateStatus?.phase === 'downloading'}
-            >
-              {versionBadgeText(props.appVersion, props.updateStatus, props.locale)}
-            </button>
           </div>
-
-          <div className="titlebar-center">
-            <div className="titlebar-status-indicator">
-              <span className={`titlebar-dot ${props.mcpRunning ? 'active' : ''}`}></span>
-              <span>{props.mcpRunning ? (props.locale === 'th' ? 'MCP Gateway ออนไลน์' : 'MCP Gateway Active') : (props.locale === 'th' ? 'MCP พร้อมทำงาน' : 'MCP Ready')}</span>
-            </div>
-          </div>
+          <button
+            type="button"
+            className={`titlebar-version update-${props.updateStatus?.phase ?? 'idle'}`}
+            onClick={props.onUpdateAction}
+            title={props.updateStatus?.message ?? (props.locale === 'th' ? 'กดเพื่อตรวจอัปเดต' : 'Check for updates')}
+            aria-label={props.updateStatus?.canInstall === true
+              ? (props.locale === 'th' ? `ติดตั้งอัปเดต ${props.updateStatus.availableVersion ?? ''}` : `Install update ${props.updateStatus.availableVersion ?? ''}`)
+              : (props.locale === 'th' ? 'ตรวจอัปเดต' : 'Check for updates')}
+            aria-busy={props.updateStatus?.phase === 'checking' || props.updateStatus?.phase === 'downloading'}
+          >
+            {versionBadgeText(props.appVersion, props.updateStatus, props.locale)}
+          </button>
+          <StatusDot
+            className="titlebar-status"
+            tone={props.mcpRunning ? 'success' : 'neutral'}
+            label={props.mcpRunning ? (props.locale === 'th' ? 'MCP Gateway ออนไลน์' : 'MCP Gateway Active') : (props.locale === 'th' ? 'MCP พร้อมทำงาน' : 'MCP Ready')}
+          />
         </div>
 
         <div className="titlebar-actions">
@@ -94,15 +106,17 @@ export function AppShell(props: AppShellProps): ReactElement {
                 className={props.screen === item.screen ? 'nav-item active' : 'nav-item'}
                 onClick={() => props.onNavigate(item.screen)}
               >
-                {t(item.key)}
+                <item.icon size={16} className="nav-item__icon" />
+                <span className="nav-item__label">{t(item.key)}</span>
               </button>
             ))}
           </nav>
           <div className="sidebar-footer">
-            <span>Windows Desktop</span>
-            <strong className={props.mcpRunning ? 'status-online' : 'status-offline'}>
-              {props.mcpRunning ? t('footer.connected') : t('footer.disconnected')}
-            </strong>
+            <span className="sidebar-footer__label">Windows Desktop</span>
+            <StatusDot
+              tone={props.mcpRunning ? 'success' : 'neutral'}
+              label={props.mcpRunning ? t('footer.connected') : t('footer.disconnected')}
+            />
           </div>
         </aside>
 

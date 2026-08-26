@@ -7,7 +7,7 @@ describe('titlebar update notification', () => {
     const root = path.resolve(import.meta.dirname, '..');
     const shell = await readFile(path.join(root, 'src', 'renderer', 'features', 'shell', 'AppShell.tsx'), 'utf8');
     const app = await readFile(path.join(root, 'src', 'renderer', 'App.tsx'), 'utf8');
-    const styles = await readFile(path.join(root, 'src', 'renderer', 'styles.css'), 'utf8');
+    const styles = await readFile(path.join(root, 'src', 'renderer', 'styles', 'shell.css'), 'utf8');
 
     expect(shell).toContain("className={`titlebar-version update-${props.updateStatus?.phase ?? 'idle'}`}");
     expect(shell).toContain('onClick={props.onUpdateAction}');
@@ -16,6 +16,6 @@ describe('titlebar update notification', () => {
     expect(app).toContain('window.inwsus.onUpdateStatus');
     expect(app).toContain('window.inwsus.installUpdate()');
     expect(styles).toContain('.titlebar-version.update-ready');
-    expect(styles).toContain('@keyframes update-ready-pulse');
+    expect(styles).toContain('@keyframes shell-update-ready-pulse');
   });
 });

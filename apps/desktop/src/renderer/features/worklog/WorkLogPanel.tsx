@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState, type ReactElement } from 'react';
 import type { InFlightWorkItem, WorkLogEntry, WorkspaceSummary } from '@inwsus/ipc-contracts';
 import { copyTextToClipboard } from '../../clipboard.js';
+import { Button, EmptyState } from '../../components/ui/index.js';
+import { Check, Copy, ScrollText } from '../../components/icons/index.js';
 import type { MessageKey } from '../../i18n/messages.js';
 
 export type WorkLogFilter = 'all' | 'error';
@@ -67,23 +69,31 @@ export function WorkLogPanel(props: WorkLogPanelProps): ReactElement {
       <div className="section-heading">
         <h2>{props.title}</h2>
         <div className="worklog-actions">
-          <button
-            type="button"
-            className={props.filter === 'all' ? 'active' : undefined}
-            onClick={() => props.onFilterChange('all')}
-          >
-            {props.filterAllLabel}
-          </button>
-          <button
-            type="button"
-            className={props.filter === 'error' ? 'active' : undefined}
-            onClick={() => props.onFilterChange('error')}
-          >
-            {props.filterErrorLabel}
-          </button>
-          <button type="button" disabled={sessionId === null} onClick={() => { if (sessionId !== null) void props.onClear({ workspaceId: null, sessionId }); }}>{props.clearSessionLabel}</button>
-          <button type="button" disabled={workspaceId === null} onClick={() => { if (workspaceId !== null) void props.onClear({ workspaceId, sessionId: null }); }}>{props.clearWorkspaceLabel}</button>
-          <button type="button" onClick={() => { void props.onClear({ workspaceId: null, sessionId: null }); }}>{props.clearAllLabel}</button>
+          <div className="segmented-control" role="group" aria-label={`${props.filterAllLabel} / ${props.filterErrorLabel}`}>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              className={props.filter === 'all' ? 'active' : undefined}
+              onClick={() => props.onFilterChange('all')}
+            >
+              {props.filterAllLabel}
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              className={props.filter === 'error' ? 'active' : undefined}
+              onClick={() => props.onFilterChange('error')}
+            >
+              {props.filterErrorLabel}
+            </Button>
+          </div>
+          <div className="worklog-actions__destructive">
+            <Button type="button" variant="secondary" size="sm" disabled={sessionId === null} onClick={() => { if (sessionId !== null) void props.onClear({ workspaceId: null, sessionId }); }}>{props.clearSessionLabel}</Button>
+            <Button type="button" variant="secondary" size="sm" disabled={workspaceId === null} onClick={() => { if (workspaceId !== null) void props.onClear({ workspaceId, sessionId: null }); }}>{props.clearWorkspaceLabel}</Button>
+            <Button type="button" variant="secondary" size="sm" onClick={() => { void props.onClear({ workspaceId: null, sessionId: null }); }}>{props.clearAllLabel}</Button>
+          </div>
         </div>
       </div>
       <div className="scope-filter-bar">
@@ -111,7 +121,7 @@ export function WorkLogPanel(props: WorkLogPanelProps): ReactElement {
         onChange={(event) => setSearch(event.target.value)}
       />
       <div className="worklog-stream" data-testid="work-log">
-        {visible.length === 0 ? <p>{props.emptyLabel}</p> : null}
+        {visible.length === 0 ? <EmptyState icon={<ScrollText size={32} />} title={props.emptyLabel} /> : null}
         {visible.map((row) => row.kind === 'inflight' ? (
           <div key={`inflight:${row.id}`} className="worklog-line inflight">
             <time>{formatTime(row.item.startedAt)}</time>
@@ -146,9 +156,16 @@ function CopyButton(props: {
   const copied = props.copiedId === props.row.id;
   const label = copied ? (props.copiedLabel ?? 'Copied') : (props.copyLabel ?? 'Copy full log');
   return (
-    <button type="button" className="row-copy-button" title={label} aria-label={label} onClick={() => { void props.onCopy(props.row); }}>
-      {copied ? '✓' : '⧉'}
-    </button>
+    <Button
+      type="button"
+      variant="ghost"
+      size="sm"
+      className="row-copy-button"
+      title={label}
+      aria-label={label}
+      icon={copied ? <Check size={14} className="icon" /> : <Copy size={14} className="icon" />}
+      onClick={() => { void props.onCopy(props.row); }}
+    />
   );
 }
 

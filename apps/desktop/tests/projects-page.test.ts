@@ -35,11 +35,14 @@ describe('Projects page lifecycle controls', () => {
     expect(markup).toContain('Active projects');
     expect(markup).toContain('Archived projects');
     expect(markup).toContain('System workspaces');
-    expect(markup).toContain('Archive</button>');
-    expect(markup).toContain('Restore</button>');
-    expect(markup).toContain('Remove</button>');
+    // Buttons render via the shared `Button` primitive, which wraps its label
+    // in a `ui-button__label` span — assert against that shape instead of a
+    // bare `<button>` close tag.
+    expect(markup).toContain('Archive</span></button>');
+    expect(markup).toContain('Restore</span></button>');
+    expect(markup).toContain('Remove</span></button>');
     expect(markup).toContain('managed automatically by inwsus');
-    expect(markup.match(/>Remove<\/button>/g)?.length).toBe(2);
+    expect(markup.match(/>Remove<\/span><\/button>/g)?.length).toBe(2);
   });
 
   it('explains that registration removal never deletes project files', () => {

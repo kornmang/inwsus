@@ -1,5 +1,7 @@
 import { useEffect, useState, type ReactElement } from 'react';
 import type { DashboardSnapshot, WorkspaceSummary } from '@inwsus/ipc-contracts';
+import { Badge, Button, Card, StatusDot } from '../../components/ui/index.js';
+import { Copy } from '../../components/icons/index.js';
 
 interface McpPanelProps {
   readonly status: DashboardSnapshot['mcp'];
@@ -27,38 +29,58 @@ export function McpPanel({ status, selectedWorkspace, onStart, onStop, busy }: M
   }
 
   return (
-    <section className="card mcp-card" aria-label="MCP connection">
-      <div className="section-heading">
-        <h2>MCP connection</h2>
-        <span>{selectedWorkspace?.displayName ?? 'No workspace selected'}</span>
-      </div>
-      <div className="mcp-status-row">
+    <Card
+      className="mcp-card"
+      aria-label="MCP connection"
+      title="MCP connection"
+      actions={<Badge tone="neutral">{selectedWorkspace?.displayName ?? 'No workspace selected'}</Badge>}
+    >
+      <div className="card-stack">
+        <div className="agent-status-row agent-status-row--split">
+          <div className="agent-status-row__group">
+            <StatusDot tone={status.running ? 'success' : 'neutral'} />
+            <div className="agent-status-row__text">
+              <span className="agent-status-row__meta">Local status</span>
+              <strong data-testid="mcp-status">{status.running ? 'Running' : 'Stopped'}</strong>
+            </div>
+          </div>
+          <div className="project-row__actions">
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={busy || status.running || selectedWorkspace === null}
+              onClick={() => { void onStart(); }}
+            >
+              Start Connection
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={busy || !status.running}
+              onClick={() => { void onStop(); }}
+            >
+              Stop Connection
+            </Button>
+          </div>
+        </div>
         <div>
-          <p className="card-label">Local status</p>
-          <strong data-testid="mcp-status">{status.running ? 'Running' : 'Stopped'}</strong>
+          <p className="stat-tile__label">MCP endpoint</p>
+          <code className="endpoint-code" data-testid="mcp-endpoint">{status.url ?? 'No local endpoint active'}</code>
         </div>
-        <div className="mcp-actions">
-          <button
-            type="button"
-            disabled={busy || status.running || selectedWorkspace === null}
-            onClick={() => { void onStart(); }}
+        <div className="field-row">
+          <Button
+            size="sm"
+            variant="ghost"
+            icon={<Copy size={14} />}
+            disabled={status.url === null}
+            onClick={() => { void copyEndpoint(); }}
           >
-            Start Connection
-          </button>
-          <button type="button" disabled={busy || !status.running} onClick={() => { void onStop(); }}>
-            Stop Connection
-          </button>
+            Copy MCP endpoint
+          </Button>
+          {copyStatus === null ? null : <span data-testid="mcp-copy-status" role="status">{copyStatus}</span>}
         </div>
       </div>
-      <p className="mcp-endpoint-label">MCP endpoint</p>
-      <code data-testid="mcp-endpoint" className="mcp-endpoint">{status.url ?? 'No local endpoint active'}</code>
-      <div className="mcp-copy-row">
-        <button type="button" disabled={status.url === null} onClick={() => { void copyEndpoint(); }}>
-          Copy MCP endpoint
-        </button>
-        {copyStatus === null ? null : <span data-testid="mcp-copy-status" role="status">{copyStatus}</span>}
-      </div>
-    </section>
+    </Card>
   );
 }
 

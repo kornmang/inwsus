@@ -1,6 +1,8 @@
 import { useMemo, useState, type ReactElement } from 'react';
 import type { UiLocale, WorkspaceSummary } from '@inwsus/ipc-contracts';
 import { createTranslator } from '../../i18n/index.js';
+import { Badge, Button, Card, EmptyState, Field } from '../../components/ui/index.js';
+import { Folder } from '../../components/icons/index.js';
 
 interface ProjectsPageProps {
   readonly locale: UiLocale;
@@ -34,44 +36,44 @@ export function ProjectsPage(props: ProjectsPageProps): ReactElement {
     const busy = workspace.id === busyWorkspaceId;
     const confirmingDelete = workspace.id === confirmingDeleteId;
     return (
-      <li key={workspace.id} className={selected ? 'active' : archived ? 'archived' : undefined}>
-        <div className="project-row-main">
-          <div className="project-row-title">
+      <li key={workspace.id} className={`project-row ${selected ? 'project-row--active' : ''}`}>
+        <div className="project-row__main">
+          <div className="project-row__title">
             <strong>{workspace.displayName}</strong>
-            {selected ? <span className="project-status-badge current">{t('project.active')}</span> : null}
-            {archived ? <span className="project-status-badge archived">{t('project.archivedBadge')}</span> : null}
+            {selected ? <Badge tone="accent">{t('project.active')}</Badge> : null}
+            {archived ? <Badge tone="neutral">{t('project.archivedBadge')}</Badge> : null}
           </div>
-          <p>{workspace.realRootPath}</p>
-          {confirmingDelete ? <p className="project-delete-hint">{t('project.deleteHint')}</p> : null}
+          <p className="project-row__path">{workspace.realRootPath}</p>
+          {confirmingDelete ? <p className="project-row__path">{t('project.deleteHint')}</p> : null}
         </div>
-        <div className="project-actions">
+        <div className="project-row__actions">
           {archived ? (
-            <button type="button" disabled={busy} onClick={() => { void runWorkspaceAction(workspace.id, () => props.onSetWorkspaceArchived(workspace.id, false)); }}>
+            <Button size="sm" variant="secondary" disabled={busy} onClick={() => { void runWorkspaceAction(workspace.id, () => props.onSetWorkspaceArchived(workspace.id, false)); }}>
               {t('project.restore')}
-            </button>
+            </Button>
           ) : (
             <>
-              <button type="button" disabled={busy || selected} onClick={() => { void runWorkspaceAction(workspace.id, () => props.onSelectWorkspace(workspace.id)); }}>
+              <Button size="sm" variant={selected ? 'secondary' : 'primary'} disabled={busy || selected} onClick={() => { void runWorkspaceAction(workspace.id, () => props.onSelectWorkspace(workspace.id)); }}>
                 {selected ? t('project.active') : t('project.setMain')}
-              </button>
-              <button type="button" className="project-archive-button" disabled={busy} onClick={() => { void runWorkspaceAction(workspace.id, () => props.onSetWorkspaceArchived(workspace.id, true)); }}>
+              </Button>
+              <Button size="sm" variant="secondary" disabled={busy} onClick={() => { void runWorkspaceAction(workspace.id, () => props.onSetWorkspaceArchived(workspace.id, true)); }}>
                 {t('project.archive')}
-              </button>
+              </Button>
             </>
           )}
           {confirmingDelete ? (
             <>
-              <button type="button" className="project-delete-button confirm" disabled={busy} onClick={() => { void runWorkspaceAction(workspace.id, () => props.onDeleteWorkspace(workspace.id)); }}>
+              <Button size="sm" variant="danger" disabled={busy} onClick={() => { void runWorkspaceAction(workspace.id, () => props.onDeleteWorkspace(workspace.id)); }}>
                 {t('project.confirmDelete')}
-              </button>
-              <button type="button" className="project-cancel-button" disabled={busy} onClick={() => setConfirmingDeleteId(null)}>
+              </Button>
+              <Button size="sm" variant="ghost" disabled={busy} onClick={() => setConfirmingDeleteId(null)}>
                 {t('project.cancel')}
-              </button>
+              </Button>
             </>
           ) : (
-            <button type="button" className="project-delete-button" disabled={busy} onClick={() => setConfirmingDeleteId(workspace.id)}>
+            <Button size="sm" variant="danger" disabled={busy} onClick={() => setConfirmingDeleteId(workspace.id)}>
               {t('project.delete')}
-            </button>
+            </Button>
           )}
         </div>
       </li>
@@ -81,21 +83,23 @@ export function ProjectsPage(props: ProjectsPageProps): ReactElement {
   return (
     <div className="page-content viewport-list-page projects-page">
       <h1>{t('nav.projects')}</h1>
-      <section className="panel">
-        <label className="field-label" htmlFor="workspace-root">{t('project.add')}</label>
-        <div className="form-row">
-          <input
-            id="workspace-root"
-            aria-label="Workspace root"
-            value={rootPath}
-            onChange={(event) => setRootPath(event.target.value)}
-          />
-          <button type="button" disabled={rootPath.trim().length === 0} onClick={() => { void props.onAddWorkspace(rootPath).then(() => setRootPath('')); }}>
-            {t('project.add')}
-          </button>
-        </div>
-        <p className="project-add-hint">{t('project.addHint')}</p>
-      </section>
+      <Card>
+        <Field label={t('project.add')} htmlFor="workspace-root" hint={t('project.addHint')}>
+          {({ controlId }) => (
+            <div className="field-row">
+              <input
+                id={controlId}
+                aria-label="Workspace root"
+                value={rootPath}
+                onChange={(event) => setRootPath(event.target.value)}
+              />
+              <Button size="sm" disabled={rootPath.trim().length === 0} onClick={() => { void props.onAddWorkspace(rootPath).then(() => setRootPath('')); }}>
+                {t('project.add')}
+              </Button>
+            </div>
+          )}
+        </Field>
+      </Card>
       <section className="panel project-list-panel">
         <div className="project-list-scroll">
           <ProjectSection title={t('project.activeList')} count={groups.active.length} emptyText={t('project.emptyActive')}>
@@ -107,14 +111,14 @@ export function ProjectsPage(props: ProjectsPageProps): ReactElement {
           {groups.system.length === 0 ? null : (
             <ProjectSection title={t('project.systemList')} count={groups.system.length} emptyText="">
               {groups.system.map((workspace) => (
-                <li key={workspace.id} className="system-workspace">
-                  <div className="project-row-main">
-                    <div className="project-row-title">
+                <li key={workspace.id} className="project-row">
+                  <div className="project-row__main">
+                    <div className="project-row__title">
                       <strong>{workspace.displayName}</strong>
-                      <span className="project-status-badge system">{t('project.systemBadge')}</span>
+                      <Badge tone="neutral">{t('project.systemBadge')}</Badge>
                     </div>
-                    <p>{workspace.realRootPath}</p>
-                    <p className="project-system-hint">{t('project.systemHint')}</p>
+                    <p className="project-row__path">{workspace.realRootPath}</p>
+                    <p className="project-row__path">{t('project.systemHint')}</p>
                   </div>
                 </li>
               ))}
@@ -129,8 +133,12 @@ export function ProjectsPage(props: ProjectsPageProps): ReactElement {
 function ProjectSection(props: { readonly title: string; readonly count: number; readonly emptyText: string; readonly children: ReactElement | readonly ReactElement[] }): ReactElement {
   return (
     <section className="project-list-section">
-      <div className="project-list-heading"><h2>{props.title}</h2><span>{props.count}</span></div>
-      {props.count === 0 ? <p className="project-empty">{props.emptyText}</p> : <ul className="project-list">{props.children}</ul>}
+      <div className="project-list-section-heading"><h2>{props.title}</h2><Badge tone="neutral">{props.count}</Badge></div>
+      {props.count === 0 ? (
+        <EmptyState icon={<Folder size={24} />} title={props.emptyText} />
+      ) : (
+        <ul className="project-list">{props.children}</ul>
+      )}
     </section>
   );
 }

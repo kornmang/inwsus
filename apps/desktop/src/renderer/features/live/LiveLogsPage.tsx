@@ -1,6 +1,8 @@
 import { useState, type ReactElement } from 'react';
 import type { IncidentClassification, LogLine, LogSource, UiLocale, WorkspaceSummary } from '@inwsus/ipc-contracts';
 import { createTranslator } from '../../i18n/index.js';
+import { Alert, Button } from '../../components/ui/index.js';
+import { Activity, Loader, ExternalLink } from '../../components/icons/index.js';
 import { LogStreamPanel, type LogScopeSelection } from './LogStreamPanel.js';
 
 interface LiveLogsPageProps {
@@ -35,12 +37,20 @@ export function LiveLogsPage(props: LiveLogsPageProps): ReactElement {
           <p className="page-subtitle">{t('live.subtitle')}</p>
         </div>
         <div className="heading-actions">
-          <button type="button" className="clear-all-logs-button" onClick={() => { void props.onClearAll(); }}>{props.locale === 'th' ? 'ล้าง Log ทั้งหมด' : 'Clear All Logs'}</button>
-          <button type="button" disabled={props.incidentBusy} onClick={() => { void props.onCaptureIncident(); }}>{t('live.captureIncident')}</button>
-          <button type="button" onClick={() => { void props.onPopOut(); }}>{t('live.popOut')}</button>
+          <Button type="button" variant="danger" size="sm" className="clear-all-logs-button" onClick={() => { void props.onClearAll(); }}>{props.locale === 'th' ? 'ล้าง Log ทั้งหมด' : 'Clear All Logs'}</Button>
+          <Button type="button" variant="secondary" size="sm" disabled={props.incidentBusy} onClick={() => { void props.onCaptureIncident(); }}>{t('live.captureIncident')}</Button>
+          <Button type="button" variant="secondary" size="sm" icon={<ExternalLink size={14} />} onClick={() => { void props.onPopOut(); }}>{t('live.popOut')}</Button>
         </div>
       </div>
-      {!props.incidentBusy && props.incidentNotice === null && props.incidentClassification === null ? null : <p className="hint" role="status">{props.incidentBusy ? t('live.incident.capturing') : props.incidentNotice ?? `${incidentSummary(t, props.incidentClassification!)} · ${props.incidentCapturedAt ?? ''}`}</p>}
+      {!props.incidentBusy && props.incidentNotice === null && props.incidentClassification === null ? null : (
+        <Alert
+          tone={props.incidentBusy ? 'info' : 'warning'}
+          role="status"
+          icon={props.incidentBusy ? <Loader size={16} /> : <Activity size={16} />}
+        >
+          {props.incidentBusy ? t('live.incident.capturing') : props.incidentNotice ?? `${incidentSummary(t, props.incidentClassification!)} · ${props.incidentCapturedAt ?? ''}`}
+        </Alert>
+      )}
       <div className="log-tabs" role="tablist" aria-label={t('live.title')}>
         {sources.map((source) => (
           <button

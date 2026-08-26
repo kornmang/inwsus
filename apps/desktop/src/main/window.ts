@@ -51,8 +51,8 @@ export function createMainWindow(showOnReady = true): BrowserWindow {
     autoHideMenuBar: true,
     titleBarStyle: 'hidden',
     titleBarOverlay: {
-      color: '#07090e',
-      symbolColor: '#f5c542',
+      color: '#faf9f5',
+      symbolColor: '#1f1e1d',
       height: 38,
     },
     ...(iconPath !== undefined ? { icon: iconPath } : {}),
@@ -98,8 +98,8 @@ export function createLogViewerWindow(): BrowserWindow {
     title: 'inwsus — Live Logs',
     titleBarStyle: 'hidden',
     titleBarOverlay: {
-      color: '#07090e',
-      symbolColor: '#f5c542',
+      color: '#faf9f5',
+      symbolColor: '#1f1e1d',
       height: 38,
     },
     ...(iconPath !== undefined ? { icon: iconPath } : {}),

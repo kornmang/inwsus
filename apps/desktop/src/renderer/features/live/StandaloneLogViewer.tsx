@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactElement } from 'react';
 import type { LogLine, LogSource } from '@inwsus/ipc-contracts';
 import { createTranslator } from '../../i18n/index.js';
+import { Button } from '../../components/ui/index.js';
 import { applyLogSnapshot } from './log-buffer.js';
 import { LogStreamPanel, type LogScopeSelection } from './LogStreamPanel.js';
 
@@ -83,7 +84,7 @@ export function StandaloneLogViewer(): ReactElement {
             <span className="titlebar-version">Live Logs</span>
           </div>
           <div className="titlebar-center">
-            <span className="hint" style={{ fontSize: '11.5px' }}>{tunnelLogPath ?? ''}</span>
+            <span className="hint">{tunnelLogPath ?? ''}</span>
           </div>
         </div>
       </header>
@@ -104,7 +105,7 @@ export function StandaloneLogViewer(): ReactElement {
               </button>
             ))}
           </div>
-          <button type="button" className="clear-all-logs-button" onClick={() => { void clearAll(); }}>ล้าง Log ทั้งหมด</button>
+          <Button type="button" variant="danger" size="sm" className="clear-all-logs-button" onClick={() => { void clearAll(); }}>ล้าง Log ทั้งหมด</Button>
         </div>
         <LogStreamPanel
           title={tab === 'tunnel' ? t('live.tabTunnel') : tab === 'mcp' ? t('live.tabMcp') : t('live.tabProcess')}

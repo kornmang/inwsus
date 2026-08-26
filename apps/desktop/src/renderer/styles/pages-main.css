@@ -1,0 +1,544 @@
+/* ==========================================================================
+   Wave 2 / Track D — per-page layout for: Home (Control Center), Projects,
+   Git, Dashboard, and the dashboard sub-panels (Workspace, MCP, Capability,
+   Permission, Process).
+   Requires tokens.css, base.css, primitives.css to be loaded first.
+
+   `.page-content`, `.page-heading`, `.page-subtitle`, `.heading-actions`,
+   `.viewport-list-page`, `.project-list-panel`, `.project-list-scroll` are
+   shared shell layout classes and live in styles/shell.css. `.git-file-list`,
+   `.git-not-repo-notice`, `.git-switch-list`, and `.git-panel` are Git-page-
+   specific layout and are defined below (wave 3).
+   ========================================================================== */
+
+/* ---------- shared page primitives ---------- */
+
+.section-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  min-width: 0;
+}
+
+.card-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.stat-tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  min-width: 0;
+}
+
+/* One neutral surface for every tile (contract §1/§4) — state is carried by
+   the value text colour plus the StatusDot next to the label, never by a
+   per-tile background tint or a coloured border. */
+.stat-tile__label-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.stat-tile__label {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.stat-tile__value {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.stat-tile__value--warn {
+  color: var(--warning);
+}
+
+.stat-tile__value--safe {
+  color: var(--success);
+}
+
+.stat-tile__value--active {
+  color: var(--accent);
+}
+
+.kv-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.kv-list > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.kv-list dt {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.kv-list dd {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.endpoint-code {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-subtle);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Home / Control Center ---------- */
+
+.agent-status-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.agent-status-row--split {
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.agent-status-row__group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.agent-status-row__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.agent-status-row__meta {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.security-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-3);
+}
+
+.home-two-col {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+
+/* ---------- Projects ---------- */
+
+.project-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+  transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+}
+
+.project-row:hover {
+  border-color: var(--border-strong);
+}
+
+.project-row--active {
+  border-color: var(--accent-border);
+  background: var(--accent-subtle);
+}
+
+.project-row__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  flex: 1;
+}
+
+.project-row__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.project-row__title strong {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  color: var(--text);
+}
+
+.project-row__path {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.project-row__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.project-list-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* An empty section (no active/archived projects) centres its EmptyState
+   inside a modest, page-coloured box instead of leaving it pinned to the
+   top of an otherwise bare block. */
+.project-list-section:has(> .ui-empty-state) {
+  flex: 1;
+  min-height: 200px;
+  padding: var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-elevated);
+}
+
+/* Keep the section heading pinned to the top and centre only the empty
+   state within the remaining space, so the box grows to fill the panel
+   without the heading drifting toward the middle. */
+.project-list-section:has(> .ui-empty-state) > .ui-empty-state {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.project-list-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.project-list-section-heading h2 {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--text);
+  margin: 0;
+}
+
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---------- Git ---------- */
+
+.git-branch-badge {
+  display: inline-flex;
+}
+
+.git-panel {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.git-not-repo-notice {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  flex: 1;
+  min-height: 0;
+  margin-top: var(--space-5);
+  padding: var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-subtle);
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.git-switch-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+  min-width: 0;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: var(--space-2);
+}
+
+.git-file-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-3);
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  min-width: 0;
+}
+
+.git-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-3);
+}
+
+.git-file-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+.git-file-row:hover {
+  background: var(--bg-inset);
+}
+
+.git-file-row__path {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--text);
+}
+
+.git-file-row__status {
+  color: var(--text-subtle);
+  font-family: var(--font);
+  font-size: var(--text-xs);
+  flex-shrink: 0;
+}
+
+.git-switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  flex-wrap: wrap;
+}
+
+.git-switch-row__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  flex: 1 1 200px;
+}
+
+.git-switch-row__text strong {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--text);
+}
+
+.git-switch-row__text p {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.git-notice-body {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.git-notice-body__icon {
+  color: var(--text-subtle);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.git-notice-body__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.git-notice-body__text strong {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  color: var(--text);
+}
+
+.git-notice-body__text p {
+  margin: 0;
+  font-size: var(--text-base);
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Dashboard + sub-panels ---------- */
+
+.audit-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.audit-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+}
+
+.audit-list li:hover {
+  background: var(--bg-inset);
+}
+
+.audit-list li span:first-child {
+  color: var(--text);
+}
+
+.audit-list li span:last-child {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+
+.capability-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.capability-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+}
+
+.capability-row__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.capability-row__text strong {
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--text);
+}
+
+.capability-row__text p {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.capability-row__text small {
+  font-size: var(--text-xs);
+  color: var(--text-subtle);
+}
+
+.capability-row__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.process-log {
+  margin: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-subtle);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.process-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}

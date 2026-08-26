@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
 import type { LogLevel, LogLine, LogSource, WorkspaceSummary } from '@inwsus/ipc-contracts';
 import { copyTextToClipboard } from '../../clipboard.js';
+import { Button, EmptyState } from '../../components/ui/index.js';
+import { Check, Copy, ScrollText } from '../../components/icons/index.js';
 import type { MessageKey } from '../../i18n/messages.js';
 
 export type LogTab = LogSource;
@@ -72,13 +74,15 @@ export function LogStreamPanel(props: LogStreamPanelProps): ReactElement {
       <div className="section-heading">
         <h2>{props.title}</h2>
         <div className="worklog-actions">
-          <button type="button" className={paused ? 'active' : undefined} onClick={() => setPaused((value) => !value)}>
+          <Button type="button" variant="secondary" size="sm" className={paused ? 'active' : undefined} onClick={() => setPaused((value) => !value)}>
             {paused ? props.followLabel : props.pauseLabel}
-          </button>
-          <button type="button" disabled={sessionId === null} onClick={() => { if (sessionId !== null) void props.onClear({ workspaceId: null, sessionId }); }}>{props.clearSessionLabel}</button>
-          <button type="button" disabled={workspaceId === null} onClick={() => { if (workspaceId !== null) void props.onClear({ workspaceId, sessionId: null }); }}>{props.clearWorkspaceLabel}</button>
-          <button type="button" onClick={() => { void props.onClear({ workspaceId: null, sessionId: null }); }}>{props.clearLabel}</button>
-          <button type="button" onClick={() => { void props.onExport(scope, filter); }}>{props.exportLabel}</button>
+          </Button>
+          <div className="worklog-actions__destructive">
+            <Button type="button" variant="secondary" size="sm" disabled={sessionId === null} onClick={() => { if (sessionId !== null) void props.onClear({ workspaceId: null, sessionId }); }}>{props.clearSessionLabel}</Button>
+            <Button type="button" variant="secondary" size="sm" disabled={workspaceId === null} onClick={() => { if (workspaceId !== null) void props.onClear({ workspaceId, sessionId: null }); }}>{props.clearWorkspaceLabel}</Button>
+            <Button type="button" variant="secondary" size="sm" onClick={() => { void props.onClear({ workspaceId: null, sessionId: null }); }}>{props.clearLabel}</Button>
+          </div>
+          <Button type="button" variant="secondary" size="sm" onClick={() => { void props.onExport(scope, filter); }}>{props.exportLabel}</Button>
         </div>
       </div>
       <div className="scope-filter-bar">
@@ -105,15 +109,17 @@ export function LogStreamPanel(props: LogStreamPanelProps): ReactElement {
         onChange={(event) => setFilter(event.target.value)}
         aria-label={props.filterPlaceholder}
       />
-      {props.source === 'tunnel' && !props.tunnelLogExists ? (
-        <p className="hint">
-          {props.waitingLabel}
-          {props.tunnelLogPath === null ? '' : ` (${props.tunnelLogPath})`}
-        </p>
-      ) : null}
       <div className="log-stream" ref={streamRef} data-testid="log-stream" role="log" aria-live="polite">
-        {visible.length === 0 && !(props.source === 'tunnel' && !props.tunnelLogExists) ? (
-          <p className="hint">{props.waitingLabel}</p>
+        {visible.length === 0 ? (
+          <EmptyState
+            icon={<ScrollText size={32} />}
+            title={props.waitingLabel}
+            description={
+              props.source === 'tunnel' && !props.tunnelLogExists && props.tunnelLogPath !== null
+                ? props.tunnelLogPath
+                : undefined
+            }
+          />
         ) : null}
         {visible.map((line) => {
           const display = logDisplayParts(line);
@@ -123,15 +129,16 @@ export function LogStreamPanel(props: LogStreamPanelProps): ReactElement {
               <span className="tag level-tag">[{line.level.toUpperCase()}]</span>
               {display.kind === null ? null : <span className={`event-tag ${display.kind}`}>[{display.kind.toUpperCase()}]</span>}
               <span className="log-message"><ScopeBadges line={line} showWorkspace={workspaceId === null} showSession={sessionId === null} workspaces={props.workspaces} />{display.detail}</span>
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="sm"
                 className="row-copy-button"
                 title={copiedId === line.id ? (props.copiedLabel ?? 'Copied') : (props.copyLabel ?? 'Copy full log')}
                 aria-label={copiedId === line.id ? (props.copiedLabel ?? 'Copied') : (props.copyLabel ?? 'Copy full log')}
+                icon={copiedId === line.id ? <Check size={14} className="icon" /> : <Copy size={14} className="icon" />}
                 onClick={() => { void copyLine(line); }}
-              >
-                {copiedId === line.id ? '✓' : '⧉'}
-              </button>
+              />
             </div>
           );
         })}

@@ -8,6 +8,19 @@ import { StandaloneLogViewer } from '../src/renderer/features/live/StandaloneLog
 
 const noop = async (): Promise<void> => undefined;
 
+/**
+ * Layout-critical rules for these selectors are split across the token-based
+ * stylesheet set (styles/shell.css, styles/pages-main.css, styles/pages-ops.css)
+ * rather than the single legacy styles.css. Concatenate them so the regex
+ * assertions below can match whichever file actually owns a given selector.
+ */
+function readLayoutCss(): string {
+  const files = ['shell.css', 'pages-main.css', 'pages-ops.css'];
+  return files
+    .map((file) => readFileSync(new URL(`../src/renderer/styles/${file}`, import.meta.url), 'utf8'))
+    .join('\n');
+}
+
 describe('viewport-sized log and list layout', () => {
   it('marks both embedded and pop-out viewers with dedicated fixed viewport containers', () => {
     const embedded = renderToStaticMarkup(createElement(LiveLogsPage, {
@@ -84,7 +97,7 @@ describe('viewport-sized log and list layout', () => {
   });
 
   it('keeps Live Logs inside the window and scrolls only the log table', () => {
-    const css = readFileSync(new URL('../src/renderer/styles.css', import.meta.url), 'utf8');
+    const css = readLayoutCss();
     expect(css).toMatch(/\.live-logs-page\s*\{[^}]*flex:\s*1[^}]*min-height:\s*0[^}]*overflow:\s*hidden/s);
     expect(css).toMatch(/\.live-logs-page \.log-stream\s*\{[^}]*min-height:\s*0[^}]*overflow-y:\s*auto/s);
     expect(css).toMatch(/\.log-viewer-window\s*\{[^}]*overflow:\s*hidden/s);
@@ -94,14 +107,14 @@ describe('viewport-sized log and list layout', () => {
   });
 
   it('keeps ordinary pages content-sized so the bottom gap follows the real content', () => {
-    const css = readFileSync(new URL('../src/renderer/styles.css', import.meta.url), 'utf8');
+    const css = readLayoutCss();
     const workLog = readFileSync(new URL('../src/renderer/features/worklog/WorkLogPage.tsx', import.meta.url), 'utf8');
     expect(css).toMatch(/\.page-content\s*\{[^}]*flex:\s*0 0 auto[^}]*min-height:\s*100%[^}]*padding-bottom:\s*var\(--page-bottom-gap\)/s);
     expect(workLog).toContain('page-content viewport-list-page worklog-page');
   });
 
   it('uses the same fixed-viewport/internal-scroll pattern for project and Git lists', () => {
-    const css = readFileSync(new URL('../src/renderer/styles.css', import.meta.url), 'utf8');
+    const css = readLayoutCss();
     const projects = readFileSync(new URL('../src/renderer/features/projects/ProjectsPage.tsx', import.meta.url), 'utf8');
     const git = readFileSync(new URL('../src/renderer/features/git/GitPage.tsx', import.meta.url), 'utf8');
     expect(projects).toContain('page-content viewport-list-page');

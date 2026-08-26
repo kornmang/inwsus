@@ -1,5 +1,20 @@
-import { useEffect, useState, type ReactElement } from 'react';
+import { useEffect, useState, type ReactElement, type ReactNode } from 'react';
 import type { DashboardSnapshot, DestructiveDeletePolicy, PermissionProfileName, UiLocale, UserSettings } from '@inwsus/ipc-contracts';
+import {
+  AlertTriangle,
+  Archive,
+  Check,
+  ExternalLink,
+  Hexagon,
+  LayoutGrid,
+  Refresh,
+  Settings as SettingsIcon,
+  Shield,
+  Trash,
+  Wrench,
+  Zap,
+} from '../../components/icons/index.js';
+import { Alert, Badge, Button, Card, EmptyState, Field, SectionHeading, StatusDot } from '../../components/ui/index.js';
 import { createTranslator } from '../../i18n/index.js';
 import { SettingSwitch } from './SettingSwitch.js';
 import { UserConfigPanel, type UserConfigSection } from './UserConfigPanel.js';
@@ -195,13 +210,13 @@ export function SettingsPage(props: SettingsPageProps): ReactElement {
     }
   }
 
-  const navItems: readonly { id: SettingsSection; icon: string; title: string; description: string }[] = [
-    { id: 'general', icon: '⌘', title: props.locale === 'th' ? 'ทั่วไป' : 'General', description: props.locale === 'th' ? 'ภาษา, Startup, Update' : 'Language, startup, updates' },
-    { id: 'security', icon: '◇', title: props.locale === 'th' ? 'ความปลอดภัย' : 'Security', description: props.locale === 'th' ? 'สิทธิ์และ Workspace policy' : 'Permissions and workspace policy' },
-    { id: 'tools', icon: '◎', title: props.locale === 'th' ? 'Tools' : 'Tools', description: props.locale === 'th' ? 'Codex, Timeout, Roots' : 'Codex, timeouts, roots' },
-    { id: 'mcp', icon: '⬡', title: 'MCP & Extensions', description: props.locale === 'th' ? 'Servers, Skills, Allowlist' : 'Servers, skills, allowlist' },
-    { id: 'tunnel', icon: '↗', title: 'Secure Tunnel', description: props.locale === 'th' ? 'API Key, Client, Reconnect' : 'API key, client, reconnect' },
-    { id: 'backup', icon: '▣', title: props.locale === 'th' ? 'กู้คืนข้อมูล' : 'Recovery', description: props.locale === 'th' ? 'Recovery Trash, Checkpoint, Backup' : 'Recovery Trash, checkpoints, backups' },
+  const navItems: readonly { id: SettingsSection; icon: ReactNode; title: string; description: string }[] = [
+    { id: 'general', icon: <SettingsIcon size={16} />, title: props.locale === 'th' ? 'ทั่วไป' : 'General', description: props.locale === 'th' ? 'ภาษา, Startup, Update' : 'Language, startup, updates' },
+    { id: 'security', icon: <Shield size={16} />, title: props.locale === 'th' ? 'ความปลอดภัย' : 'Security', description: props.locale === 'th' ? 'สิทธิ์และ Workspace policy' : 'Permissions and workspace policy' },
+    { id: 'tools', icon: <Wrench size={16} />, title: props.locale === 'th' ? 'Tools' : 'Tools', description: props.locale === 'th' ? 'Codex, Timeout, Roots' : 'Codex, timeouts, roots' },
+    { id: 'mcp', icon: <Hexagon size={16} />, title: 'MCP & Extensions', description: props.locale === 'th' ? 'Servers, Skills, Allowlist' : 'Servers, skills, allowlist' },
+    { id: 'tunnel', icon: <ExternalLink size={16} />, title: 'Secure Tunnel', description: props.locale === 'th' ? 'API Key, Client, Reconnect' : 'API key, client, reconnect' },
+    { id: 'backup', icon: <Archive size={16} />, title: props.locale === 'th' ? 'กู้คืนข้อมูล' : 'Recovery', description: props.locale === 'th' ? 'Recovery Trash, Checkpoint, Backup' : 'Recovery Trash, checkpoints, backups' },
   ];
 
   const userConfigSection: UserConfigSection | null = activeSection === 'backup' ? null : activeSection;
@@ -215,7 +230,7 @@ export function SettingsPage(props: SettingsPageProps): ReactElement {
           <h1>{t('settings.title')}</h1>
           <p className="page-subtitle">{props.locale === 'th' ? 'ตั้งค่าระบบจากหน้าเดียว โดยไม่ต้องแก้ไฟล์ config เอง' : 'Configure the system without editing configuration files manually.'}</p>
         </div>
-        <div className="settings-health-chip"><span className="status-dot online" />{props.locale === 'th' ? 'Local settings' : 'Local settings'}</div>
+        <StatusDot tone="success" label={props.locale === 'th' ? 'Local settings' : 'Local settings'} className="settings-health-chip" />
       </div>
 
       <div className="settings-shell-v2">
@@ -230,7 +245,6 @@ export function SettingsPage(props: SettingsPageProps): ReactElement {
             >
               <span className="settings-nav-icon" aria-hidden="true">{item.icon}</span>
               <span className="settings-nav-copy"><strong>{item.title}</strong><small>{item.description}</small></span>
-              <span className="settings-nav-chevron" aria-hidden="true">›</span>
             </button>
           ))}
         </aside>
@@ -243,136 +257,154 @@ export function SettingsPage(props: SettingsPageProps): ReactElement {
           </header>
 
           {activeSection === 'general' ? (
-            <section className="panel settings-card settings-card-polished" aria-label={t('settings.generalTitle')}>
-              <SettingsCardHeading icon="A" title={t('settings.generalTitle')} subtitle={props.locale === 'th' ? 'ภาษา UI, Tray และข้อความระบบ' : 'UI, tray, and system-message language'} badge={props.locale.toUpperCase()} />
-              <div className="setting-field max-field-width">
-                <label className="field-label" htmlFor="locale-select">{t('settings.locale')}</label>
-                <select id="locale-select" className="settings-select" value={props.locale} onChange={(event) => { void props.onLocaleChange(event.target.value as UiLocale); }}>
-                  <option value="th">🇹🇭 {t('language.th')}</option>
-                  <option value="en">🇺🇸 {t('language.en')}</option>
-                </select>
-              </div>
-              <p className="hint">{props.locale === 'th' ? 'เปลี่ยนภาษาหน้าจอ Tray และข้อความระบบทันที' : 'Changes screen, tray, and system-message language immediately.'}</p>
-            </section>
+            <Card className="settings-card" aria-label={t('settings.generalTitle')}>
+              <SettingsCardHeading icon={<SettingsIcon size={16} />} title={t('settings.generalTitle')} subtitle={props.locale === 'th' ? 'ภาษา UI, Tray และข้อความระบบ' : 'UI, tray, and system-message language'} badge={props.locale.toUpperCase()} />
+              <Field label={t('settings.locale')} htmlFor="locale-select" className="max-field-width" hint={props.locale === 'th' ? 'เปลี่ยนภาษาหน้าจอ Tray และข้อความระบบทันที' : 'Changes screen, tray, and system-message language immediately.'}>
+                {({ controlId }) => (
+                  <select id={controlId} className="settings-select" value={props.locale} onChange={(event) => { void props.onLocaleChange(event.target.value as UiLocale); }}>
+                    <option value="th">{t('language.th')}</option>
+                    <option value="en">{t('language.en')}</option>
+                  </select>
+                )}
+              </Field>
+            </Card>
           ) : null}
 
           {activeSection === 'security' ? (
             <>
-              <section className="panel settings-card settings-card-polished" aria-label={t('settings.securityTitle')}>
-                <SettingsCardHeading icon="◇" title={t('settings.securityTitle')} subtitle={profileHint(props.locale, props.dashboard.permissionProfile)} badge={props.dashboard.permissionProfile.toUpperCase()} />
-                <div className="setting-field max-field-width">
-                  <label className="field-label" htmlFor="permission-profile">{t('settings.permissions')}</label>
-                  <select id="permission-profile" aria-label="Permission profile" className="settings-select" value={props.dashboard.permissionProfile} onChange={(event) => { void props.onPermissionProfileChange(event.target.value as PermissionProfileName); }}>
-                    <option value="safe">🛡️ {t('permission.safe')}</option>
-                    <option value="balanced">⚖️ {t('permission.balanced')}</option>
-                    <option value="full">⚡ {t('permission.full')}</option>
-                    <option value="custom">🔧 {t('permission.custom')}</option>
-                  </select>
-                </div>
-              </section>
+              <Card className="settings-card" aria-label={t('settings.securityTitle')}>
+                <SettingsCardHeading icon={<Shield size={16} />} title={t('settings.securityTitle')} subtitle={profileHint(props.locale, props.dashboard.permissionProfile)} badge={props.dashboard.permissionProfile.toUpperCase()} />
+                <Field label={t('settings.permissions')} htmlFor="permission-profile" className="max-field-width">
+                  {({ controlId }) => (
+                    <select id={controlId} aria-label="Permission profile" className="settings-select" value={props.dashboard.permissionProfile} onChange={(event) => { void props.onPermissionProfileChange(event.target.value as PermissionProfileName); }}>
+                      <option value="safe">{t('permission.safe')}</option>
+                      <option value="balanced">{t('permission.balanced')}</option>
+                      <option value="full">{t('permission.full')}</option>
+                      <option value="custom">{t('permission.custom')}</option>
+                    </select>
+                  )}
+                </Field>
+              </Card>
 
-              <section className="panel settings-card settings-card-polished" aria-label={t('settings.unrestricted')}>
-                <SettingsCardHeading icon="⚡" title={t('settings.unrestricted')} subtitle={props.locale === 'th' ? 'ปลดข้อจำกัด machine roots สำหรับงานที่ต้องการสิทธิ์เต็ม' : 'Remove machine-root restrictions for full-power workflows'} badge={props.dashboard.unrestricted ? 'ON' : 'OFF'} />
-                <SettingSwitch checked={props.dashboard.unrestricted} label={props.locale === 'th' ? 'Unrestricted mode' : 'Unrestricted mode'} description={t('settings.unrestrictedHint')} onChange={(enabled) => { void props.onUnrestrictedChange(enabled).then((restartRequired) => setUnrestrictedMessage(restartRequired ? t('settings.restartRequired') : null)); }} />
-                {unrestrictedMessage === null ? null : <div className="alert-box-warning" role="status">⚠️ {unrestrictedMessage}</div>}
-              </section>
-
-              <section className="panel settings-card settings-card-polished" aria-label="AI destructive action policy">
+              <Card className="settings-card" aria-label={t('settings.unrestricted')}>
                 <SettingsCardHeading
-                  icon="⌫"
+                  icon={<Zap size={16} />}
+                  title={t('settings.unrestricted')}
+                  subtitle={props.locale === 'th' ? 'ปลดข้อจำกัด machine roots สำหรับงานที่ต้องการสิทธิ์เต็ม' : 'Remove machine-root restrictions for full-power workflows'}
+                  action={
+                    <SettingSwitch
+                      compact
+                      checked={props.dashboard.unrestricted}
+                      label={props.locale === 'th' ? 'Unrestricted mode' : 'Unrestricted mode'}
+                      onChange={(enabled) => { void props.onUnrestrictedChange(enabled).then((restartRequired) => setUnrestrictedMessage(restartRequired ? t('settings.restartRequired') : null)); }}
+                    />
+                  }
+                />
+                <p className="hint">{t('settings.unrestrictedHint')}</p>
+                {unrestrictedMessage === null ? null : <Alert icon={<AlertTriangle size={14} />} tone="warning" role="status">{unrestrictedMessage}</Alert>}
+              </Card>
+
+              <Card className="settings-card" aria-label="AI destructive action policy">
+                <SettingsCardHeading
+                  icon={<Trash size={16} />}
                   title={props.locale === 'th' ? 'ความปลอดภัยการลบ / ทำข้อมูลหาย' : 'Delete & Data-Loss Safety'}
                   subtitle={props.locale === 'th' ? 'Full จะถามเฉพาะ destructive family ที่ยังไม่ได้อนุญาต หรือพิสูจน์ขอบเขตไม่ได้' : 'Full prompts only for destructive families that are not safely auto-approved by these settings'}
                   badge={`${Object.values(props.dashboard.destructiveDeletePolicy.approvals).filter(Boolean).length}/9`}
                 />
-                <div className="alert-box-warning" role="note">
-                  ⚠️ {props.locale === 'th'
+                <Alert icon={<AlertTriangle size={14} />} tone="warning" role="none">
+                  {props.locale === 'th'
                     ? 'Full Access ไม่ถามงานปกติ การเปิด auto-approval ด้านล่างมีผลเฉพาะคำสั่งลบ/ทำข้อมูลหายที่แยก target ได้ชัดและอยู่ใน Active Project เท่านั้น; root, critical path, wildcard, recursive/broad และคำสั่งที่วิเคราะห์ไม่ได้ยังถาม ส่วนคำสั่งระดับเครื่องอันตรายยังถูกบล็อก'
                     : 'Full Access does not prompt for ordinary work. Auto-approval below applies only to destructive actions with an exact target proven inside the Active Project; roots, critical paths, wildcards, recursive/broad or unparseable actions still ask, and dangerous machine-level commands remain blocked.'}
-                </div>
+                </Alert>
                 <div className="setting-grid two-col align-center">
                   <SettingSwitch checked disabled label={props.locale === 'th' ? 'Protected Critical Files — บังคับเปิด' : 'Protected Critical Files — always on'} description={props.locale === 'th' ? 'critical path และ workspace root ไม่ถูก auto-approve แม้เปิด destructive family นั้นไว้' : 'Critical paths and workspace roots are never auto-approved even when a destructive family is enabled'} onChange={() => undefined} />
                   <SettingSwitch checked disabled label={props.locale === 'th' ? 'Recovery Trash — บังคับเปิดสำหรับ delete_file' : 'Recovery Trash — always on for delete_file'} description={props.locale === 'th' ? 'delete_file แบบมีโครงสร้างย้าย target เข้า Recovery Trash ก่อนเสมอ' : 'Structured delete_file moves its target into Recovery Trash before deletion'} onChange={() => undefined} />
                 </div>
 
-                <div className="settings-mini-heading"><strong>{props.locale === 'th' ? 'Structured delete — กู้คืนได้' : 'Structured delete — recoverable'}</strong><span>Host Active Project</span></div>
+                <div className="settings-mini-heading"><strong>{props.locale === 'th' ? 'Structured delete — กู้คืนได้' : 'Structured delete — recoverable'}</strong><Badge tone="neutral">Host Active Project</Badge></div>
+                {/* delete_file is the only single-family group, so it is a lone
+                    full-width row by design (not a 2-col grid pair) — every
+                    multi-item group below uses the same setting-grid rhythm. */}
                 <SettingSwitch checked={props.dashboard.destructiveDeletePolicy.approvals.delete_file} label="delete_file" description={props.locale === 'th' ? 'Auto-approve ได้เฉพาะ path เดียวใน Active Project, ไม่ใช่ root/critical/wildcard และมี Recovery Trash' : 'Auto-approves one exact Active Project path only; roots, critical paths, and wildcards remain guarded and Recovery Trash is required'} onChange={(enabled) => setDestructiveApproval('delete_file', enabled)} />
 
-                <div className="settings-mini-heading"><strong>Git destructive families</strong><span>{props.locale === 'th' ? 'exact scoped forms เท่านั้น' : 'exact scoped forms only'}</span></div>
+                <div className="settings-mini-heading"><strong>Git destructive families</strong><Badge tone="neutral">{props.locale === 'th' ? 'exact scoped forms เท่านั้น' : 'exact scoped forms only'}</Badge></div>
                 <div className="setting-grid two-col align-center">
                   <SettingSwitch checked={props.dashboard.destructiveDeletePolicy.approvals.git_rm} label="git_rm" description={props.locale === 'th' ? 'อนุญาต git rm เฉพาะ target เดียวที่ระบุหลัง --; recursive/broad/critical ยังถาม' : 'Allows git rm only for one exact target after --; recursive, broad, and critical targets still ask'} onChange={(enabled) => setDestructiveApproval('git_rm', enabled)} />
                   <SettingSwitch checked={props.dashboard.destructiveDeletePolicy.approvals.git_clean} label="git_clean" description={props.locale === 'th' ? 'อนุญาต git clean เฉพาะ exact path; clean ทั้ง repo, -d/-x และ broad forms ยังถาม' : 'Allows git clean only for an exact path; repo-wide clean, -d/-x, and broad forms still ask'} onChange={(enabled) => setDestructiveApproval('git_clean', enabled)} />
                   <SettingSwitch checked={props.dashboard.destructiveDeletePolicy.approvals.git_reset_restore} label="git_reset_restore" description={props.locale === 'th' ? 'อนุญาต exact-path git restore; reset --hard และ restore แบบกว้างยังถามเพราะพิสูจน์ target ไม่ได้' : 'Allows exact-path git restore; reset --hard and broad restore still ask because the affected scope cannot be proven narrowly'} onChange={(enabled) => setDestructiveApproval('git_reset_restore', enabled)} />
                 </div>
 
-                <div className="settings-mini-heading"><strong>{props.locale === 'th' ? 'Shell / Process destructive families' : 'Shell / Process destructive families'}</strong><span>{props.locale === 'th' ? 'ไม่อยู่ใน Recovery Trash' : 'not Recovery Trash-backed'}</span></div>
+                <div className="settings-mini-heading"><strong>{props.locale === 'th' ? 'Shell / Process destructive families' : 'Shell / Process destructive families'}</strong><Badge tone="neutral">{props.locale === 'th' ? 'ไม่อยู่ใน Recovery Trash' : 'not Recovery Trash-backed'}</Badge></div>
                 <div className="setting-grid two-col align-center">
                   <SettingSwitch checked={props.dashboard.destructiveDeletePolicy.approvals.shell_rm_unlink} label="shell_rm_unlink" description={props.locale === 'th' ? 'Auto-approve rm/unlink target เดียว; -r/-R/recursive, wildcard และ path นอกโปรเจกต์ยังถาม' : 'Auto-approves one rm/unlink target; recursive flags, wildcards, and paths outside the project still ask'} onChange={(enabled) => setDestructiveApproval('shell_rm_unlink', enabled)} />
                   <SettingSwitch checked={props.dashboard.destructiveDeletePolicy.approvals.shell_rmdir} label="shell_rmdir" description={props.locale === 'th' ? 'Auto-approve rmdir แบบ target เดียว; recursive/parents และ broad forms ยังถาม' : 'Auto-approves one rmdir target; recursive/parents and broad forms still ask'} onChange={(enabled) => setDestructiveApproval('shell_rmdir', enabled)} />
                   <SettingSwitch checked={props.dashboard.destructiveDeletePolicy.approvals.shell_del_erase} label="shell_del_erase" description={props.locale === 'th' ? 'Auto-approve del/erase แบบ exact target เมื่อ parser พิสูจน์รูปแบบได้; /s และ broad forms ยังถาม' : 'Auto-approves exact del/erase targets when the parser can prove the form; /s and broad forms still ask'} onChange={(enabled) => setDestructiveApproval('shell_del_erase', enabled)} />
                 </div>
 
-                <div className="settings-mini-heading"><strong>WSL destructive families</strong><span>{props.locale === 'th' ? 'exact scoped forms เท่านั้น' : 'exact scoped forms only'}</span></div>
+                <div className="settings-mini-heading"><strong>WSL destructive families</strong><Badge tone="neutral">{props.locale === 'th' ? 'exact scoped forms เท่านั้น' : 'exact scoped forms only'}</Badge></div>
                 <div className="setting-grid two-col align-center">
                   <SettingSwitch checked={props.dashboard.destructiveDeletePolicy.approvals.wsl_rm_unlink} label="wsl_rm_unlink" description={props.locale === 'th' ? 'Auto-approve WSL rm/unlink target เดียวใน Active Project; recursive/absolute Linux path/broad forms ยังถาม' : 'Auto-approves one WSL rm/unlink target in the Active Project; recursive, absolute Linux paths, and broad forms still ask'} onChange={(enabled) => setDestructiveApproval('wsl_rm_unlink', enabled)} />
                   <SettingSwitch checked={props.dashboard.destructiveDeletePolicy.approvals.wsl_rmdir} label="wsl_rmdir" description={props.locale === 'th' ? 'Auto-approve WSL rmdir target เดียว; parents/broad/outside forms ยังถาม' : 'Auto-approves one WSL rmdir target; parents, broad, and outside forms still ask'} onChange={(enabled) => setDestructiveApproval('wsl_rmdir', enabled)} />
                 </div>
 
                 <p className="hint">{props.locale === 'th' ? 'Full: READ / WRITE / EXECUTE และ mutation ปกติไม่ถาม ส่วน destructive family ที่ปิดไว้หรือพิสูจน์ exact scope ไม่ได้จะถามตามปกติ การ auto-approve command family ไม่ได้ทำให้ผลคำสั่งเข้า Recovery Trash' : 'Full: ordinary READ / WRITE / EXECUTE and normal mutations do not prompt. A destructive family still asks when disabled or when exact scope cannot be proven. Auto-approved command-family effects are not covered by Recovery Trash.'}</p>
-              </section>
+              </Card>
 
-              <section className="panel settings-card settings-card-polished" aria-label="STDIO security policy">
-                <SettingsCardHeading icon="▦" title="STDIO Security Policy" subtitle={props.locale === 'th' ? 'Policy สำหรับ standalone/headless stdio; Secure Tunnel ใช้ Desktop MCP และ native approval' : 'Policy for standalone/headless stdio; Secure Tunnel uses Desktop MCP and native approval'} badge={props.dashboard.stdioPermissionProfile.toUpperCase()} />
+              <Card className="settings-card" aria-label="STDIO security policy">
+                <SettingsCardHeading icon={<LayoutGrid size={16} />} title="STDIO Security Policy" subtitle={props.locale === 'th' ? 'Policy สำหรับ standalone/headless stdio; Secure Tunnel ใช้ Desktop MCP และ native approval' : 'Policy for standalone/headless stdio; Secure Tunnel uses Desktop MCP and native approval'} badge={props.dashboard.stdioPermissionProfile.toUpperCase()} />
                 <div className="setting-grid two-col align-center">
-                  <div className="setting-field">
-                    <label className="field-label" htmlFor="stdio-profile">STDIO Permission Profile</label>
-                    <select id="stdio-profile" className="settings-select" value={stdioProfile} onChange={(event) => { setStdioProfile(event.target.value as PermissionProfileName); setStdioDirty(true); }}>
-                      <option value="safe">Safe</option><option value="balanced">Balanced</option><option value="full">Full</option><option value="custom">Custom</option>
-                    </select>
-                  </div>
+                  <Field label="STDIO Permission Profile" htmlFor="stdio-profile">
+                    {({ controlId }) => (
+                      <select id={controlId} className="settings-select" value={stdioProfile} onChange={(event) => { setStdioProfile(event.target.value as PermissionProfileName); setStdioDirty(true); }}>
+                        <option value="safe">Safe</option><option value="balanced">Balanced</option><option value="full">Full</option><option value="custom">Custom</option>
+                      </select>
+                    )}
+                  </Field>
                   <SettingSwitch checked={strictRoots} label="Strict Workspace Roots" description={props.locale === 'th' ? 'บล็อก absolute path นอก Allowed Roots แบบ fail-closed' : 'Reject absolute paths outside Allowed Roots fail-closed'} onChange={(enabled) => { setStrictRoots(enabled); setStdioDirty(true); }} />
                 </div>
-                <div className="setting-field">
-                  <label className="field-label" htmlFor="stdio-roots">{props.locale === 'th' ? 'Allowed Roots — หนึ่ง path ต่อบรรทัด' : 'Allowed Roots — one path per line'}</label>
-                  <textarea id="stdio-roots" className="settings-textarea" rows={5} value={allowedRootsText} placeholder={'E:\\Projects\\MyApp\nD:\\Shared\\Source'} onChange={(event) => { setAllowedRootsText(event.target.value); setStdioDirty(true); }} />
-                </div>
-                <div className="inline-actions"><button type="button" className="btn-save-gold" disabled={!stdioDirty} onClick={() => { void saveStdioPolicy(); }}>{props.locale === 'th' ? 'บันทึก STDIO Policy' : 'Save STDIO Policy'}</button></div>
-                {policyError === null ? null : <div className="alert-box-warning" role="alert">⚠️ {policyError}</div>}
-                {stdioMessage === null ? null : <div className="toast-success-banner" role="status">✓ {stdioMessage}</div>}
-              </section>
+                <Field label={props.locale === 'th' ? 'Allowed Roots — หนึ่ง path ต่อบรรทัด' : 'Allowed Roots — one path per line'} htmlFor="stdio-roots">
+                  {({ controlId }) => (
+                    <textarea id={controlId} className="settings-textarea" rows={5} value={allowedRootsText} placeholder={'E:\\Projects\\MyApp\nD:\\Shared\\Source'} onChange={(event) => { setAllowedRootsText(event.target.value); setStdioDirty(true); }} />
+                  )}
+                </Field>
+                <div className="inline-actions"><Button type="button" variant="primary" size="sm" disabled={!stdioDirty} onClick={() => { void saveStdioPolicy(); }}>{props.locale === 'th' ? 'บันทึก STDIO Policy' : 'Save STDIO Policy'}</Button></div>
+                {policyError === null ? null : <Alert icon={<AlertTriangle size={14} />} tone="danger" role="alert">{policyError}</Alert>}
+                {stdioMessage === null ? null : <Alert icon={<Check size={14} />} tone="success" role="status">{stdioMessage}</Alert>}
+              </Card>
             </>
           ) : null}
 
           <UserConfigPanel locale={props.locale} settings={props.dashboard.settings} section={userConfigSection} onSave={props.onUserSettingsChange} />
 
           {activeSection === 'tunnel' ? (
-            <section className="panel settings-card settings-card-polished" aria-label={t('settings.tunnelTitle')}>
-              <SettingsCardHeading icon="↗" title={t('settings.tunnelTitle')} subtitle={props.locale === 'th' ? 'Credential, tunnel-client และ Setup Wizard' : 'Credentials, tunnel-client, and setup wizard'} badge={props.dashboard.tunnel.profileExists ? (props.locale === 'th' ? 'พร้อมใช้งาน' : 'READY') : (props.locale === 'th' ? 'ต้องตั้งค่า' : 'SETUP')} />
+            <Card className="settings-card" aria-label={t('settings.tunnelTitle')}>
+              <SettingsCardHeading icon={<ExternalLink size={16} />} title={t('settings.tunnelTitle')} subtitle={props.locale === 'th' ? 'Credential, tunnel-client และ Setup Wizard' : 'Credentials, tunnel-client, and setup wizard'} badge={props.dashboard.tunnel.profileExists ? (props.locale === 'th' ? 'พร้อมใช้งาน' : 'READY') : (props.locale === 'th' ? 'ต้องตั้งค่า' : 'SETUP')} />
               <div className="setting-grid two-col">
                 <div className="setting-field">
                   <label className="field-label" htmlFor="tunnel-key">{t('settings.tunnelKey')}</label>
-                  <div className="form-row"><div className="password-input-wrapper"><input id="tunnel-key" type={showApiKey ? 'text' : 'password'} placeholder={props.dashboard.tunnel.hasApiKey ? '••••••••••••••••' : 'sk-...'} value={apiKey} onChange={(event) => setApiKey(event.target.value)} autoComplete="off" /><button type="button" className="toggle-pw-btn" onClick={() => setShowApiKey((value) => !value)}>{showApiKey ? 'Hide' : 'Show'}</button></div><button type="button" className="btn-save-gold" onClick={() => { void props.onSaveTunnelApiKey(apiKey).then(() => { setApiKey(''); setSavedMessage(t('settings.saved')); }); }}>{t('settings.saveKey')}</button></div>
+                  <div className="form-row"><div className="password-input-wrapper"><input id="tunnel-key" type={showApiKey ? 'text' : 'password'} placeholder={props.dashboard.tunnel.hasApiKey ? '••••••••••••••••' : 'sk-...'} value={apiKey} onChange={(event) => setApiKey(event.target.value)} autoComplete="off" /><Button type="button" variant="ghost" size="sm" onClick={() => setShowApiKey((value) => !value)}>{showApiKey ? 'Hide' : 'Show'}</Button></div><Button type="button" variant="primary" size="sm" onClick={() => { void props.onSaveTunnelApiKey(apiKey).then(() => { setApiKey(''); setSavedMessage(t('settings.saved')); }); }}>{t('settings.saveKey')}</Button></div>
                   <p className="hint">{props.dashboard.tunnel.hasApiKey ? 'Protected with Windows DPAPI' : t('tunnel.needKey')}</p>
                 </div>
                 <div className="setting-field">
                   <label className="field-label" htmlFor="tunnel-client-path">{t('settings.clientPath')}</label>
-                  <div className="form-row"><input id="tunnel-client-path" placeholder="C:\tools\tunnel-client.exe" value={clientPath} onChange={(event) => setClientPath(event.target.value)} /><button type="button" onClick={() => { void browseTunnelClient(); }}>{props.locale === 'th' ? 'เลือกไฟล์…' : 'Browse…'}</button><button type="button" className="btn-save-gold" onClick={() => { void props.onSetTunnelClientPath(clientPath).then(() => setSavedMessage(t('settings.saved'))); }}>{t('settings.savePath')}</button></div>
+                  <div className="form-row"><input id="tunnel-client-path" placeholder="C:\tools\tunnel-client.exe" value={clientPath} onChange={(event) => setClientPath(event.target.value)} /><Button type="button" variant="secondary" size="sm" onClick={() => { void browseTunnelClient(); }}>{props.locale === 'th' ? 'เลือกไฟล์…' : 'Browse…'}</Button><Button type="button" variant="primary" size="sm" onClick={() => { void props.onSetTunnelClientPath(clientPath).then(() => setSavedMessage(t('settings.saved'))); }}>{t('settings.savePath')}</Button></div>
                 </div>
               </div>
               <div className="tunnel-setup-box">
                 <div className="settings-mini-heading"><strong>Setup Wizard</strong><span>{props.locale === 'th' ? 'ไม่ต้องเปิด PowerShell init เอง' : 'No manual PowerShell init'}</span></div>
                 <label className="field-label" htmlFor="tunnel-id">OpenAI Tunnel ID</label>
-                <div className="form-row"><input id="tunnel-id" placeholder="tunnel_0123456789abcdef..." value={tunnelId} onChange={(event) => setTunnelId(event.target.value)} /><button type="button" className="btn-save-gold" disabled={tunnelBusy} onClick={() => { void configureTunnel(); }}>{tunnelBusy ? (props.locale === 'th' ? 'กำลังตั้งค่า…' : 'Configuring…') : (props.locale === 'th' ? 'Configure Tunnel' : 'Configure Tunnel')}</button></div>
+                <div className="form-row"><input id="tunnel-id" placeholder="tunnel_0123456789abcdef..." value={tunnelId} onChange={(event) => setTunnelId(event.target.value)} /><Button type="button" variant="primary" size="sm" disabled={tunnelBusy} loading={tunnelBusy} onClick={() => { void configureTunnel(); }}>{props.locale === 'th' ? 'Configure Tunnel' : 'Configure Tunnel'}</Button></div>
               </div>
-              {savedMessage === null ? null : <div className="toast-success-banner" role="status">✓ {savedMessage}</div>}
-              {tunnelMessage === null ? null : <div className="alert-box-warning" role="status">{tunnelMessage}</div>}
-            </section>
+              {savedMessage === null ? null : <Alert icon={<Check size={14} />} tone="success" role="status">{savedMessage}</Alert>}
+              {tunnelMessage === null ? null : <Alert icon={<AlertTriangle size={14} />} tone="warning" role="status">{tunnelMessage}</Alert>}
+            </Card>
           ) : null}
 
           {activeSection === 'backup' ? (
             <>
-              <section className="panel settings-card settings-card-polished" aria-label="Recovery Center">
+              <Card className="settings-card" aria-label="Recovery Center">
                 <SettingsCardHeading
-                  icon="↶"
+                  icon={<Refresh size={16} />}
                   title={props.locale === 'th' ? 'Recovery Center' : 'Recovery Center'}
                   subtitle={props.locale === 'th' ? 'ไฟล์ที่ลบ สำเนาก่อนไฟล์ไบนารีถูกเขียนทับ และ checkpoint ของ Active Project' : 'Deleted items, binary pre-replacement backups, and checkpoints for the Active Project'}
                   badge={`${props.dashboard.recovery.trashItems.length + props.dashboard.recovery.checkpoints.length} ITEMS`}
@@ -381,37 +413,48 @@ export function SettingsPage(props: SettingsPageProps): ReactElement {
                   <span className="field-label">{props.locale === 'th' ? 'ตำแหน่ง Recovery Trash บนเครื่อง' : 'Local Recovery Trash location'}</span>
                   <code className="settings-path-display">{props.dashboard.recovery.trashRoot ?? (props.locale === 'th' ? 'ยังไม่ได้ตั้งค่า' : 'Not configured')}</code>
                 </div>
-                <div className="settings-mini-heading"><strong>{props.locale === 'th' ? 'ไฟล์ที่ลบ / สำเนาก่อนเขียนทับ' : 'Deleted / pre-replacement backups'}</strong><span>{props.dashboard.recovery.trashItems.length}</span></div>
-                {props.dashboard.recovery.trashItems.length === 0 ? <div className="empty-setting-state">{props.locale === 'th' ? 'Recovery Trash ยังว่าง' : 'Recovery Trash is empty'}</div> : (
+                <div className="settings-mini-heading"><strong>{props.locale === 'th' ? 'ไฟล์ที่ลบ / สำเนาก่อนเขียนทับ' : 'Deleted / pre-replacement backups'}</strong><Badge tone="neutral">{props.dashboard.recovery.trashItems.length}</Badge></div>
+                {props.dashboard.recovery.trashItems.length === 0 ? (
+                  <EmptyState compact title={props.locale === 'th' ? 'Recovery Trash ยังว่าง' : 'Recovery Trash is empty'} />
+                ) : (
                   <div className="backup-list settings-backup-list">{props.dashboard.recovery.trashItems.map((item) => (
                     <div key={item.recoveryId} className="backup-item">
                       <div><strong>{item.relativePath}</strong><p className="hint">{new Date(item.deletedAt).toLocaleString(props.locale === 'th' ? 'th-TH' : 'en-US')} · {item.kind === 'replacement_backup' ? (props.locale === 'th' ? 'สำเนาก่อนเขียนทับ' : 'pre-replacement') : item.isDirectory ? 'folder' : 'file'} · {item.payloadAvailable ? (props.locale === 'th' ? 'พร้อมกู้คืน' : 'ready') : (props.locale === 'th' ? 'payload ไม่ครบ' : 'payload missing')}</p></div>
-                      <button type="button" disabled={!item.payloadAvailable || recoveryBusyId !== null} onClick={() => { void restoreTrashItem(item.workspaceId, item.recoveryId, item.relativePath, item.kind); }}>{recoveryBusyId === item.recoveryId ? (props.locale === 'th' ? 'กำลังกู้…' : 'Restoring…') : (props.locale === 'th' ? 'กู้คืน' : 'Restore')}</button>
+                      <Button type="button" variant="secondary" size="sm" disabled={!item.payloadAvailable || recoveryBusyId !== null} loading={recoveryBusyId === item.recoveryId} onClick={() => { void restoreTrashItem(item.workspaceId, item.recoveryId, item.relativePath, item.kind); }}>{props.locale === 'th' ? 'กู้คืน' : 'Restore'}</Button>
                     </div>
                   ))}</div>
                 )}
-                <div className="settings-mini-heading"><strong>{props.locale === 'th' ? 'Checkpoint ก่อนแก้/เขียนทับ' : 'Pre-change checkpoints'}</strong><span>{props.dashboard.recovery.checkpoints.length}</span></div>
-                {props.dashboard.recovery.checkpoints.length === 0 ? <div className="empty-setting-state">{props.locale === 'th' ? 'ยังไม่มี checkpoint' : 'No checkpoints yet'}</div> : (
+                <div className="settings-mini-heading"><strong>{props.locale === 'th' ? 'Checkpoint ก่อนแก้/เขียนทับ' : 'Pre-change checkpoints'}</strong><Badge tone="neutral">{props.dashboard.recovery.checkpoints.length}</Badge></div>
+                {props.dashboard.recovery.checkpoints.length === 0 ? (
+                  <EmptyState compact title={props.locale === 'th' ? 'ยังไม่มี checkpoint' : 'No checkpoints yet'} />
+                ) : (
                   <div className="backup-list settings-backup-list">{props.dashboard.recovery.checkpoints.slice(0, 20).map((checkpoint) => {
                     const paths = checkpoint.files.map((file) => file.path);
-                    return <div key={checkpoint.id} className="backup-item"><div><strong>{new Date(checkpoint.createdAt).toLocaleString(props.locale === 'th' ? 'th-TH' : 'en-US')}</strong><p className="hint">{paths.join(', ')} · {formatBytes(checkpoint.files.reduce((total, file) => total + file.size, 0))}</p></div><button type="button" disabled={recoveryBusyId !== null} onClick={() => { void restoreCheckpoint(checkpoint.workspaceId, checkpoint.id, paths); }}>{recoveryBusyId === checkpoint.id ? (props.locale === 'th' ? 'กำลังกู้…' : 'Restoring…') : (props.locale === 'th' ? 'ย้อนกลับจุดนี้' : 'Restore point')}</button></div>;
+                    return (
+                      <div key={checkpoint.id} className="backup-item">
+                        <div><strong>{new Date(checkpoint.createdAt).toLocaleString(props.locale === 'th' ? 'th-TH' : 'en-US')}</strong><p className="hint">{paths.join(', ')} · {formatBytes(checkpoint.files.reduce((total, file) => total + file.size, 0))}</p></div>
+                        <Button type="button" variant="secondary" size="sm" disabled={recoveryBusyId !== null} loading={recoveryBusyId === checkpoint.id} onClick={() => { void restoreCheckpoint(checkpoint.workspaceId, checkpoint.id, paths); }}>{props.locale === 'th' ? 'ย้อนกลับจุดนี้' : 'Restore point'}</Button>
+                      </div>
+                    );
                   })}</div>
                 )}
-                {recoveryError === null ? null : <div className="alert-box-warning" role="alert">⚠️ {recoveryError}</div>}
-                {recoveryMessage === null ? null : <div className="toast-success-banner" role="status">✓ {recoveryMessage}</div>}
-              </section>
+                {recoveryError === null ? null : <Alert icon={<AlertTriangle size={14} />} tone="danger" role="alert">{recoveryError}</Alert>}
+                {recoveryMessage === null ? null : <Alert icon={<Check size={14} />} tone="success" role="status">{recoveryMessage}</Alert>}
+              </Card>
 
-              <section className="panel settings-card settings-card-polished" aria-label="Backup and restore">
-                <SettingsCardHeading icon="▣" title={props.locale === 'th' ? 'สำรองฐานข้อมูลโปรแกรม' : 'Application Database Backup'} subtitle="SQLite consistent snapshots" action={<button type="button" className="btn-save-gold" disabled={backupBusy} onClick={() => { void createBackupNow(); }}>{backupBusy ? (props.locale === 'th' ? 'กำลังทำงาน…' : 'Working…') : (props.locale === 'th' ? 'Backup ตอนนี้' : 'Backup Now')}</button>} />
-                {props.dashboard.backups.length === 0 ? <div className="empty-setting-state">{props.locale === 'th' ? 'ยังไม่มี Backup' : 'No backups yet'}</div> : (
+              <Card className="settings-card" aria-label="Backup and restore">
+                <SettingsCardHeading icon={<Archive size={16} />} title={props.locale === 'th' ? 'สำรองฐานข้อมูลโปรแกรม' : 'Application Database Backup'} subtitle="SQLite consistent snapshots" action={<Button type="button" variant="primary" size="sm" disabled={backupBusy} loading={backupBusy} onClick={() => { void createBackupNow(); }}>{props.locale === 'th' ? 'Backup ตอนนี้' : 'Backup Now'}</Button>} />
+                {props.dashboard.backups.length === 0 ? (
+                  <EmptyState compact title={props.locale === 'th' ? 'ยังไม่มี Backup' : 'No backups yet'} />
+                ) : (
                   <div className="backup-list settings-backup-list">{props.dashboard.backups.slice(0, 5).map((backup) => (
-                    <div key={backup.id} className="backup-item"><div><strong>{new Date(backup.createdAt).toLocaleString(props.locale === 'th' ? 'th-TH' : 'en-US')}</strong><p className="hint">{backup.reason} · {formatBytes(backup.sizeBytes)}</p></div><button type="button" disabled={backupBusy || props.dashboard.tunnel.state === 'running' || props.dashboard.mcp.running} onClick={() => { void scheduleRestore(backup.id); }}>{props.locale === 'th' ? 'Restore ชุดนี้' : 'Restore'}</button></div>
+                    <div key={backup.id} className="backup-item"><div><strong>{new Date(backup.createdAt).toLocaleString(props.locale === 'th' ? 'th-TH' : 'en-US')}</strong><p className="hint">{backup.reason} · {formatBytes(backup.sizeBytes)}</p></div><Button type="button" variant="secondary" size="sm" disabled={backupBusy || props.dashboard.tunnel.state === 'running' || props.dashboard.mcp.running} onClick={() => { void scheduleRestore(backup.id); }}>{props.locale === 'th' ? 'Restore ชุดนี้' : 'Restore'}</Button></div>
                   ))}</div>
                 )}
-                {(props.dashboard.tunnel.state === 'running' || props.dashboard.mcp.running) ? <div className="alert-box-warning">⚠️ {props.locale === 'th' ? 'หยุด Tunnel และ Local MCP ก่อน Restore ฐานข้อมูล' : 'Stop Tunnel and local MCP before scheduling a database restore.'}</div> : null}
-                {backupError === null ? null : <div className="alert-box-warning" role="alert">⚠️ {backupError}</div>}
-                {backupMessage === null ? null : <div className="toast-success-banner" role="status">✓ {backupMessage}</div>}
-              </section>
+                {(props.dashboard.tunnel.state === 'running' || props.dashboard.mcp.running) ? <Alert icon={<AlertTriangle size={14} />} tone="warning">{props.locale === 'th' ? 'หยุด Tunnel และ Local MCP ก่อน Restore ฐานข้อมูล' : 'Stop Tunnel and local MCP before scheduling a database restore.'}</Alert> : null}
+                {backupError === null ? null : <Alert icon={<AlertTriangle size={14} />} tone="danger" role="alert">{backupError}</Alert>}
+                {backupMessage === null ? null : <Alert icon={<Check size={14} />} tone="success" role="status">{backupMessage}</Alert>}
+              </Card>
             </>
           ) : null}
         </div>
@@ -420,12 +463,14 @@ export function SettingsPage(props: SettingsPageProps): ReactElement {
   );
 }
 
-function SettingsCardHeading({ icon, title, subtitle, badge, action }: { readonly icon: string; readonly title: string; readonly subtitle: string; readonly badge?: string; readonly action?: ReactElement }): ReactElement {
+function SettingsCardHeading({ icon, title, subtitle, badge, action }: { readonly icon: ReactNode; readonly title: string; readonly subtitle: string; readonly badge?: string; readonly action?: ReactElement }): ReactElement {
   return (
-    <div className="section-heading settings-card-heading">
-      <div className="settings-heading-copy"><span className="settings-card-icon" aria-hidden="true">{icon}</span><div><h2 className="settings-card-title">{title}</h2><span className="page-subtitle">{subtitle}</span></div></div>
-      {action ?? (badge === undefined ? null : <span className="pill-badge gold">{badge}</span>)}
-    </div>
+    <SectionHeading
+      className="settings-card-heading"
+      title={<span className="settings-card-heading-title"><span className="settings-card-icon" aria-hidden="true">{icon}</span>{title}</span>}
+      description={subtitle}
+      actions={action ?? (badge === undefined ? null : <Badge tone="accent">{badge}</Badge>)}
+    />
   );
 }
 

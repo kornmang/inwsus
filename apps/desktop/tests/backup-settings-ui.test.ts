@@ -60,7 +60,9 @@ describe('Backup settings UI', () => {
     expect(markup).toContain('Application Database Backup');
     expect(markup).toContain('Backup Now');
     expect(markup).toContain('SQLite consistent snapshots');
-    expect(markup).toContain('Restore</button>');
+    // Renders via the shared `Button` primitive — assert on its
+    // `ui-button__label` shape instead of a bare `<button>` close tag.
+    expect(markup).toContain('Restore</span></button>');
   });
 
   it('disables restore while local MCP or Secure Tunnel is active', () => {
@@ -82,6 +84,6 @@ describe('Backup settings UI', () => {
     }));
 
     expect(markup).toContain('Stop Tunnel and local MCP before scheduling a database restore.');
-    expect(markup).toContain('<button type="button" disabled="">Restore</button>');
+    expect(markup).toMatch(/<button[^>]*disabled=""[^>]*>[\s\S]*?Restore<\/span><\/button>/);
   });
 });

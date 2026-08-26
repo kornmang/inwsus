@@ -13,6 +13,7 @@ import type {
   WorkspaceSummary,
 } from '@inwsus/ipc-contracts';
 import { AppShell, type Screen } from './features/shell/AppShell.js';
+import { Alert } from './components/ui/index.js';
 import { ControlCenterPage } from './features/home/ControlCenterPage.js';
 import { ProjectsPage } from './features/projects/ProjectsPage.js';
 import { GitPage } from './features/git/GitPage.js';
@@ -420,7 +421,11 @@ export function App(): ReactElement {
       onLocaleChange={(next) => { void changeLocale(next); }}
       onUpdateAction={() => { void handleUpdateAction(); }}
     >
-      {error === null ? null : <div className="error-banner" role="alert">{error}</div>}
+      {error === null ? null : (
+        <Alert tone="danger" role="alert">
+          {error}
+        </Alert>
+      )}
       {screen === 'home' ? (
         <ControlCenterPage
           dashboard={dashboard}

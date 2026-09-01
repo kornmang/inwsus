@@ -26,6 +26,6 @@ export function startMcpStdio(options: McpStdioOptions): StdioServerHandle {
   const requestScope = options.requestScope ?? createStdioRequestScope();
   return serveStdio(
     () => createMcpServer({ ...options, runBudgetGuard, incrementalVerifier, requestScope }),
-    { legacy: 'reject', onerror: options.onError ?? writeStdioDiagnostic },
+    { legacy: 'serve', onerror: options.onError ?? writeStdioDiagnostic },
   );
 }

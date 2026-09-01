@@ -34,4 +34,25 @@ describe('MCP stdio transport', () => {
       await client.close();
     }
   }, 30_000);
+
+  it('accepts 2025-06-18 client initialization', async () => {
+    const transport = new StdioClientTransport({
+      command: process.execPath,
+      args: [fixturePath],
+      stderr: 'pipe',
+    });
+    const client = new Client(
+      { name: 'inwsus-stdio-legacy-test-client', version: '0.1.0' },
+      { versionNegotiation: { mode: 'legacy' } },
+    );
+
+    try {
+      await client.connect(transport);
+      const { tools } = await client.listTools();
+
+      expect(tools).toHaveLength(212);
+    } finally {
+      await client.close();
+    }
+  }, 30_000);
 });

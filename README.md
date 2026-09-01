@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/engasnm111/inwsus/releases/latest"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/engasnm111/inwsus" /></a>
+  <a href="https://github.com/kornmang/inwsus/releases/latest"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/kornmang/inwsus" /></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg" /></a>
   <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%20x64-0078D4" />
   <img alt="Node" src="https://img.shields.io/badge/Node.js-24.x-339933" />
@@ -302,7 +302,7 @@ stops the current local HTTP listener.
 ### 1. Install inwsus Desktop
 
 1. Download the latest published installer from
-   [GitHub Releases](https://github.com/engasnm111/inwsus/releases/latest).
+   [GitHub Releases](https://github.com/kornmang/inwsus/releases/latest).
    The Windows installer for the current version is `inwsus-Setup-4.11.0.exe`; download the published artifact from GitHub Releases.
 2. Run the NSIS installer and launch **inwsus Agent Control Center**.
 3. Add or select the project/workspace you want inwsus to operate on.
@@ -550,7 +550,7 @@ Requirements for source development:
 - `rg` (ripgrep) recommended.
 
 ```powershell
-git clone https://github.com/engasnm111/inwsus.git
+git clone https://github.com/kornmang/inwsus.git
 Set-Location .\inwsus
 corepack enable
 corepack pnpm@10.15.0 install --frozen-lockfile
@@ -646,7 +646,7 @@ The **AI Destructive Actions** setting is now deliberately narrow. Only the exac
 ### Clone and install dependencies
 
 ```powershell
-git clone https://github.com/engasnm111/inwsus.git
+git clone https://github.com/kornmang/inwsus.git
 Set-Location .\inwsus
 corepack pnpm@10.15.0 install --frozen-lockfile
 ```
@@ -1755,7 +1755,7 @@ not want to publish a personal email address should configure a GitHub-provided
 - [Contributing guide](CONTRIBUTING.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Security Policy](SECURITY.md)
-- [Issue tracker](https://github.com/engasnm111/inwsus/issues)
+- [Issue tracker](https://github.com/kornmang/inwsus/issues)
 
 Please use the security policy instead of public issues for vulnerability details.
 ## Development and verification

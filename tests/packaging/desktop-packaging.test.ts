@@ -26,8 +26,8 @@ describe('Windows desktop packaging', () => {
 
     expect(desktopPackage.description).toBe('Windows-first local AI-agent runtime and MCP gateway with 218 configurable tools.');
     expect(desktopPackage.author).toBe('Adisorn');
-    expect(desktopPackage.homepage).toBe('https://github.com/engasnm111/inwsus#readme');
-    expect(desktopPackage.repository).toEqual({ type: 'git', url: 'https://github.com/engasnm111/inwsus.git' });
+    expect(desktopPackage.homepage).toBe('https://github.com/kornmang/inwsus#readme');
+    expect(desktopPackage.repository).toEqual({ type: 'git', url: 'https://github.com/kornmang/inwsus.git' });
   });
 
   it('declares inwsus x64 NSIS packaging and built runtime bundles', async () => {

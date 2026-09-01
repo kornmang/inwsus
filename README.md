@@ -41,9 +41,9 @@ over outbound HTTPS, forwards MCP work to inwsus's Desktop loopback HTTP MCP,
 and returns the response without opening a public inbound port on the Windows
 machine.
 
-## Current version: v4.11.0
+## Current version: v4.11.1
 
-The v4.11.0 release target and runtime contract contain **218 configurable MCP tools**,
+The v4.11.1 release target and runtime contract contain **218 configurable MCP tools**,
 with **212 advertised by default** because
 the six `codex_*` delegation tools are opt-in. The earlier 184-tool snapshot remains
 only as the compatibility baseline used by the v4 architecture; new v4 gateway
@@ -303,7 +303,7 @@ stops the current local HTTP listener.
 
 1. Download the latest published installer from
    [GitHub Releases](https://github.com/kornmang/inwsus/releases/latest).
-   The Windows installer for the current version is `inwsus-Setup-4.11.0.exe`; download the published artifact from GitHub Releases.
+   The Windows installer for the current version is `inwsus-Setup-4.11.1.exe`; download the published artifact from GitHub Releases.
 2. Run the NSIS installer and launch **inwsus Agent Control Center**.
 3. Add or select the project/workspace you want inwsus to operate on.
 4. Review **Settings** before attaching an AI client, especially Permission
@@ -696,7 +696,7 @@ corepack pnpm@10.15.0 package:windows
 The x64 NSIS installer is written to:
 
 ```text
-apps/desktop/dist/installers/inwsus-Setup-4.11.0.exe
+apps/desktop/dist/installers/inwsus-Setup-4.11.1.exe
 ```
 
 The installer is per-user by default. A common installed executable path is:
